@@ -15,17 +15,17 @@ tags:
 
 **TL;DR**: We built a browser-based terminal controller in one day using Claude Code, named pipes, and Xterm.js. No SSH needed, just open your browser and start typing. Check and command your agents on the go!
 
-What happens when three developers lock themselves in a room from 11am to 2pm with [Claude Code](https://www.anthropic.com/claude-code) and too much caffeine? You get [VibeTunnel](https://vibetunnel.sh) - a browser-based terminal that actually works. No SSH client needed, no port forwarding, just pure terminal access through your browser.
+What happens when three developers lock themselves in a room from 11am to 2pm with [Claude Code](https://www.anthropic.com/claude-code) and too much caffeine? You get [VibeTunnel](https://vibetunnel.sh) - a browser-based terminal that actually works. Control & command your agents on the go.
 
 This is the story of how Mario, Armin, and I built VibeTunnel in one marathon session.
 
-We met up for a hackathon without knowing exactly what we wanted to build, but we knew one thing: we were all completely in love with building stuff with AI. As we talked, we realized we shared the same frustration - we all wanted to check on our AI agents and see how far they'd gotten with their tasks.
-
 ## Motivation
 
-The actual use case that drove us? Being able to check on Claude Code from anywhere, get push notifications, and give it new commands when it's done. This first version lets us control Claude Code remotely - imagine being at lunch and checking if your agent finished that refactoring task, then immediately giving it the next assignment.
+We met up for a hackathon without knowing exactly what we wanted to build, but we knew one thing: we were all completely in love with building stuff with AI. As we talked, we realized we shared the same frustration - we all wanted to check on our AI agents and see how far they'd gotten with their tasks.
 
-But here's the thing - we didn't want to constrain VibeTunnel to just Claude Code. It can control anything in your terminal. The broader frustration remains: accessing your development machine's terminal from anywhere shouldn't require complex SSH setups, port forwarding gymnastics, or fighting with corporate firewalls. We wanted something that just works. And we're making it [open source](https://github.com/amantus-ai/vibetunnel) so everyone can benefit.
+This first version lets you control Claude Code remotely - imagine being at lunch and checking if your agent finished that refactoring task, then immediately giving it the next assignment.
+
+But here's the thing - we didn't want to constrain VibeTunnel to just Claude Code. It can control anything in your terminal. Accessing your development machine's terminal from anywhere shouldn't require complex SSH setups. We wanted something that just works. And we're making it [open source](https://github.com/amantus-ai/vibetunnel) so everyone can benefit.
 
 ![The VibeTunnel team: Peter, Armin and Mario (from left to right)](/assets/img/2025/vibetunnel/team.jpg)
 
@@ -163,6 +163,13 @@ VibeTunnel is what happens when developers scratch their own itch with modern to
 As Armin noted about the quality:
 
 > I don't think that we wrote the most amazing code with Claude. There's definitely a lot of slop in there. But I think if one were to want to make this really, really nice, you could actually use Claude to fix a ton of this stuff. Plus - it's not just the app that is there. Right? There's the logo. There's the website. There is the readme. There's the documentation. All of it just came out of effectively an agent.
+
+The scale of what we built in one marathon session? Over 16,000 lines of code:
+- Swift: 7,666 lines (57%)
+- Rust: 3,001 lines (22%)
+- Shell Scripts: 2,331 lines (17%)
+- TypeScript: 2,756 lines
+- **Total Core Code: 16,283 lines**
 
 At the end of our marathon session, we all agreed:
 
