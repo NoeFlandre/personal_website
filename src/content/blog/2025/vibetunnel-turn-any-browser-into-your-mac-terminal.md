@@ -27,6 +27,8 @@ The actual use case that drove us? Being able to check on Claude Code from anywh
 
 But here's the thing - we didn't want to constrain VibeTunnel to just Claude Code. It can control anything in your terminal. The broader frustration remains: accessing your development machine's terminal from anywhere shouldn't require complex SSH setups, port forwarding gymnastics, or fighting with corporate firewalls. We wanted something that just works. And we're making it [open source](https://github.com/amantus-ai/vibetunnel) so everyone can benefit.
 
+![The VibeTunnel team: Peter, Armin and Mario (from left to right)](/assets/img/2025/vibetunnel/team.jpg)
+
 ## The Birth of VibeTunnel
 
 It started with Armin's prototype that piped stdin/stdout to files and used [asciinema](https://asciinema.org/) for playback. His initial approach was clever - capture terminal output to a [JSONL](https://jsonlines.org/) file that described terminal dimensions and character events, then replay it using asciinema's player. But it was one-way communication only - no input, no interactivity, just a recording.
@@ -131,8 +133,6 @@ Armin explained why this is actually harder than SSH:
 - **Node.js/Rust/Swift** - Pick your flavor based on your team's expertise or deployment constraints. They all expose the same REST API, so switching between them is literally just changing a command-line flag.
 
 ## The Real MVP: Teamwork, Claude, and Caffeine
-
-![The VibeTunnel team: Peter, Armin and Mario (from left to right)](/assets/img/2025/vibetunnel/team.jpg)
 
 This project happened because of a perfect storm of factors:
 
