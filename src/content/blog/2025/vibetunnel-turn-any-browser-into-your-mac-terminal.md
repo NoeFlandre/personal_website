@@ -13,11 +13,11 @@ tags:
 
 ![VibeTunnel: Browser-Based Terminal Access](/assets/img/2025/vibetunnel/hero.jpg)
 
-**TL;DR**: We built a browser-based terminal controller in one day using Claude Code, named pipes, and Xterm.js. No SSH needed, just open your browser and start typing. Check and command your agents on the go!
+**TL;DR**: We built a browser-based terminal controller working around 24 hours using Claude Code, named pipes, and Xterm.js. No SSH needed, just open your browser and start typing. Check and command your agents on the go!
 
-What happens when three developers lock themselves in a room from 11am to 2pm with [Claude Code](https://www.anthropic.com/claude-code) and too much caffeine? You get [VibeTunnel](https://vibetunnel.sh) - a browser-based terminal that actually works. Control & command your agents on the go.
+What happens when three developers lock themselves in a room for around 24 hours with [Claude Code](https://www.anthropic.com/claude-code) and too much caffeine? You get [VibeTunnel](https://vibetunnel.sh) - a browser-based terminal that actually works. Control & command your agents on the go.
 
-This is the story of how Mario, Armin, and I built VibeTunnel in one marathon session.
+This is the story of how Mario, Armin, and I built VibeTunnel in one marathon session working around 24 hours.
 
 ## Motivation
 
@@ -37,13 +37,13 @@ Armin had actually built a similar library two years ago:
 
 > I used a library that I wrote two years ago... that library probably took me three or four days because I had to really figure out how pseudo terminals work. I'm pretty sure you could write this whole thing up in probably under an hour at this point. And I didn't even bother using my library again... I just copy pasted the whole library in and had Claude do the modifications to it.
 
-Within hours, we had transformed it into a full bidirectional terminal emulator. The journey from "wouldn't it be cool if..." to a working prototype showcases what's possible when you combine the right tools, the right team, and a healthy dose of determination. Here's how we built it in one intense session that started at 11am and stretched well past midnight.
+Within hours, we had transformed it into a full bidirectional terminal emulator. The journey from "wouldn't it be cool if..." to a working prototype showcases what's possible when you combine the right tools, the right team, and a healthy dose of determination. Here's how we built it in one intense session working around 24 hours.
 
 ## The Technical Journey
 
-### From Asciinema to Xterm.js: The Midnight Pivot
+### From Asciinema to Xterm.js: The Marathon Pivot
 
-Our first major challenge came after midnight when we needed a proper [scrollback buffer](https://unix.stackexchange.com/questions/145050/what-exactly-is-scrollback-and-scrollback-buffer). The initial asciinema approach had a fatal flaw - no history. You couldn't scrollback to see previous output, making it useless for any real work. Imagine running a build command and not being able to scroll up to see the errors!
+Our first major challenge came when we needed a proper [scrollback buffer](https://unix.stackexchange.com/questions/145050/what-exactly-is-scrollback-and-scrollback-buffer). The initial asciinema approach had a fatal flaw - no history. You couldn't scrollback to see previous output, making it useless for any real work. Imagine running a build command and not being able to scroll up to see the errors!
 
 Mario spent two hours going down a rabbit hole, investigating whether to write his own ANSI sequence renderer. He got surprisingly far - basic text output worked, colors were rendering, cursor movement was... sort of working. But then came the edge cases: double-width characters, complex cursor positioning, alternate screen buffers, and the hundreds of other ANSI escape sequences that real terminals support. It was becoming clear this was a month-long project, not a two-hour hack.
 
@@ -77,7 +77,7 @@ Armin put it in perspective:
 
 He compared it to his experience at [Sentry](https://sentry.io):
 
-> Every year, we had a hack week culture. So every year, we took four days to five days of three to four people working on one project. And, honestly, three, four people working for five days not nearly as impressive in terms of how much stuff you can produce than I think even within twelve hours.
+> Every year, we had a hack week culture. So every year, we took four days to five days of three to four people working on one project. And, honestly, three, four people working for five days not nearly as impressive in terms of how much stuff you can produce than working around 24 hours with AI.
 
 Claude excels at bootstrapping. Need to integrate a library you've never used? Claude will get you 80% there in minutes. Want to understand how Server-Sent Events work? Claude generates a working example faster than you can read the MDN docs. 
 
@@ -136,13 +136,13 @@ This project happened because of a perfect storm of factors:
 
 **Armin's systems wizardry** - He cranked out the Rust binary in 2-3 hours, building the critical process management layer that makes everything possible.
 
-**Mario's frontend adventures with Claude** - Mario rebuilt the UI layer three times. The first version was a mess (don't judge, it was 11 PM). The second used vanilla JavaScript and quickly became unmaintainable. The third, using Lit, was the charm. Claude was his constant companion, generating boilerplate, explaining APIs, and occasionally leading him astray with over-engineered solutions. The key was learning when to trust Claude and when to take control.
+**Mario's frontend adventures with Claude** - Mario rebuilt the UI layer three times. The first version was a mess. The second used vanilla JavaScript and quickly became unmaintainable. The third, using Lit, was the charm. Claude was his constant companion, generating boilerplate, explaining APIs, and occasionally leading him astray with over-engineered solutions. The key was learning when to trust Claude and when to take control.
 
 **My deep knowledge of macOS and Product-market fit** - I've been in the iOS and macOS space for almost 20 years and really know how to build great products. I could reuse a lot of my existing work to get us really far, especially with branding, distribution, and the difficulties around notarization and updating. I built the app, onboarding, website, the social pages, did the design, and the overall branding to make this from a quick hack project into an actual beautifully designed product.
 
 I had the most fun building the website with [v0 from Vercel](https://v0.dev/). I almost didn't believe that it would shoot out something that is as cool as this.
 
-**The power of a deadline** - We set out to work from 11am to 2pm, but the excitement carried us well past midnight. There's something magical about a time constraint. It forces pragmatic decisions.
+**The power of a deadline** - We worked around 24 hours on this. There's something magical about a time constraint. It forces pragmatic decisions.
 
 > The individual components aren't really complex. It's just fitting them together and making them work together. This became our mantra. Named pipes? Simple. SSE? Straightforward. Terminal emulation? Solved problem. But making them dance together in harmony? That's where the magic (and the bugs) lived.
 
@@ -160,7 +160,7 @@ As Armin noted about the quality:
 
 > I don't think that we wrote the most amazing code with Claude. There's definitely a lot of slop in there. But I think if one were to want to make this really, really nice, you could actually use Claude to fix a ton of this stuff. Plus - it's not just the app that is there. Right? There's the logo. There's the website. There is the readme. There's the documentation. All of it just came out of effectively an agent.
 
-The scale of what we built in one marathon session? Over 16,000 lines of code:
+The scale of what we built working around 24 hours? Over 16,000 lines of code:
 - Swift: 7,666 lines (57%)
 - Rust: 3,001 lines (22%)
 - Shell Scripts: 2,331 lines (17%)
