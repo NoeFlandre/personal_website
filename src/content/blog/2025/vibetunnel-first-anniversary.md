@@ -1,10 +1,10 @@
 ---
 title: "VibeTunnel's first AI-anniversary"
 description: "It's been one month since we released the first version of VibeTunnel, and since in the AI world time is so much faster, let's call it VibeTunnel's first anniversary!"
-pubDatetime: 2025-07-15T10:00:00+01:00
+pubDatetime: 2025-07-16T01:00:00+01:00
 heroImage: "/assets/img/2025/vibetunnel-first-anniversary/header.png"
 tags: ["vibetunnel", "ai", "terminal", "tools"]
-unlisted: true
+unlisted: false
 ---
 
 It's been one month since we [released the first version of VibeTunnel](/posts/2025/vibetunnel-turn-any-browser-into-your-mac-terminal/) - let's call it VibeTunnel's first anniversary! 
@@ -68,7 +68,7 @@ VibeTunnel wouldn't be where it is today without our amazing contributors:
 
 **Core Team**: [Mario Zechner](https://github.com/badlogic) (291 commits) and [Armin Ronacher](https://github.com/mitsuhiko) (132 commits) who helped build the foundation and shaped the architecture.
 
-**Major Contributors**: [Manuel Maly](https://github.com/manuelmaly) (72), [Helmut Januschka](https://github.com/hjanuschka) (55), [Jeff Hurray](https://github.com/jhurray) (36), and [David Collado](https://github.com/collado-dev) (14) for their significant contributions.
+**Major Contributors**: [Manuel Maly](https://github.com/manuelmaly) (72), [Helmut Januschka](https://github.com/hjanuschka) (55), and [Jeff Hurray](https://github.com/jhurray) (36) for their significant contributions.
 
 **Community Heroes**: Billy Irwin, Igor Tarasenko, David, Thomas Ricouard, Piotr, hewigovens, Clay Warren, Chris Reynolds, Madhava Jay, Michi Hoffmann, Raghav Sethi, Tao Xu, Devesh Shetty, Jan Remeš, Luis Nell, Luke, Marek Šuppa, Sandeep Aggarwal, Zhiqiang Zhou, and noppe - every contribution matters!
 
@@ -78,6 +78,8 @@ Whether you fixed a typo, squashed a bug, or built entire features - thank you f
 
 ## Looking Forward
 
-We just shipped a standalone npm with Linux support and the bug list is slowing down. 1.0 ships end of July, followed by the iOS app and some wild ideas in the pipeline: Agent Mode, Apple Watch app, voice mode. The future of terminal access is bright!
+We just shipped beta 11 and a standalone npm with Linux support and the bug list is slowing down. 1.0 ships end of July, followed by the iOS app and some wild ideas in the pipeline: Agent Mode, Apple Watch app, voice mode. The future of terminal access is bright!
+
+Oh, and one more thing - we're creating a VibeTunnel organization! As the project grows beyond its scrappy startup phase, we'll be moving the repository to its own org. This will help us better manage the ecosystem of tools, plugins, and integrations that are starting to emerge around VibeTunnel.
 
 Since agents can't eat cake, I made them a different present: VibeTunnel is now on [vt.sh](https://vt.sh)! If you haven't tried it yet, now's the perfect time - [download the Mac app](https://github.com/amantus-ai/vibetunnel/releases) and post a picture on Twitter of the weirdest place you're vibin'!
