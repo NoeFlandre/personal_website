@@ -11,11 +11,11 @@ It's been one month since we [released the first version of VibeTunnel](/posts/2
 
 VibeTunnel is an app that turns your web browser into a terminal for your Mac (or Linux), perfect for running agents like claude code or gemini from anywhere. Because these slot machines aren't additive enough already!
 
-> **TL;DR** – 2.8k commits, 144k LOC, Mac/Linux/npm releases, 1.0 coming late July. Agents + humans = 🚀
+> **TL;DR** – 2.8k commits, 147k LOC, Mac/Linux/npm releases, 1.0 coming late July. Agents + humans = 🚀
 
 ## Growth & Velocity
 
-Let's start with some hard data. VibeTunnel has grown from **4,012 lines of code** in b1 to **144,021 lines** in b10 – that's a 36x increase in just one month! Through **2,842 commits** from 32 contributors, we've built something that might convince non-believers that large projects can indeed be built with agents.
+Let's start with some hard data. VibeTunnel has grown from **4,012 lines of code** in b1 to **147,226 lines** in b11 – that's a 37x increase in just one month! Through **2,842 commits** from 32 contributors, we've built something that might convince non-believers that large projects can indeed be built with agents.
 
 | Release | Date | Total LOC | Tests | Mac | Web |
 |---------|------|-----------|-------|-----|-----|
@@ -23,6 +23,7 @@ Let's start with some hard data. VibeTunnel has grown from **4,012 lines of code
 | beta.3 | Jun 23 | 49,133 | 8,324 | 14,266 | 18,082 |
 | beta.6 | Jul 3 | 106,263 | 27,890 | 20,305 | 61,554 |
 | beta.10 | Jul 15 | 144,021 | 36,079 | 34,462 | 83,009 |
+| beta.11 | Jul 16 | 147,226 | 37,430 | 34,959 | 83,894 |
 
 The pace has been intense: **436 commits** in the explosive growth phase (beta.2 to beta.3) where we added Mac and iOS apps, averaging **126 commits per release**. Test coverage improved dramatically, and we even went full circle through Rust, Go, to Node as server backends, with plans to [bring Rust back](https://github.com/amantus-ai/vibetunnel/pull/297). And aren't languages really just implementation details, when you have agents?
 
