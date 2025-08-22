@@ -9,13 +9,13 @@ tags: ["ai", "claude", "development", "claude-code", "best-practices", "agentic-
 
 **The reinvention of software development is happening now.** 
 
-This August edition cuts through the AI hype with five essential perspectives that reveal both the promise and peril of our evolving profession. We track developers' evolution from AI skeptics to strategists, examine how juniors are losing fundamental skills, reality-check the 10x productivity myths, and explore why both platform monopolies and MCP server proliferation may be dead ends.
+This edition cuts through the AI hype with five essential perspectives that reveal both the promise and peril of our evolving profession. We track developers' evolution from AI skeptics to strategists, examine how juniors are losing fundamental skills, reality-check the 10x productivity myths, and explore why both platform monopolies and MCP server proliferation may be dead ends.
 
 🤖 *Heads Up: [Summaries are AI-Assisted](/posts/2025/startup-slop). All posts are hand-picked.*
 
 ## Developers, Reinvented
 
-[Read the article](https://ashtom.github.io/developers-reinvented) by Thomas Dohmke ([@ashtom](https://x.com/ashtom)) • August 2025 • 11 min
+[Read the article](https://ashtom.github.io/developers-reinvented) by Thomas Dohmke ([@ashtom](https://x.com/ashtom)) • 11 min
 
 Thomas presents groundbreaking research from interviews with developers who've made AI tools central to their workflows, revealing a four-stage evolution that's reshaping software development from skepticism to strategic AI orchestration.
 
@@ -31,9 +31,9 @@ The research reveals "realistic optimists" who acknowledge disruption while embr
 
 ## The Hidden Cost of AI-Assisted Learning
 
-[Read the article](https://nmn.gl/blog/ai-and-learning) by Nemil Dalal ([@nemild](https://x.com/nemild)) • August 2025 • 8 min
+[Read the article](https://nmn.gl/blog/ai-and-learning) by Namanyay Goel ([@NamanyayG](https://x.com/NamanyayG)) • 8 min
 
-Nemil presents a sobering counterpoint to AI evangelism, examining how AI tools may be creating a generation of developers who can ship code without truly understanding it—trading deep knowledge for quick fixes.
+Namanyay presents a sobering counterpoint to AI evangelism, examining how AI tools may be creating a generation of developers who can ship code without truly understanding it—trading deep knowledge for quick fixes.
 
 - **The learning crisis**: Junior developers increasingly rely on AI-generated solutions without understanding the underlying principles, potentially creating a knowledge gap that compounds over time as they advance in their careers
 - **Pattern matching vs. understanding**: AI tools excel at providing working code snippets, but developers miss the crucial struggle phase where deep understanding forms—the difference between knowing how to use a solution and understanding why it works
@@ -47,7 +47,7 @@ This critical perspective complements the optimistic evolution narrative, highli
 
 ## Reality Check: AI's Actual Impact on Productivity
 
-[Read the article](https://colton.dev/blog/curing-your-ai-10x-engineer-imposter-syndrome/) by Colton Anglin • August 2025 • 6 min
+[Read the article](https://colton.dev/blog/curing-your-ai-10x-engineer-imposter-syndrome/) by Colton Anglin • 6 min
 
 Colton delivers a much-needed reality check on the hyperbolic claims of 10x or 100x productivity gains from AI, offering reassurance to engineers experiencing imposter syndrome in the face of aggressive AI marketing.
 
@@ -63,7 +63,7 @@ This grounded perspective serves as an antidote to both AI evangelism and doom-s
 
 ## The End of Platform Dominance
 
-[Read the article](https://www.aparker.io/post/3lvjepuyf4q2w) by Austin Parker ([@aparker.io](https://bsky.app/profile/aparker.io)) • August 2025 • 10 min
+[Read the article](https://www.aparker.io/post/3lvjepuyf4q2w) by Austin Parker ([@aparker.io](https://bsky.app/profile/aparker.io)) • 10 min
 
 Austin presents a visionary thesis on how AI will fundamentally restructure the software industry, shifting from today's platform monopolies to tomorrow's ecosystem of small, custom applications built on open protocols.
 
@@ -79,7 +79,7 @@ This radical vision complements our exploration of role transformation by imagin
 
 ## Less is More: The Hidden Costs of MCP Server Proliferation
 
-[Read the article](https://ghuntley.com/allocations/) by Geoffrey Huntley ([@geoff](https://x.com/GeoffreyHuntley)) • August 2025 • 10 min
+[Read the article](https://ghuntley.com/allocations/) by Geoffrey Huntley ([@geoff](https://x.com/GeoffreyHuntley)) • 10 min
 
 Geoffrey presents a critical analysis of Model Context Protocol (MCP) servers, warning that the rush to add more tools and integrations is actually degrading AI coding assistant performance rather than improving it.
 
