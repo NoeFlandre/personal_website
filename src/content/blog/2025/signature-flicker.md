@@ -68,7 +68,7 @@ Codex isn't perfect — it sometimes overwrites lines of text — but it already
 
 ### pi
 
-Mario Zechner's [pi](https://shittycodingagent.ai/) is another example of doing it right — smooth rendering without alt mode:
+Mario Zechner's [pi](https://shittycodingagent.ai/) is currently the gold-standard for differential rendering, while also using all tricks of modern terminals — including showing inline images:
 
 ![pi demo](/assets/img/2025/signature-flicker/pi-demo.gif)
 
