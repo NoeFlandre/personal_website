@@ -66,6 +66,12 @@ Compare to OpenAI's Codex, which stays in the primary screen buffer and lets me 
 
 Codex isn't perfect — it sometimes overwrites lines of text — but it already nails the part that matters most: it behaves like a terminal. That makes [their current direction toward an alt-mode TUI](https://github.com/openai/codex/blob/main/codex-rs/tui2/docs/tui_viewport_and_history.md) feel like a regression, not an upgrade. Here's hoping they reverse course.
 
+### pi
+
+Mario Zechner's [pi](https://shittycodingagent.ai/) is another example of doing it right — smooth rendering without alt mode:
+
+![pi demo](/assets/img/2025/signature-flicker/pi-demo.gif)
+
 ## Verdict
 
 Claude Code and [pi](https://shittycodingagent.ai/) prove you can kill flicker without giving up the terminal's muscle memory.
