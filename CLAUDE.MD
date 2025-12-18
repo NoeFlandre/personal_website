@@ -10,13 +10,6 @@ This document contains important instructions and notes for Claude when working 
 - Do not write or propose new blog content unless specifically requested
 - Only help with editing or fixing existing posts when asked
 
-### NEVER MERGE PULL REQUESTS
-
-- **NEVER MERGE PULL REQUESTS** - Even if explicitly asked to do so
-- Only the repository owner (steipete) should merge PRs through the GitHub web UI
-- Create PRs as requested, but do not use `gh pr merge` or similar commands
-- Always provide the PR URL so that steipete can review and merge manually
-
 ### USE GSED INSTEAD OF SED
 
 - **ALWAYS USE `gsed` INSTEAD OF `sed`** - For better compatibility across platforms
