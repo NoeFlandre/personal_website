@@ -10,7 +10,7 @@ tags: ["ai", "codex", "workflow"]
 
 It's incredible how far "vibe coding" has come this year. Whereas in ~May I was amazed that *some* prompts produced code that worked out of the box, **this is now my expectation**. I can ship code now at a speed that seems unreal. I burned [a lot of tokens](https://x.com/thsottiaux/status/2004789121492156583) since then. Time for an update.
 
-It's funny how these agents work. There's been this argument a few weeks ago that one needs to write code in order to feel bad architecture and that using agents creates a disconnection - and I **couldn't disagree more**. When you spend enough time with agents, you know exactly how long sth should take, and when codex comes back and hasn't solved it in one shot, I already get suspicious.
+It's funny how these agents work. There's been this argument a few weeks ago that [one needs to write code in order to feel bad architecture](https://x.com/steipete/status/1997380251081490717) and that using agents creates a disconnection - and I **couldn't disagree more**. When you spend enough time with agents, you know exactly how long sth should take, and when codex comes back and hasn't solved it in one shot, I already get suspicious.
 
 The amount of software I can create is now mostly **limited by inference time and hard thinking**. And let's be honest - most software does not require hard thinking. Most apps shove data from one form to another, maybe store it somewhere, and then show it to the user in some way or another. The simplest form is text, so by default, whatever I wanna build, it starts as CLI. Agents can call it directly and verify output - closing the loop.
 
@@ -116,4 +116,4 @@ trust_level = "trusted"
 ```
 This allows the model to read more in one go, the defaults are a bit small and can limit what it sees. It fails silently, which is a pain and something they'll eventually fix. Also, web search is still not on by default? `unified_exec` replaced tmux and my old `runner` script, rest's neat too. And don't be scared about compaction, ever since OpenAI switched to their new /compact endpoint, this works well enough that tasks can run across many compacts and will be finished. It'll make things slower, but often acts like a review, and the model will find bugs when it looks at code again.
 
-That's it, for now. I plan on writing more again and have quite a backlog on ideas in my head, just having **too much fun building things**. If you wanna hear more ramblings and ideas how to build in this new world, [follow me on Twitter](https://x.com/steipete).
+That's it, for now. I plan on writing more again and have quite a backlog on ideas in my head, just having [**too much fun building things**](https://x.com/steipete/status/2005393881395835045). If you wanna hear more ramblings and ideas how to build in this new world, [follow me on Twitter](https://x.com/steipete).
