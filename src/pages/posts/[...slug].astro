@@ -56,7 +56,7 @@ type Props = {
 
 const { post, yearSlug } = Astro.props;
 const { Content } = await render(post);
-const readingTime = calculateReadingTime(post.body ?? "");
+const readingTime = post.data.readingTime || calculateReadingTime(post.body ?? "");
 ---
 
 <BlogPostLayout {...post.data} slug={yearSlug} readingTime={readingTime}>
