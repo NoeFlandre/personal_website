@@ -25,6 +25,7 @@ const blog = defineCollection({
       // Additional fields from existing posts
       source: z.string().optional(),
       AIDescription: z.boolean().optional(),
+      readingTime: z.string().optional(),
     }),
 });
 
