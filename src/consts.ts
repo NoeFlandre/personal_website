@@ -31,12 +31,12 @@ interface Site {
 
 // Site configuration
 export const SITE: Site = {
-  website: "https://steipete.me/",
-  author: "Peter Steinberger",
-  profile: "https://steipete.me/about",
-  desc: "AI-powered tools from Swift roots to web frontiers. Every commit lands on GitHub for you to fork & remix.",
-  title: "Peter Steinberger",
-  ogImage: "peter-avatar.jpg",
+  website: "https://noeflandre.github.io/",
+  author: "Noé Flandre",
+  profile: "https://noeflandre.github.io/about",
+  desc: "AI Research Engineer, vibe-learning. Daily meal : curating datasets & training models",
+  title: "Noé Flandre",
+  ogImage: "noe-avatar.jpg",
   lightAndDarkMode: true,
   postPerIndex: 10,
   postPerPage: 10,
@@ -46,7 +46,7 @@ export const SITE: Site = {
   editPost: {
     enabled: true,
     text: "Edit on GitHub",
-    url: "https://github.com/steipete/steipete.me/edit/main/",
+    url: "https://github.com/NoeFlandre/personal_website/edit/main/",
   },
   dynamicOgImage: true,
   lang: "en",
@@ -71,16 +71,24 @@ export const NAV_LINKS: SocialLink[] = [
 // Social media links
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    href: "https://github.com/steipete",
+    href: "https://huggingface.co/NoeFlandre",
+    label: "HuggingFace",
+  },
+  {
+    href: "https://github.com/NoeFlandre",
     label: "GitHub",
   },
   {
-    href: "https://twitter.com/steipete",
-    label: "Twitter",
+    href: "https://scholar.google.com/citations?user=NOvshPMAAAAJ&hl=en",
+    label: "Google Scholar",
   },
   {
-    href: "https://bsky.app/profile/steipete.me",
-    label: "BlueSky",
+    href: "https://x.com/NoeFlandre",
+    label: "X",
+  },
+  {
+    href: "https://www.linkedin.com/in/no%C3%A9flandre/",
+    label: "LinkedIn",
   },
   {
     href: "/rss.xml",
@@ -91,8 +99,10 @@ export const SOCIAL_LINKS: SocialLink[] = [
 // Icon map for social media
 export const ICON_MAP: Record<string, string> = {
   GitHub: "github",
-  Twitter: "twitter",
-  BlueSky: "bsky",
+  X: "twitter",
+  "Google Scholar": "google",
+  LinkedIn: "linkedin",
+  HuggingFace: "hf",
   RSS: "rss",
   Email: "mail",
 };

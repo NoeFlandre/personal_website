@@ -2,6 +2,8 @@
 import IconBlueSky from "@/assets/icons/IconBlueSky.svg";
 import IconBrandX from "@/assets/icons/IconBrandX.svg";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
+import IconGoogleScholar from "@/assets/icons/IconGoogleScholar.svg";
+import IconHuggingFace from "@/assets/icons/hf.svg";
 import IconLinkedin from "@/assets/icons/IconLinkedin.svg";
 import IconMail from "@/assets/icons/IconMail.svg";
 import { SOCIALS } from "@/constants";
@@ -19,6 +21,8 @@ const iconMap = {
   bluesky: IconBlueSky,
   linkedin: IconLinkedin,
   mail: IconMail,
+  huggingface: IconHuggingFace,
+  googlescholar: IconGoogleScholar,
 };
 ---
 
@@ -33,7 +37,7 @@ const iconMap = {
           title={social.linkTitle}
         >
           {IconComponent && (
-            <IconComponent class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />
+            <IconComponent class="inline-block size-6 scale-125 fill-transparent stroke-current opacity-90 group-hover:fill-transparent sm:scale-110" />
           )}
           <span class="sr-only">{social.linkTitle}</span>
         </LinkButton>

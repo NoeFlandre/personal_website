@@ -20,21 +20,22 @@
   font-display: swap;
 }
 
+/* Bear Blog theme */
 :root,
 html[data-theme="light"] {
-  --background: #fdfdfd;
-  --foreground: #282728;
-  --accent: #006cac;
-  --muted: #e6e6e6;
-  --border: #ece9e9;
+  --background: #ffffff;
+  --foreground: #444444;
+  --accent: #3273dc;
+  --muted: #f2f2f2;
+  --border: #e0e0e0;
 }
 
 html[data-theme="dark"] {
-  --background: #212737;
-  --foreground: #eaedf3;
-  --accent: #ff6b01;
-  --muted: #343f60bf;
-  --border: #ab4b08;
+  --background: #01242e;
+  --foreground: #dddddd;
+  --accent: #8cc2dd;
+  --muted: #004052;
+  --border: #1a4a5e;
 }
 
 @theme {

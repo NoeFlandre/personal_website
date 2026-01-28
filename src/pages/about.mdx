@@ -1,21 +1,20 @@
 ---
 layout: ../layouts/AboutLayout.astro
 title: "About"
-description: "Vienna ↔ London. iOS architect turned web developer. Open source everything. Conference speaker & writer on tech innovation."
+description: "Freshly graduate, currently in India exploring AI and PyTorch. Building side projects and researching responsible AI development."
 ---
 
-import NewsletterForm from '../components/NewsletterForm.astro';
+import CareerTimeline from '../components/CareerTimeline.astro';
 
 <div class="flex flex-col md:flex-row gap-8 items-start">
-  <div class="w-full md:w-auto md:flex-shrink-0 md:max-w-[281px]">
-    <img src="/peter-office.jpg" alt="Peter in his office setup" class="w-full h-auto rounded-lg" />
+  <div class="w-full md:w-auto md:flex-shrink-0 flex justify-center">
+    <img src="/image.png" alt="Noé Flandre" class="w-full max-w-[281px] h-auto rounded-lg object-cover object-[60%_35%] scale-110 shadow-lg" />
   </div>
   <div class="flex-1 min-w-0">
-    <p>Deep in vibe-coding mode – tinkering with shiny web tech, chasing fresh ideas.</p>
-    <p>After years shipping native iOS, modern web feels like a breath of fresh air.</p>
-    <p>I split my time between Vienna ↔ London.</p>
-    <p>I'm looking for new opportunities to share my learnings at conferences.</p>
-    <p>[Check out my speaking history & topics](https://github.com/steipete/speaking).</p>
+    <p>Freshly graduate, I am currently in India escaping the French winter while maximizing my learning curve on PyTorch.</p>
+    <p>I am building side projects, which you can find on my [GitHub](https://github.com/NoeFlandre), and conducting research.</p>
+    <p>I am looking for opportunities to gain expertise in AI while contributing to its development in an open, thoughtful and responsible way.</p>
+    <p>Feel free to reach out!</p>
   </div>
 </div>
 
@@ -23,26 +22,12 @@ import NewsletterForm from '../components/NewsletterForm.astro';
 
 <div class="bg-secondary p-0 rounded-lg">
   <img 
-    src="https://ghchart.rshah.org/steipete" 
-    alt="Peter's GitHub Contribution Graph" 
+    src="https://ghchart.rshah.org/NoeFlandre" 
+    alt="Noe's GitHub Contribution Graph" 
     class="w-full"
     style="max-width: 100%; height: auto;"
     loading="lazy"
   />
 </div>
 
-I build what excites me and release it all as open source.
-
-[Follow me on GitHub](https://github.com/steipete/) and catch the back-story in [Finding My Spark](/posts/2025/finding-my-spark-again/).
-
-## Stay Connected
-
-<NewsletterForm />
-
-If you'd like to connect or have questions about my work, feel free to reach out through any of the links below.
-
-Tip: Change steipete.me to steipete.md for the markdown version.
-
-<div class="not-prose">
-  <p class="text-sm text-gray-500 dark:text-gray-400 mt-8">Imprint: Peter Steinberger, Siebensterngasse 15, 1070 Vienna, Austria</p>
-</div>
+<CareerTimeline />
