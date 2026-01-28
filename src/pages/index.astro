@@ -21,7 +21,7 @@ const featuredPosts = posts2025AndLater.filter(({ data }) => data.featured);
 const recentPosts = posts2025AndLater.filter(({ data }) => !data.featured);
 ---
 
-<Layout description="Peter Steinberger: AI-powered tools from Swift roots to web frontiers. Every commit lands on GitHub for you to fork & remix.">
+<Layout description="Noé Flandre: AI Research Engineer // Shipping side projects on GitHub - all open">
   <StructuredData type="WebSite" data={{}} />
   <StructuredData type="Person" data={{}} />
   <Header />
@@ -29,16 +29,18 @@ const recentPosts = posts2025AndLater.filter(({ data }) => !data.featured);
     <section id="hero" class="pt-6 pb-4">
       <div class="flex flex-col sm:flex-row items-start gap-4">
         <a href="/about" class="block mx-auto sm:mx-0 group">
-          <img 
-            src="/peter-avatar.jpg" 
-            alt="Peter Steinberger" 
-            class="w-40 h-40 rounded-full object-cover flex-shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl"
-          />
+          <div class="w-40 h-40 rounded-full overflow-hidden flex-shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl border-4 border-accent/10">
+            <img
+              src="/noe-avatar.jpg"
+              alt="Noé Flandre"
+              class="w-full h-full object-cover scale-[1.8] translate-x-[15%] translate-y-[-5%]"
+            />
+          </div>
         </a>
         <div class="flex-1 text-center sm:text-left">
           <div class="flex items-center gap-2 justify-center sm:justify-start">
             <h1 class="my-2 inline-block text-2xl font-bold sm:my-4 sm:text-3xl">
-              Hi, I'm @steipete.
+              Hi, I'm Noé.
             </h1>
             <a
               target="_blank"
@@ -56,8 +58,7 @@ const recentPosts = posts2025AndLater.filter(({ data }) => !data.featured);
             </a>
           </div>
           <p>
-            AI-powered tools from Swift roots to web frontiers.<br />
-            Every commit lands on GitHub for you to fork & remix.
+            AI Research Engineer, vibe-learning<br />Daily meal : curating datasets & training models
           </p>
           {
             // only display if at least one social link is enabled
@@ -103,7 +104,7 @@ const recentPosts = posts2025AndLater.filter(({ data }) => !data.featured);
     }
 
     <div class="my-8 text-center">
-      <LinkButton href="/posts/">
+      <LinkButton href="/posts">
         All Posts
         <IconArrowRight class="inline-block" />
       </LinkButton>

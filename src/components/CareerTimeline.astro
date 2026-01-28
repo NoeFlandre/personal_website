@@ -1,0 +1,219 @@
+---
+interface TimelineItem {
+  year: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  details?: string[];
+  location?: string;
+  link?: string;
+}
+
+const experience: TimelineItem[] = [
+  {
+    year: "Jun 2025 — Nov 2025",
+    title: "AI Engineer Intern",
+    subtitle: "Airbus Defence and Space",
+    location: "Toulouse, France",
+    description: "Fine-tuning of Vision-Language Models on Satellite Images",
+    details: [
+      "State-of-the-art review of fine-tuning techniques for VLMs in remote sensing",
+      "Built a remote sensing benchmark suite to compare models and training strategies",
+      "Implemented end-to-end fine-tuning pipelines on GCP"
+    ]
+  },
+  {
+    year: "Aug 2024",
+    title: "Research Intern (LLMs & Simulation)",
+    subtitle: "VMASC",
+    location: "Suffolk, VA, USA",
+    description: "Applied LLMs to simulation and decision-making",
+    details: [
+      "Leveraged GPT-4o and Claude 3.5 to explain simulation outputs",
+      "Applied BERT/BART for extractive/abstractive summaries",
+      "Evaluated outputs with BLEU, ROUGE, and METEOR"
+    ]
+  },
+  {
+    year: "May 2024 — Jul 2024",
+    title: "Research Intern (LLMs)",
+    subtitle: "Miami University",
+    location: "Oxford, OH, USA",
+    description: "LLMs for conceptual modeling and multimodal evaluation",
+    details: [
+      "Linked causal maps using LLMs and word embeddings",
+      "Assessed LLMs on master-level conceptual modeling tasks",
+      "Studied prompt engineering impacts on task performance and reliability"
+    ]
+  }
+];
+
+const education: TimelineItem[] = [
+  {
+    year: "2022 — 2025",
+    title: "IMT Mines Alès",
+    subtitle: "MEng",
+    location: "Alès, France",
+    details: [
+      "Major : Data Science and AI",
+      "Hackathons : Ariane Group (3rd) / Altémed (1st) / Best English Debater"
+    ]
+  },
+  {
+    year: "Jan 2025 — May 2025",
+    title: "IIT Bombay",
+    subtitle: "Exchange Semester",
+    location: "Mumbai, India",
+    details: [
+      "Human-Centered AI",
+      "Advanced Image processing",
+      "Medical Image processing"
+    ]
+  }
+];
+
+const projects: TimelineItem[] = [
+  {
+    year: "Dec 2025",
+    title: "NanoCLIP: Lightweight Vision-Language Model",
+    description: "Implemented and trained a CLIP architecture from scratch (PyTorch)",
+    link: "https://github.com/NoeFlandre/nanoclip"
+  },
+  {
+    year: "Apr 2025",
+    title: "DeepSeek Models — Jailbreak Robustness Evaluation",
+    description: "Engineered local/API-based jailbreaks, assessment with Claude API.",
+    link: "https://github.com/NoeFlandre/JailBreak-DeepSeek"
+  },
+  {
+    year: "Mar 2025",
+    title: "GPT-2 Training From Scratch (2xH100, PyTorch DDP)",
+    description: "Trained a virgin GPT-2 model on FineWeb-Edu 10B evaluated on HellaSwag.",
+    link: "https://github.com/NoeFlandre/GPT2-From-Scratch"
+  }
+];
+
+const publications: TimelineItem[] = [
+  {
+    year: "2025",
+    title: "Promoting empathy in decision-making by turning agent-based models into stories using large-language models",
+    subtitle: "Journal of Simulation",
+    description: "Daumas C., Giabbanelli P. J., **Flandre N.**",
+    link: "https://www.researchgate.net/publication/395240074_Promoting_empathy_in_decision-making_by_turning_agent-based_models_into_stories_using_large-language_models"
+  },
+  {
+    year: "2024",
+    title: "Can large language models learn conceptual modeling by looking at slide decks and pass graduate examinations? an empirical study",
+    subtitle: "ER 2024 (EmpER'24)",
+    description: "**Flandre N.**, Giabbanelli P. J.",
+    link: "https://link.springer.com/chapter/10.1007/978-3-031-75599-6_15"
+  }
+];
+---
+
+<div class="timeline-sections space-y-16 mt-12 mb-16">
+  {/* Experience Section */}
+  <section class="!p-0 !m-0">
+    <h2 class="text-2xl font-bold mb-8 border-b border-border pb-2 italic">Experience</h2>
+    <div class="relative border-l-2 border-border ml-3 md:ml-4 space-y-12">
+      {experience.map((item) => (
+        <div class="relative pl-8">
+          <div class="absolute -left-[11px] top-1.5 w-5 h-5 rounded-full bg-background border-4 border-accent"></div>
+          <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+            <h3 class="text-xl font-bold leading-tight">{item.title} — {item.subtitle}</h3>
+            <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
+          </div>
+          {item.location && <p class="text-sm text-foreground/50 italic mb-2">{item.location}</p>}
+          {item.description && <p class="text-base font-medium text-foreground/80 mb-2 italic">{item.description}</p>}
+          {item.details && (
+            <ul class="list-disc list-outside ml-4 space-y-1 text-base text-foreground/70">
+              {item.details.map(detail => <li>{detail}</li>)}
+            </ul>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* Education Section */}
+  <section class="!p-0 !m-0">
+    <h2 class="text-2xl font-bold mb-8 border-b border-border pb-2 italic">Education</h2>
+    <div class="relative border-l-2 border-border ml-3 md:ml-4 space-y-12">
+      {education.map((item) => (
+        <div class="relative pl-8">
+          <div class="absolute -left-[11px] top-1.5 w-5 h-5 rounded-full bg-background border-4 border-accent"></div>
+          <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+            <h3 class="text-xl font-bold leading-tight">{item.title} {item.subtitle && `— ${item.subtitle}`}</h3>
+            <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
+          </div>
+          {item.location && <p class="text-sm text-foreground/50 italic mb-2">{item.location}</p>}
+          {item.description && <p class="text-base text-foreground/80 mb-2">{item.description}</p>}
+          {item.details && (
+            <ul class="list-dash list-outside ml-4 space-y-1 text-base text-foreground/70">
+              {item.details.map(detail => <li>{detail}</li>)}
+            </ul>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* Publications Section */}
+  <section class="!p-0 !m-0">
+    <h2 class="text-2xl font-bold mb-8 border-b border-border pb-2 italic">Publications</h2>
+    <div class="relative border-l-2 border-border ml-3 md:ml-4 space-y-12">
+      {publications.map((item) => (
+        <div class="relative pl-8">
+          <div class="absolute -left-[11px] top-1.5 w-5 h-5 rounded-full bg-background border-4 border-accent"></div>
+          <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+            <h3 class="text-lg font-bold leading-tight">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="hover:text-accent underline decoration-accent/30 underline-offset-4">
+                  {item.title}
+                </a>
+              ) : (
+                item.title
+              )}
+            </h3>
+            <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
+          </div>
+          <p class="text-base text-foreground/80 mt-1">
+            <span set:html={item.description.replace(/\*\*Flandre N\.\*\*/g, '<strong>Flandre N.</strong>')} />.
+            <span class="italic"> {item.subtitle}</span>
+          </p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* Projects Section */}
+  <section class="!p-0 !m-0">
+    <h2 class="text-2xl font-bold mb-8 border-b border-border pb-2 italic">Projects</h2>
+    <div class="relative border-l-2 border-border ml-3 md:ml-4 space-y-12">
+      {projects.map((item) => (
+        <div class="relative pl-8">
+          <div class="absolute -left-[11px] top-1.5 w-5 h-5 rounded-full bg-background border-4 border-accent"></div>
+          <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+            <h3 class="text-xl font-bold leading-tight">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="hover:text-accent underline decoration-accent/30 underline-offset-4">
+                  {item.title}
+                </a>
+              ) : (
+                item.title
+              )}
+            </h3>
+            <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
+          </div>
+          {item.description && <p class="text-base text-foreground/80 mt-2">{item.description}</p>}
+        </div>
+      ))}
+    </div>
+  </section>
+</div>
+
+<style>
+  .list-dash {
+    list-style-type: "- ";
+  }
+</style>

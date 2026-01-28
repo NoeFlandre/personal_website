@@ -2,38 +2,38 @@ import { SITE } from "./consts";
 
 export const SOCIALS = [
   {
+    name: "HuggingFace",
+    href: "https://huggingface.co/NoeFlandre",
+    linkTitle: `${SITE.title} on HuggingFace`,
+    icon: "huggingface",
+    active: true,
+  },
+  {
     name: "Github",
-    href: "https://github.com/steipete",
-    linkTitle: ` ${SITE.title} on Github`,
+    href: "https://github.com/NoeFlandre",
+    linkTitle: `${SITE.title} on Github`,
     icon: "github",
     active: true,
   },
   {
+    name: "Google Scholar",
+    href: "https://scholar.google.com/citations?user=NOvshPMAAAAJ&hl=en",
+    linkTitle: `${SITE.title} on Google Scholar`,
+    icon: "googlescholar",
+    active: true,
+  },
+  {
     name: "X",
-    href: "https://x.com/steipete",
+    href: "https://x.com/NoeFlandre",
     linkTitle: `${SITE.title} on X`,
     icon: "twitter",
     active: true,
   },
   {
-    name: "BlueSky",
-    href: "https://bsky.app/profile/steipete.me",
-    linkTitle: `${SITE.title} on BlueSky`,
-    icon: "bluesky",
-    active: true,
-  },
-  {
     name: "LinkedIn",
-    href: "https://www.linkedin.com/in/steipete/",
+    href: "https://www.linkedin.com/in/no%C3%A9flandre/",
     linkTitle: `${SITE.title} on LinkedIn`,
     icon: "linkedin",
-    active: true,
-  },
-  {
-    name: "Mail",
-    href: "mailto:peter@steipete.me",
-    linkTitle: `Send an email to ${SITE.title}`,
-    icon: "mail",
     active: true,
   },
 ] as const;
