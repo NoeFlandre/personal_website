@@ -112,9 +112,9 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "favicon.ico",
+            src: "noe-avatar.jpg",
             sizes: "48x48",
-            type: "image/x-icon",
+            type: "image/jpeg",
           },
           {
             src: "noe-avatar.jpg",
