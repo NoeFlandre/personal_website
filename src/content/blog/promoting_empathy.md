@@ -7,58 +7,87 @@ featured: true
 readingTime: "5 min read"
 ---
 
-New publication!
+Our new publication just came out!
 
 Source paper : [https://doi.org/10.1080/17477778.2025.2536663](https://doi.org/10.1080/17477778.2025.2536663)
 
-We ask a simple question: **can an LLM help decision-makers *feel* what simulated agents go through, by turning ABM traces into first-person stories, while staying faithful to the dynamics?** 
+Instead of asking “can ABMs predict?”, we ask something more human:
 
-## Setup
+**Can an LLM help decision-makers *feel* what simulated agents go through, by turning ABM traces into first-person stories, while staying faithful to the underlying dynamics?**
 
-- **Case studies (3 ABMs):** two evacuation models (fire/flood; hurricane) + one migration model.  
-- **Pipeline:** simulation outputs (time series per agent) → “journey” summary → GPT-4 as *narrativizer* producing a story.  
-- **Two prompting strategies:**
-  - **Direct:** explicitly ask for *empathetic* narratives (and accept GPT’s interpretation of empathy). 
-  - **Indirect:** **style transfer**, write in the voice of well-known empathetic figures.  
+## The idea in one line
 
-## What we measured
+ABMs are great at structure (counts, curves, trends).  
+Stories are great at attention and care.  
+So we try to **keep the ABM for structure** and use the LLM for **narrative bandwidth**, without drifting into syrupy “LLM empathy” prose.
+
+## What we did
+
+### 1) The models (3 case studies)
+
+- **Case studies (3 ABMs):** two evacuation models (fire/flood; hurricane) + one migration model.
+
+### 2) The pipeline (from traces → story)
+
+- **Pipeline:** simulation outputs (time series per agent) → “journey” summary → GPT-4 as *narrativizer* producing a story.
+
+### 3) The two ways we prompted empathy
+
+We compared two prompting strategies:
+
+- **Direct:** explicitly ask for *empathetic* narratives (and accept GPT’s interpretation of empathy).
+- **Indirect:** **style transfer**, write in the voice of well-known empathetic figures.
+
+## What we measured (and why)
+
+We didn’t just eyeball the stories, we measured:
 
 - **Readability** (Flesch Reading Ease).
 - **Quality + faithfulness** (does the story reflect initial/final states and trends).
-- **Human perception of empathy** via validated questionnaires (pilot user study). 
+- **Human perception of empathy** via validated questionnaires (pilot user study).
 
-## Results (numbers that matter)
+## Results
 
-**1) Indirect > direct for readable writing.**  
-In a factorial design (144 runs), readability lands from “fairly easy” to “very easy” depending on settings. 
-The big move is indirect prompting (style transfer):
+### 1) Indirect > direct for readable writing
+
+In a factorial design (**144 runs**), readability ranges from “fairly easy” to “very easy” depending on settings.
+
+The biggest lever is **indirect prompting (style transfer)**:
 
 - **MigrAgent:** best **61.54 → 83.36**
 - **CHIME:** **76.87 → 86.71**
-- **BNE:** **75.78 → 93.54**  
+- **BNE:** **75.78 → 93.54**
 
-This is basically: **shorter sentences + simpler words** without explicitly pleading for empathy.  
+In plain terms: **shorter sentences + simpler words**, without explicitly pleading for empathy.
 
-**2) Faithfulness improves (at least on the checks we ran).**  
-With the indirect setup, every story had a human name, and the text reflected initial/final/trends for the agent across all stories, an improvement over the direct approach’s already-high rates.  
+### 2) Faithfulness improves (at least on the checks we ran)
 
-**3) Humans buy the “genuine emotions” signal, but don’t fully “feel it”.**  
-Pilot survey: **6 participants** (balanced gender; avg age **42**; all graduate/professional degrees).   
+With the indirect setup, **every story had a human name**, and the text reflected **initial/final/trends** for the agent across all stories, an improvement over the direct approach’s already-high rates.
+
+### 3) People believe the “genuine emotions” signal, but don’t fully *feel it*
+
+Pilot survey: **6 participants** (balanced gender; avg age **42**; all graduate/professional degrees).
+
 On the **State Empathy Scale (1–5)**:
 
-- “**The character’s emotions are genuine**”: **4.17 / 3.67 / 3.50** (MigrAgent / CHIME / BNE) 
-- “**Reactions are understandable**”: **4.33 / 4.33 / 3.83**  
-- But “**I experienced the same emotions**” is lower (**3.50 / 2.50 / 2.17**). 
+- “**The character’s emotions are genuine**”: **4.17 / 3.67 / 3.50** (MigrAgent / CHIME / BNE)
+- “**Reactions are understandable**”: **4.33 / 4.33 / 3.83**
+- But “**I experienced the same emotions**” is lower (**3.50 / 2.50 / 2.17**).
 
-We argue this gap is expected: the scenarios are extreme (evacuations, disasters), and readers aren’t in that physiological state.  
-There’s also evidence outcomes vary by model (one-way ANOVA **p = 0.0349**). 
+We argue this gap is expected: the scenarios are extreme (evacuations, disasters), and readers aren’t in that physiological state.
 
-## Why this is interesting
+There’s also evidence outcomes vary by model (one-way ANOVA **p = 0.0349**).
 
-ABMs usually talk in aggregates: curves, counts, means. That’s great for prediction. Bad for *care*.  
-This paper shows a pragmatic path: **keep the ABM for structure, use the LLM for narrative bandwidth**, and use **style transfer** as the control knob to avoid syrupy “LLM empathy” prose.   
+## Why this matters
 
-## Caveats (distilled)
+ABMs usually talk in aggregates: curves, counts, means. That’s great for prediction. Bad for *care*.
 
-- **Tiny human study** (n=6), intentionally closer to expert audiences, not the general public.  
-- Readability ≠ empathy; and empathy ≠ good policy (can bias attention). The paper focuses on single-group scenarios to reduce that risk. 
+This paper shows a pragmatic path:
+- **keep the ABM for structure**
+- **use the LLM for narrative bandwidth**
+- and use **style transfer** as the control knob to avoid syrupy “LLM empathy” prose.
+
+## Some limitations
+
+- **Tiny human study** (n=6), intentionally closer to expert audiences, not the general public.
+- Readability ≠ empathy; and empathy ≠ good policy (can bias attention). The paper focuses on single-group scenarios to reduce that risk.
