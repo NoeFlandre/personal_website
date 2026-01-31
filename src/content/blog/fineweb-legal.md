@@ -15,7 +15,7 @@ So I built something myself.
 
 FineWeb is this massive dataset of web crawl data that HuggingFace released. It's already cleaned up and ready to use. I figured: there's got to be legal content in there. Court opinions get published online. Government sites post regulations. Law schools put up research papers.
 
-I just needed to find it.
+Someone just has to filter that data.
 
 **What I built**
 
@@ -23,7 +23,7 @@ I just needed to find it.
 2. A classifier trained on 6,500 samples I annotated with Mistral
 3. A pipeline to score millions of documents
 
-The classifier ended up at 97.99% F1, which is better than I expected. It's a LoRA adapter on Gemma-Embedding-300M, so it's small and fast.
+The classifier ended up at 97.99% F1, which is better than I expected. It's a LoRA adapter on Gemma-Embedding-300M, so it's small and fast. I am renting some GPUs for few experiments but I don't have infinite budget so I try to keep things at tiny scale most of the time. 
 
 **The result**
 

@@ -7,7 +7,7 @@ featured: true
 readingTime: "5 min read"
 ---
 
-Our new publication just came out!
+Our new publication just came out! Let's break it down
 
 Source paper : [https://doi.org/10.1080/17477778.2025.2536663](https://doi.org/10.1080/17477778.2025.2536663)
 
@@ -40,11 +40,7 @@ We compared two prompting strategies:
 
 ## What we measured (and why)
 
-We didn’t just eyeball the stories, we measured:
-
-- **Readability** (Flesch Reading Ease).
-- **Quality + faithfulness** (does the story reflect initial/final states and trends).
-- **Human perception of empathy** via validated questionnaires (pilot user study).
+We didn’t just eyeball the stories, we measured **readability** (Flesch Reading Ease), **quality + faithfulness** (does the story reflect initial/final states and trends), **human perception of empathy** via validated questionnaires (pilot user study).
 
 ## Results
 
@@ -74,7 +70,7 @@ On the **State Empathy Scale (1–5)**:
 - “**Reactions are understandable**”: **4.33 / 4.33 / 3.83**
 - But “**I experienced the same emotions**” is lower (**3.50 / 2.50 / 2.17**).
 
-We argue this gap is expected: the scenarios are extreme (evacuations, disasters), and readers aren’t in that physiological state.
+We argue this gap is expected: the scenarios are extreme (evacuations, disasters), and readers aren’t in that physiological state which makes it harder to empathize.
 
 There’s also evidence outcomes vary by model (one-way ANOVA **p = 0.0349**).
 
@@ -82,7 +78,7 @@ There’s also evidence outcomes vary by model (one-way ANOVA **p = 0.0349**).
 
 ABMs usually talk in aggregates: curves, counts, means. That’s great for prediction. Bad for *care*.
 
-This paper shows a pragmatic path:
+Our paper shows a pragmatic path:
 - **keep the ABM for structure**
 - **use the LLM for narrative bandwidth**
 - and use **style transfer** as the control knob to avoid syrupy “LLM empathy” prose.
@@ -90,4 +86,4 @@ This paper shows a pragmatic path:
 ## Some limitations
 
 - **Tiny human study** (n=6), intentionally closer to expert audiences, not the general public.
-- Readability ≠ empathy; and empathy ≠ good policy (can bias attention). The paper focuses on single-group scenarios to reduce that risk.
+- Readability ≠ empathy; and empathy ≠ good policy (can bias attention). Our paper focuses on single-group scenarios to reduce that risk.
