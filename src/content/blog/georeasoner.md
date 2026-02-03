@@ -16,7 +16,7 @@ https://arxiv.org/pdf/2408.11366
 
 In geospatial reasoning, research has been employing two sets of methods :
 
-1. conventional natural language understanding toolkits (e.g  Named Entity Resolution (NER) methods) which are used to identify and classify geographic entities
+1. conventional natural language understanding toolkits (e.g  Named Entity Recognition (NER) methods) which are used to identify and classify geographic entities
 2. pretrained models on geo-related natural language data
 
 Both these methods are facing limitations : 
@@ -24,7 +24,7 @@ Both these methods are facing limitations :
 1. They do not generalize well to unseen geospatial data
 2. Existing approaches do not combine structured geospatial facts (e.g “longitude”) with unstructured linguistic descriptions (e.g cultural meaning of a location). The former can be found in geospatial databases (e.g OpenStreetMap) while the latter can be found online (e.g Wikipedia). 
 
-To tackle these challenges this research team propose a new LLM named GeoReasoner which they claim to be able to reason on geospatially grounded natural language. This is done by leveraging both linguistic and geospatial information.
+To tackle these challenges this research team propose a new pretrained language model named GeoReasoner which they claim to be able to reason on geospatially grounded natural language. This is done by leveraging both linguistic and geospatial information.
 
 They first use LLMs to generate location descriptions enriched with information from geographic databases along with information from the Internet. The goal is to build training data that lets the model learn :
 
@@ -116,7 +116,7 @@ We average them :
 h_loc = (h_San + h_Jose) / 2
 ```
 
-For the neighbor entity information, they take the anchor entity, list the neighboring entities, sort them by distance and concatenate them into a pseudo sentence effectively allowing the Transformer to “read” spatial structure as a sequence. On top of ordering entities, the team is also injecting x, y coordinates in the same fashion as positional embeddings in standard Transformers. For the anchor level tokens, they use a special filler value **DSEP** to let the model know that this token does not have spatial grounding. The idea here is to decouple the pure text from the spatial information to prevent the model to cheat from matching places via their coordinates.
+For the neighbor entity information, they take the anchor entity, list the neighboring entities, sort them by distance and concatenate them into a pseudo sentence effectively allowing the Transformer to “read” spatial structure as a sequence. On top of ordering entities, the team is also injecting x, y coordinates in the same fashion as positional embeddings in standard Transformers. For the anchor level tokens, they use a special filler value **DSEP** to let the model know that this token does not have spatial grounding. The idea here is to decouple the pure text from the spatial information. One way to view this is to prevent the model to cheat from matching places via their coordinates.
 
 Example : 
 
@@ -142,7 +142,7 @@ h_geo_i = embedding from neighbors
 
 They roughly want **h_loc_i ≈ h_geo_i** but far from embeddings of other places. 
 
-For each batch they are using 50% random negatives (any other places) and 50% hard negatives (geographically or linguistically similar places) to ensure a fine discrimination, not just coarse matching.
+For each batch they are using 50% random negatives (we can guess any other places) and 50% hard negatives (most probably geographically or linguistically similar places) to ensure a fine discrimination, not just coarse matching.
 
 2)MASKED LANGUAGE MODELING (MLM)
 
@@ -201,7 +201,7 @@ Here is how they frame it :
 - Output: class label
 - Add: a simple classification head
 
-It is to note that during downstream tasks, GeoReasoner does not necessarily get both views. There are situation where only text or only geo context is available. 
+It is to note that during downstream tasks, GeoReasoner does not necessarily get both views. There are situation where only text or only geo context is available. For example for geo-entity typing, only geospatial context is given during inference.
 
 ---
 
