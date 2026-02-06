@@ -1,0 +1,168 @@
+---
+import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
+
+const testimonials = [
+  {
+    name: "Philippe Giabbanelli",
+    link: "https://www.linkedin.com/in/philippe-giabbanelli-38183728b/",
+    title: "(Full) Research Professor, VMASC, Old Dominion University",
+    relationship: "Direct supervisor during two summer internships",
+    date: "August 12, 2024",
+    quote:
+      "I was Noe's sole supervisor during his two summer internships in 2024. He did a truly impressive amount of work and he was able to quickly learn the ropes of being a researcher in an international center. I am confident that several publications at reputable venues will eventually arise from his commendable efforts.",
+  },
+  {
+    name: "Gerard Dray",
+    link: "https://www.linkedin.com/in/gerard-dray/",
+    title: "Professor, IMT Mines Ales",
+    relationship: "Research initiation project supervisor",
+    date: "July 8, 2024",
+    quote:
+      "I highly recommend Noe Flandre for any professional opportunity in his field of expertise. Having worked with him during a research initiation project, I observed his rigor, professionalism, and ability to successfully manage complex projects.",
+  },
+  {
+    name: "Jean-Roch Vandenbroucke",
+    link: "https://www.linkedin.com/in/omuhonga/",
+    title: "Micro-ONG OMUHONGA-Namibie",
+    relationship: "Worked with Noe on the same team",
+    date: "July 7, 2024",
+    quote:
+      "Au cours de l'année 2023, j'ai travaillé en partenariat étroit avec Noé Flandre pour préparer et réaliser un projet humanitaire au profit d'une population marginalisée de Namibie. Noé Flandre a été un acteur très engagé pour trouver les ressources nécessaires, négocier avec les fournisseurs locaux et l'entreprise Lafire Trading and Co de la capitale Windhoek. Il a ensuite contribué à mettre en œuvre le chantier dans la région reculée du Kunene. Il a été un moteur dans le groupe au sein duquel il a démontré ses capacités de travail en équipe et également de prise d'initiative.",
+  },
+  {
+    name: "Maxime Menardo",
+    link: "https://www.linkedin.com/in/maxime-menardo-ab437a159/",
+    title: "Project lead, Hai Mask | Sports technology development",
+    relationship: "Direct supervisor",
+    date: "July 7, 2024",
+    quote:
+      "Noé a travaillé sur Haï Mask lors d'une mission de terrain marketing/étude de marché à l'IMT d'Alès. Il a su montrer son enthousiasme pour le projet et, avec les autres étudiants de son équipe, Noah et Arthur, a livré dans les temps une étude de marché très satisfaisante. Les conclusions de cette étude nous ont grandement aidés sur le volet marketing de Haï Mask. Je suis convaincu que Noé apportera une contribution précieuse à toute équipe ou projet futur. C'est avec plaisir que je recommande Noé.",
+  },
+];
+---
+
+<div class="not-prose mt-4 text-foreground dark:text-white" data-testimonial-carousel>
+  <div class="flex items-center justify-end gap-2">
+    <button
+      type="button"
+      class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/80 text-foreground transition-colors hover:bg-accent hover:text-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/20 dark:bg-white/10 dark:text-white"
+      data-action="prev"
+      aria-label="Previous recommendation"
+    >
+      <IconChevronLeft class="size-5" />
+    </button>
+    <button
+      type="button"
+      class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/80 text-foreground transition-colors hover:bg-accent hover:text-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/20 dark:bg-white/10 dark:text-white"
+      data-action="next"
+      aria-label="Next recommendation"
+    >
+      <IconChevronLeft class="size-5 rotate-180" />
+    </button>
+  </div>
+
+  <div class="relative mt-3">
+    <div class="overflow-hidden rounded-lg border border-border bg-muted/60 shadow-sm text-foreground dark:border-white/20 dark:bg-white/10 dark:text-white">
+      <ul class="flex transition-transform duration-300 ease-out" data-track>
+        {testimonials.map((item, index) => (
+          <li class="min-w-full p-6 sm:p-7" data-slide>
+            <article class="flex h-full flex-col gap-4">
+              <header class="flex flex-col gap-1">
+                <p class="text-base font-semibold">
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    class="decoration-dashed underline-offset-4 hover:underline hover:text-accent"
+                  >
+                    {item.name}
+                  </a>
+                </p>
+                <p class="text-sm opacity-80 dark:opacity-100">{item.title}</p>
+                <p class="text-xs uppercase tracking-wide opacity-70 dark:opacity-100">{item.relationship}</p>
+                <p class="text-xs opacity-60 dark:opacity-100">{item.date}</p>
+              </header>
+              <blockquote class="text-base leading-relaxed">
+                &ldquo;{item.quote}&rdquo;
+              </blockquote>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="mt-3 flex items-center justify-center gap-2">
+      {testimonials.map((item, index) => (
+        <button
+          type="button"
+          class="h-2.5 w-2.5 rounded-full bg-border/70 transition-colors data-[active=true]:bg-accent dark:bg-white/30 data-[active=true]:dark:bg-white"
+          aria-label={`Go to recommendation ${index + 1}`}
+          data-dot
+          data-active={index === 0 ? "true" : "false"}
+        />
+      ))}
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const init = (root) => {
+      if (!root || root.dataset.carouselInit === "true") return;
+      root.dataset.carouselInit = "true";
+
+      const track = root.querySelector("[data-track]");
+      const slides = Array.from(root.querySelectorAll("[data-slide]"));
+      const dots = Array.from(root.querySelectorAll("[data-dot]"));
+      const prev = root.querySelector('[data-action="prev"]');
+      const next = root.querySelector('[data-action="next"]');
+
+      if (!track || slides.length === 0 || !prev || !next) return;
+
+      let index = 0;
+
+      const update = () => {
+        track.style.transform = `translateX(-${index * 100}%)`;
+        slides.forEach((slide, i) => {
+          slide.setAttribute("aria-hidden", i === index ? "false" : "true");
+        });
+        dots.forEach((dot, i) => {
+          dot.setAttribute("data-active", i === index ? "true" : "false");
+        });
+      };
+
+      prev.addEventListener("click", () => {
+        index = (index - 1 + slides.length) % slides.length;
+        update();
+      });
+
+      next.addEventListener("click", () => {
+        index = (index + 1) % slides.length;
+        update();
+      });
+
+      dots.forEach((dot, i) => {
+        dot.addEventListener("click", () => {
+          index = i;
+          update();
+        });
+      });
+
+      update();
+    };
+
+    const setup = () => {
+      document
+        .querySelectorAll("[data-testimonial-carousel]")
+        .forEach((root) => init(root));
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", setup, { once: true });
+    } else {
+      setup();
+    }
+
+    document.addEventListener("astro:page-load", setup);
+  })();
+</script>
