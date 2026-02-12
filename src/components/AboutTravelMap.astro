@@ -1,7 +1,21 @@
 ---
-const getMapImage = fileName => `/assets/img/about-map/${fileName}`;
+type PlaceType = "work" | "study" | "travel";
 
-const places = [
+interface Place {
+  id: string;
+  type: PlaceType;
+  title: string;
+  location: string;
+  period: string;
+  description: string;
+  lat: number;
+  lng: number;
+  image: string;
+}
+
+const getMapImage = (fileName: string) => `/assets/img/about-map/${fileName}`;
+
+const places: Place[] = [
   {
     id: "jodhpur-travel",
     type: "travel",
@@ -335,7 +349,7 @@ const places = [
   },
 ];
 
-const placeTypeOrder = {
+const placeTypeOrder: Record<PlaceType, number> = {
   work: 0,
   study: 1,
   travel: 2,
@@ -493,8 +507,9 @@ const filters = [
       </div>`;
 
     const init = async root => {
-      if (!root || root.dataset.mapInit === "true") return;
-      root.dataset.mapInit = "true";
+      if (!root) return;
+      if (root.dataset.mapInitState === "ready" || root.dataset.mapInitState === "loading") return;
+      root.dataset.mapInitState = "loading";
 
       const mapElement = root.querySelector("[data-map-canvas]");
       const filterButtons = Array.from(root.querySelectorAll("[data-filter]"));
@@ -502,7 +517,16 @@ const filters = [
       const cardsViewport = root.querySelector("[data-cards-viewport]");
       const cardsPrev = root.querySelector("[data-cards-prev]");
       const cardsNext = root.querySelector("[data-cards-next]");
-      if (!mapElement || filterButtons.length === 0 || cardButtons.length === 0) return;
+      if (!mapElement || filterButtons.length === 0 || cardButtons.length === 0) {
+        root.dataset.mapInitState = "idle";
+        return;
+      }
+
+      // Guard against partially initialized containers before retrying.
+      if (mapElement.classList.contains("leaflet-container")) {
+        mapElement.innerHTML = "";
+        mapElement.classList.remove("leaflet-container");
+      }
 
       const updateCardsNav = () => {
         if (!cardsViewport || !cardsPrev || !cardsNext) return;
@@ -521,165 +545,193 @@ const filters = [
         });
       };
 
-      cardsPrev?.addEventListener("click", () => {
-        scrollCards(-1);
-      });
-
-      cardsNext?.addEventListener("click", () => {
-        scrollCards(1);
-      });
-
-      cardsViewport?.addEventListener("scroll", () => {
-        updateCardsNav();
-      });
-
-      window.addEventListener("resize", () => {
-        updateCardsNav();
-      });
-
-      const L = await ensureLeafletAssets();
-      const map = L.map(mapElement, {
-        zoomControl: false,
-        worldCopyJump: true,
-      }).setView([23, 4], 2);
-
-      L.control
-        .zoom({
-          position: "bottomright",
-        })
-        .addTo(map);
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "&copy; OpenStreetMap contributors",
-      }).addTo(map);
-
-      const markersById = new Map();
-      let activeFilter = "all";
-      let activePlaceId = null;
-
-      const highlight = placeId => {
-        activePlaceId = placeId;
-        mapPlaces.forEach(place => {
-          const marker = markersById.get(place.id);
-          if (!marker) return;
-          marker.setIcon(markerIcon(L, place.type, place.id === placeId));
-        });
-        cardButtons.forEach(card => {
-          card.dataset.active = card.dataset.placeId === placeId ? "true" : "false";
+      if (root.dataset.mapUiBindings !== "true") {
+        cardsPrev?.addEventListener("click", () => {
+          scrollCards(-1);
         });
 
-        const activeCard = cardButtons.find(card => card.dataset.placeId === placeId);
-        if (activeCard && activeCard.dataset.hidden !== "true") {
-          activeCard.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "nearest",
-          });
-        }
-      };
+        cardsNext?.addEventListener("click", () => {
+          scrollCards(1);
+        });
 
-      mapPlaces.forEach(place => {
-        const marker = L.marker([place.lat, place.lng], {
-          icon: markerIcon(L, place.type),
-          riseOnHover: true,
-        })
-          .bindPopup(popupMarkup(place), {
-            className: "about-map-leaflet-popup",
-            maxWidth: 280,
+        cardsViewport?.addEventListener("scroll", () => {
+          updateCardsNav();
+        });
+
+        window.addEventListener("resize", () => {
+          updateCardsNav();
+        });
+
+        root.dataset.mapUiBindings = "true";
+      }
+
+      let map = null;
+
+      try {
+        const L = await ensureLeafletAssets();
+        map = L.map(mapElement, {
+          zoomControl: false,
+          worldCopyJump: true,
+        }).setView([23, 4], 2);
+
+        L.control
+          .zoom({
+            position: "bottomright",
           })
           .addTo(map);
 
-        marker.on("click", () => {
-          highlight(place.id);
-        });
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors",
+        }).addTo(map);
 
-        marker.on("popupopen", () => {
-          highlight(place.id);
-        });
+        const markersById = new Map();
+        let activeFilter = "all";
+        let activePlaceId = null;
 
-        markersById.set(place.id, marker);
-      });
+        const highlight = placeId => {
+          activePlaceId = placeId;
+          mapPlaces.forEach(place => {
+            const marker = markersById.get(place.id);
+            if (!marker) return;
+            marker.setIcon(markerIcon(L, place.type, place.id === placeId));
+          });
+          cardButtons.forEach(card => {
+            card.dataset.active = card.dataset.placeId === placeId ? "true" : "false";
+          });
 
-      const updateVisibility = () => {
-        const visiblePositions = [];
+          const activeCard = cardButtons.find(card => card.dataset.placeId === placeId);
+          if (activeCard && activeCard.dataset.hidden !== "true") {
+            activeCard.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+              inline: "nearest",
+            });
+          }
+        };
 
         mapPlaces.forEach(place => {
-          const isVisible = activeFilter === "all" || place.type === activeFilter;
-          const marker = markersById.get(place.id);
-          const card = root.querySelector(`[data-place-id="${place.id}"]`);
+          const marker = L.marker([place.lat, place.lng], {
+            icon: markerIcon(L, place.type),
+            riseOnHover: true,
+          })
+            .bindPopup(popupMarkup(place), {
+              className: "about-map-leaflet-popup",
+              maxWidth: 280,
+            })
+            .addTo(map);
 
-          if (card) {
-            card.dataset.hidden = isVisible ? "false" : "true";
+          marker.on("click", () => {
+            highlight(place.id);
+          });
+
+          marker.on("popupopen", () => {
+            highlight(place.id);
+          });
+
+          markersById.set(place.id, marker);
+        });
+
+        const updateVisibility = () => {
+          const visiblePositions = [];
+
+          mapPlaces.forEach(place => {
+            const isVisible = activeFilter === "all" || place.type === activeFilter;
+            const marker = markersById.get(place.id);
+            const card = root.querySelector(`[data-place-id="${place.id}"]`);
+
+            if (card) {
+              card.dataset.hidden = isVisible ? "false" : "true";
+            }
+
+            if (!marker) return;
+            if (isVisible) {
+              marker.addTo(map);
+              visiblePositions.push([place.lat, place.lng]);
+            } else {
+              map.removeLayer(marker);
+            }
+          });
+
+          if (visiblePositions.length > 0) {
+            const bounds = L.latLngBounds(visiblePositions);
+            map.fitBounds(bounds, { padding: [42, 42], maxZoom: 4 });
           }
 
-          if (!marker) return;
-          if (isVisible) {
-            marker.addTo(map);
-            visiblePositions.push([place.lat, place.lng]);
-          } else {
-            map.removeLayer(marker);
+          if (cardsViewport) {
+            cardsViewport.scrollLeft = 0;
           }
-        });
+          updateCardsNav();
 
-        if (visiblePositions.length > 0) {
-          const bounds = L.latLngBounds(visiblePositions);
-          map.fitBounds(bounds, { padding: [42, 42], maxZoom: 4 });
-        }
+          const selectedStillVisible = mapPlaces.some(
+            place => place.id === activePlaceId && (activeFilter === "all" || place.type === activeFilter)
+          );
+          if (!selectedStillVisible) {
+            activePlaceId = null;
+            cardButtons.forEach(card => {
+              card.dataset.active = "false";
+            });
+          }
+        };
 
-        if (cardsViewport) {
-          cardsViewport.scrollLeft = 0;
-        }
-        updateCardsNav();
-
-        const selectedStillVisible = mapPlaces.some(
-          place => place.id === activePlaceId && (activeFilter === "all" || place.type === activeFilter)
-        );
-        if (!selectedStillVisible) {
-          activePlaceId = null;
-          cardButtons.forEach(card => {
-            card.dataset.active = "false";
+        filterButtons.forEach(button => {
+          button.addEventListener("click", () => {
+            const filter = button.dataset.filter;
+            if (!filter) return;
+            activeFilter = filter;
+            filterButtons.forEach(filterButton => {
+              filterButton.dataset.active = filterButton === button ? "true" : "false";
+            });
+            updateVisibility();
           });
-        }
-      };
+        });
 
-      filterButtons.forEach(button => {
-        button.addEventListener("click", () => {
-          const filter = button.dataset.filter;
-          if (!filter) return;
-          activeFilter = filter;
-          filterButtons.forEach(filterButton => {
-            filterButton.dataset.active = filterButton === button ? "true" : "false";
+        cardButtons.forEach(card => {
+          card.addEventListener("click", () => {
+            const placeId = card.dataset.placeId;
+            if (!placeId || card.dataset.hidden === "true") return;
+            const place = mapPlaces.find(item => item.id === placeId);
+            const marker = markersById.get(placeId);
+            if (!place || !marker) return;
+            highlight(placeId);
+            map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 4), { duration: 0.8 });
+            marker.openPopup();
           });
-          updateVisibility();
         });
-      });
 
-      cardButtons.forEach(card => {
-        card.addEventListener("click", () => {
-          const placeId = card.dataset.placeId;
-          if (!placeId || card.dataset.hidden === "true") return;
-          const place = mapPlaces.find(item => item.id === placeId);
-          const marker = markersById.get(placeId);
-          if (!place || !marker) return;
-          highlight(placeId);
-          map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 4), { duration: 0.8 });
-          marker.openPopup();
-        });
-      });
+        updateVisibility();
 
-      updateVisibility();
+        setTimeout(() => {
+          map.invalidateSize();
+          updateCardsNav();
+        }, 80);
 
-      setTimeout(() => {
-        map.invalidateSize();
-        updateCardsNav();
-      }, 80);
+        // One more invalidate to handle slower page transition/layout settling.
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 400);
+
+        root.dataset.mapInitState = "ready";
+        root.dataset.mapRetryCount = "0";
+      } catch (error) {
+        if (map) {
+          map.remove();
+        }
+        root.dataset.mapInitState = "idle";
+        throw error;
+      }
     };
 
     const setup = () => {
       document.querySelectorAll("[data-about-map-root]").forEach(root => {
         init(root).catch(error => {
           console.error("Failed to initialize About map demo", error);
+          const retries = Number(root.dataset.mapRetryCount ?? "0");
+          if (retries >= 3) return;
+          root.dataset.mapRetryCount = String(retries + 1);
+          setTimeout(() => {
+            init(root).catch(() => {});
+          }, 600 * (retries + 1));
         });
       });
     };
