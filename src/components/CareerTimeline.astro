@@ -178,7 +178,12 @@ const publications: TimelineItem[] = [
             <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
           </div>
           <p class="text-base text-foreground/80 mt-1">
-            <span set:html={item.description.replace(/\*\*Flandre N\.\*\*/g, '<strong>Flandre N.</strong>')} />.
+            <span
+              set:html={(item.description ?? "").replace(
+                /\*\*Flandre N\.\*\*/g,
+                "<strong>Flandre N.</strong>"
+              )}
+            />.
             <span class="italic"> {item.subtitle}</span>
           </p>
         </div>
