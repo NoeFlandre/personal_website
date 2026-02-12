@@ -1,4 +1,6 @@
 ---
+import { sortPlacesForUi } from "@/utils/aboutMap.js";
+
 type PlaceType = "work" | "study" | "travel";
 
 interface Place {
@@ -349,15 +351,7 @@ const places: Place[] = [
   },
 ];
 
-const placeTypeOrder: Record<PlaceType, number> = {
-  work: 0,
-  study: 1,
-  travel: 2,
-};
-
-const placesForUi = [...places].sort(
-  (a, b) => placeTypeOrder[a.type] - placeTypeOrder[b.type]
-);
+const placesForUi = sortPlacesForUi(places);
 
 const filters = [
   { id: "all", label: "All", tone: "all" },
@@ -367,7 +361,7 @@ const filters = [
 ];
 ---
 
-<section class="not-prose about-map" data-about-map-root>
+<section class="not-prose about-map" data-about-map-root data-places={JSON.stringify(placesForUi)}>
   <header class="about-map__header">
     <h2 class="about-map__title">Where I Worked, Studied, and Traveled</h2>
   </header>
@@ -433,59 +427,20 @@ const filters = [
   </div>
 </section>
 
-<script is:inline data-places={JSON.stringify(placesForUi)}>
+<script>
+  // @ts-nocheck
+  import L from "leaflet";
+  import "leaflet/dist/leaflet.css";
+  import { getMapRetryDelayMs, parsePlacesDataset, shouldRetryMapInit } from "@/utils/aboutMap.js";
+
   (() => {
-    const scriptElement = document.currentScript;
-    const rawPlaces = scriptElement?.getAttribute("data-places") ?? "[]";
-    const mapPlaces = JSON.parse(rawPlaces);
-
-    const leafletCssHref = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-    const leafletJsSrc = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-    const leafletCssIntegrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
-    const leafletJsIntegrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
-
     const typeLabels = {
       work: "Worked",
       study: "Studied",
       travel: "Traveled",
     };
 
-    const ensureLeafletAssets = () =>
-      new Promise((resolve, reject) => {
-        if (!document.querySelector(`link[href="${leafletCssHref}"]`)) {
-          const link = document.createElement("link");
-          link.rel = "stylesheet";
-          link.href = leafletCssHref;
-          link.integrity = leafletCssIntegrity;
-          link.crossOrigin = "";
-          document.head.appendChild(link);
-        }
-
-        if (window.L) {
-          resolve(window.L);
-          return;
-        }
-
-        const existingScript = document.querySelector(`script[src="${leafletJsSrc}"]`);
-        if (existingScript) {
-          existingScript.addEventListener("load", () => resolve(window.L), { once: true });
-          existingScript.addEventListener("error", () => reject(new Error("Leaflet failed to load")), {
-            once: true,
-          });
-          return;
-        }
-
-        const script = document.createElement("script");
-        script.src = leafletJsSrc;
-        script.integrity = leafletJsIntegrity;
-        script.crossOrigin = "";
-        script.async = true;
-        script.onload = () => resolve(window.L);
-        script.onerror = () => reject(new Error("Leaflet failed to load"));
-        document.body.appendChild(script);
-      });
-
-    const markerIcon = (L, placeType, selected = false) =>
+    const markerIcon = (placeType, selected = false) =>
       L.divIcon({
         className: "",
         html: `<span class="about-map-marker about-map-marker--${placeType}${selected ? " is-selected" : ""}"></span>`,
@@ -506,7 +461,7 @@ const filters = [
         </div>
       </div>`;
 
-    const init = async root => {
+    const init = root => {
       if (!root) return;
       if (root.dataset.mapInitState === "ready" || root.dataset.mapInitState === "loading") return;
       root.dataset.mapInitState = "loading";
@@ -517,12 +472,13 @@ const filters = [
       const cardsViewport = root.querySelector("[data-cards-viewport]");
       const cardsPrev = root.querySelector("[data-cards-prev]");
       const cardsNext = root.querySelector("[data-cards-next]");
-      if (!mapElement || filterButtons.length === 0 || cardButtons.length === 0) {
+      const mapPlaces = parsePlacesDataset(root.dataset.places);
+
+      if (!mapElement || filterButtons.length === 0 || cardButtons.length === 0 || mapPlaces.length === 0) {
         root.dataset.mapInitState = "idle";
         return;
       }
 
-      // Guard against partially initialized containers before retrying.
       if (mapElement.classList.contains("leaflet-container")) {
         mapElement.innerHTML = "";
         mapElement.classList.remove("leaflet-container");
@@ -568,7 +524,6 @@ const filters = [
       let map = null;
 
       try {
-        const L = await ensureLeafletAssets();
         map = L.map(mapElement, {
           zoomControl: false,
           worldCopyJump: true,
@@ -594,7 +549,7 @@ const filters = [
           mapPlaces.forEach(place => {
             const marker = markersById.get(place.id);
             if (!marker) return;
-            marker.setIcon(markerIcon(L, place.type, place.id === placeId));
+            marker.setIcon(markerIcon(place.type, place.id === placeId));
           });
           cardButtons.forEach(card => {
             card.dataset.active = card.dataset.placeId === placeId ? "true" : "false";
@@ -612,7 +567,7 @@ const filters = [
 
         mapPlaces.forEach(place => {
           const marker = L.marker([place.lat, place.lng], {
-            icon: markerIcon(L, place.type),
+            icon: markerIcon(place.type),
             riseOnHover: true,
           })
             .bindPopup(popupMarkup(place), {
@@ -706,7 +661,6 @@ const filters = [
           updateCardsNav();
         }, 80);
 
-        // One more invalidate to handle slower page transition/layout settling.
         setTimeout(() => {
           map.invalidateSize();
         }, 400);
@@ -724,25 +678,39 @@ const filters = [
 
     const setup = () => {
       document.querySelectorAll("[data-about-map-root]").forEach(root => {
-        init(root).catch(error => {
+        init(root);
+      });
+    };
+
+    const setupWithRetry = () => {
+      document.querySelectorAll("[data-about-map-root]").forEach(root => {
+        try {
+          init(root);
+        } catch (error) {
           console.error("Failed to initialize About map demo", error);
           const retries = Number(root.dataset.mapRetryCount ?? "0");
-          if (retries >= 3) return;
-          root.dataset.mapRetryCount = String(retries + 1);
+          if (!shouldRetryMapInit(retries)) return;
+          const nextAttempt = retries + 1;
+          root.dataset.mapRetryCount = String(nextAttempt);
           setTimeout(() => {
-            init(root).catch(() => {});
-          }, 600 * (retries + 1));
-        });
+            try {
+              init(root);
+            } catch {
+              // Follow-up retries are handled by subsequent setup calls or next retry cycle.
+            }
+          }, getMapRetryDelayMs(nextAttempt));
+        }
       });
     };
 
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", setup, { once: true });
+      document.addEventListener("DOMContentLoaded", setupWithRetry, { once: true });
     } else {
-      setup();
+      setupWithRetry();
     }
 
-    document.addEventListener("astro:page-load", setup);
+    document.addEventListener("astro:page-load", setupWithRetry);
+    document.addEventListener("astro:after-swap", setup);
   })();
 </script>
 
