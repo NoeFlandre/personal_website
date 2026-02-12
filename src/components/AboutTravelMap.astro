@@ -1,0 +1,987 @@
+---
+const getMapImage = fileName => `/assets/img/about-map/${fileName}`;
+
+const places = [
+  {
+    id: "jodhpur-travel",
+    type: "travel",
+    title: "Jodhpur",
+    location: "Rajasthan, India",
+    period: "Travel",
+    description: "Blue city walk and architecture snapshots.",
+    lat: 26.2389,
+    lng: 73.0243,
+    image: getMapImage("jodhpur_travel.jpeg"),
+  },
+  {
+    id: "sam-desert-travel",
+    type: "travel",
+    title: "Sam Desert",
+    location: "Near Jaisalmer, India",
+    period: "Travel",
+    description: "Desert landscapes and sunset moments.",
+    lat: 26.913,
+    lng: 70.9136,
+    image: getMapImage("sam_desert_travel.jpeg"),
+  },
+  {
+    id: "essaouira-travel",
+    type: "travel",
+    title: "Essaouira",
+    location: "Morocco",
+    period: "Travel",
+    description: "Coastal city atmosphere and medina streets.",
+    lat: 31.5085,
+    lng: -9.7595,
+    image: getMapImage("essaouira_travel.jpeg"),
+  },
+  {
+    id: "goa-travel",
+    type: "travel",
+    title: "Goa",
+    location: "India",
+    period: "Travel",
+    description: "Beachside breaks and local exploration.",
+    lat: 15.2993,
+    lng: 74.124,
+    image: getMapImage("goa_travel.jpeg"),
+  },
+  {
+    id: "ajanta-caves-travel",
+    type: "travel",
+    title: "Ajanta Caves",
+    location: "Maharashtra, India",
+    period: "Travel",
+    description: "Historic cave complex visit.",
+    lat: 20.5519,
+    lng: 75.7033,
+    image: getMapImage("ajanta_caves_travel.jpeg"),
+  },
+  {
+    id: "norfolk-vmasc-work",
+    type: "work",
+    title: "VMASC Research Work",
+    location: "Norfolk, Virginia, USA",
+    period: "",
+    description: "Simulation-focused research using LLMs for modeling and decision making.",
+    lat: 36.8508,
+    lng: -76.2859,
+    image: getMapImage("norfolk_virginia_VMASC_work.jpeg"),
+  },
+  {
+    id: "new-york-travel",
+    type: "travel",
+    title: "New York",
+    location: "New York, USA",
+    period: "Travel",
+    description: "City exploration and street scenes.",
+    lat: 40.7128,
+    lng: -74.006,
+    image: getMapImage("new_york_travel.jpeg"),
+  },
+  {
+    id: "aveiro-travel",
+    type: "travel",
+    title: "Aveiro",
+    location: "Portugal",
+    period: "Travel",
+    description: "Canals, tiles, and city center walk.",
+    lat: 40.6405,
+    lng: -8.6538,
+    image: getMapImage("avairo_travel.jpeg"),
+  },
+  {
+    id: "palma-travel",
+    type: "travel",
+    title: "Palma",
+    location: "Mallorca, Spain",
+    period: "Travel",
+    description: "Mediterranean city snapshots.",
+    lat: 39.5696,
+    lng: 2.6502,
+    image: getMapImage("palma_mallorca_travel.jpeg"),
+  },
+  {
+    id: "bibi-ka-maqbara-travel",
+    type: "travel",
+    title: "Bibi Ka Maqbara",
+    location: "Aurangabad, India",
+    period: "Travel",
+    description: "Monument visit and architecture details.",
+    lat: 19.9017,
+    lng: 75.3203,
+    image: getMapImage("bibi_ka_maqbara_travel.jpeg"),
+  },
+  {
+    id: "copenhagen-travel",
+    type: "travel",
+    title: "Copenhagen",
+    location: "Denmark",
+    period: "Travel",
+    description: "Nordic city tour highlights.",
+    lat: 55.6761,
+    lng: 12.5683,
+    image: getMapImage("copenhagen_travel.jpeg"),
+  },
+  {
+    id: "fatehpur-sikri-travel",
+    type: "travel",
+    title: "Fatehpur Sikri",
+    location: "Uttar Pradesh, India",
+    period: "Travel",
+    description: "Historic site exploration.",
+    lat: 27.0937,
+    lng: 77.66,
+    image: getMapImage("fathepur_sikri_travel.jpeg"),
+  },
+  {
+    id: "miami-university-work",
+    type: "work",
+    title: "Miami University Research Work",
+    location: "Oxford, Ohio, USA",
+    period: "",
+    description: "Evaluating LLMs for conceptual modeling tasks and analysis.",
+    lat: 39.5101,
+    lng: -84.7397,
+    image: getMapImage("miami_university_work.jpeg"),
+  },
+  {
+    id: "bhaktapur-travel",
+    type: "travel",
+    title: "Bhaktapur",
+    location: "Nepal",
+    period: "Travel",
+    description: "Temples and old town photos.",
+    lat: 27.671,
+    lng: 85.4298,
+    image: getMapImage("bhakatapur_nepal_travel.jpeg"),
+  },
+  {
+    id: "tenerife-travel",
+    type: "travel",
+    title: "Tenerife",
+    location: "Canary Islands, Spain",
+    period: "Travel",
+    description: "Island trip and natural scenery.",
+    lat: 28.2916,
+    lng: -16.6291,
+    image: getMapImage("tenerife_travel.jpeg"),
+  },
+  {
+    id: "pokhara-travel",
+    type: "travel",
+    title: "Pokhara",
+    location: "Nepal",
+    period: "Travel",
+    description: "Mountain views and lakeside moments.",
+    lat: 28.2096,
+    lng: 83.9856,
+    image: getMapImage("pokhara_nepal_travel.jpeg"),
+  },
+  {
+    id: "iit-bombay-study",
+    type: "study",
+    title: "IIT Bombay",
+    location: "Mumbai, India",
+    period: "",
+    description: "Academic exchange (AI & Image Processing).",
+    lat: 19.1334,
+    lng: 72.9133,
+    image: getMapImage("iit_bombay_studies.jpeg"),
+  },
+  {
+    id: "ales-study",
+    type: "study",
+    title: "IMT Mines Ales",
+    location: "Ales, France",
+    period: "",
+    description: "AI-focused engineering studies with hands-on machine learning projects.",
+    lat: 44.1249,
+    lng: 4.0808,
+    image: getMapImage("ales_study.jpeg"),
+  },
+  {
+    id: "namibia-humanitarian-work",
+    type: "work",
+    title: "Humanitarian Mission",
+    location: "Near Opuwo, Namibia",
+    period: "",
+    description: "Built a classroom in a local school with community partners.",
+    lat: -18.0607,
+    lng: 13.839,
+    image: getMapImage("namibia_near_opuwo_humanitarian.jpeg"),
+  },
+  {
+    id: "agra-travel",
+    type: "travel",
+    title: "Agra",
+    location: "Uttar Pradesh, India",
+    period: "Travel",
+    description: "Landmark visit and city walk.",
+    lat: 27.1767,
+    lng: 78.0081,
+    image: getMapImage("agra_travel.jpeg"),
+  },
+  {
+    id: "pittsburgh-travel",
+    type: "travel",
+    title: "Pittsburgh",
+    location: "Pennsylvania, USA",
+    period: "Travel",
+    description: "Urban trip and skyline viewpoints.",
+    lat: 40.4406,
+    lng: -79.9959,
+    image: getMapImage("pittsburg_travel.jpeg"),
+  },
+  {
+    id: "kerala-travel",
+    type: "travel",
+    title: "Kerala",
+    location: "India",
+    period: "Travel",
+    description: "Backwaters and regional landscapes.",
+    lat: 10.8505,
+    lng: 76.2711,
+    image: getMapImage("kerala_travel.jpeg"),
+  },
+  {
+    id: "lac-leman-travel",
+    type: "travel",
+    title: "Lac Leman",
+    location: "Switzerland",
+    period: "Travel",
+    description: "Lake-side scenes and mountain background.",
+    lat: 46.45,
+    lng: 6.55,
+    image: getMapImage("lac_léman_travel.jpeg"),
+  },
+  {
+    id: "edinburgh-travel",
+    type: "travel",
+    title: "Edinburgh",
+    location: "Scotland, UK",
+    period: "Travel",
+    description: "Historic city and stone architecture.",
+    lat: 55.9533,
+    lng: -3.1883,
+    image: getMapImage("edinburg_travel.jpeg"),
+  },
+  {
+    id: "jaisalmer-travel",
+    type: "travel",
+    title: "Jaisalmer",
+    location: "Rajasthan, India",
+    period: "Travel",
+    description: "Golden city and desert edge.",
+    lat: 26.9157,
+    lng: 70.9083,
+    image: getMapImage("jaisalmer_travel.jpeg"),
+  },
+  {
+    id: "jaipur-travel",
+    type: "travel",
+    title: "Jaipur",
+    location: "Rajasthan, India",
+    period: "Travel",
+    description: "Pink city architecture and local life.",
+    lat: 26.9124,
+    lng: 75.7873,
+    image: getMapImage("jaipur_travel.jpeg"),
+  },
+  {
+    id: "seville-travel",
+    type: "travel",
+    title: "Seville",
+    location: "Spain",
+    period: "Travel",
+    description: "Historic center and warm city colors.",
+    lat: 37.3891,
+    lng: -5.9845,
+    image: getMapImage("seville_travel.png"),
+  },
+  {
+    id: "brussels-travel",
+    type: "travel",
+    title: "Brussels",
+    location: "Belgium",
+    period: "Travel",
+    description: "City center and architecture details.",
+    lat: 50.8503,
+    lng: 4.3517,
+    image: getMapImage("brussels_travel.jpeg"),
+  },
+  {
+    id: "washington-travel",
+    type: "travel",
+    title: "Washington",
+    location: "District of Columbia, USA",
+    period: "Travel",
+    description: "Monuments and city highlights.",
+    lat: 38.9072,
+    lng: -77.0369,
+    image: getMapImage("washington_travel.jpeg"),
+  },
+];
+
+const placeTypeOrder = {
+  work: 0,
+  study: 1,
+  travel: 2,
+};
+
+const placesForUi = [...places].sort(
+  (a, b) => placeTypeOrder[a.type] - placeTypeOrder[b.type]
+);
+
+const filters = [
+  { id: "all", label: "All", tone: "all" },
+  { id: "work", label: "Worked", tone: "work" },
+  { id: "study", label: "Studied", tone: "study" },
+  { id: "travel", label: "Traveled", tone: "travel" },
+];
+---
+
+<section class="not-prose about-map" data-about-map-root>
+  <header class="about-map__header">
+    <h2 class="about-map__title">Where I Worked, Studied, and Traveled</h2>
+  </header>
+
+  <div class="about-map__filters" role="tablist" aria-label="Filter locations">
+    {filters.map(filter => (
+      <button
+        type="button"
+        class="about-map__filter"
+        data-filter={filter.id}
+        data-tone={filter.tone}
+        data-active={filter.id === "all" ? "true" : "false"}
+      >
+        {filter.label}
+      </button>
+    ))}
+  </div>
+
+  <div class="about-map__canvas-shell">
+    <div class="about-map__canvas" data-map-canvas aria-label="Interactive map with location markers"></div>
+  </div>
+
+  <div class="about-map__cards-shell">
+    <button
+      type="button"
+      class="about-map__cards-nav"
+      data-cards-prev
+      aria-label="Show previous locations"
+    >
+      &#8249;
+    </button>
+
+    <div class="about-map__cards-viewport" data-cards-viewport>
+      <div class="about-map__cards-track" data-place-cards>
+        {placesForUi.map(place => (
+          <button
+            type="button"
+            class="about-map__card"
+            data-place-id={place.id}
+            data-place-type={place.type}
+          >
+            <img src={place.image} alt={`Photo placeholder for ${place.title}`} loading="lazy" />
+            <div class="about-map__card-text">
+              <p class="about-map__card-type">
+                {place.type === "travel" ? "Traveled" : place.type === "work" ? "Worked" : "Studied"}
+              </p>
+              <h3>{place.title}</h3>
+              <p>{place.location}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="about-map__cards-nav"
+      data-cards-next
+      aria-label="Show next locations"
+    >
+      &#8250;
+    </button>
+  </div>
+</section>
+
+<script is:inline data-places={JSON.stringify(placesForUi)}>
+  (() => {
+    const scriptElement = document.currentScript;
+    const rawPlaces = scriptElement?.getAttribute("data-places") ?? "[]";
+    const mapPlaces = JSON.parse(rawPlaces);
+
+    const leafletCssHref = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+    const leafletJsSrc = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    const leafletCssIntegrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
+    const leafletJsIntegrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
+
+    const typeLabels = {
+      work: "Worked",
+      study: "Studied",
+      travel: "Traveled",
+    };
+
+    const ensureLeafletAssets = () =>
+      new Promise((resolve, reject) => {
+        if (!document.querySelector(`link[href="${leafletCssHref}"]`)) {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = leafletCssHref;
+          link.integrity = leafletCssIntegrity;
+          link.crossOrigin = "";
+          document.head.appendChild(link);
+        }
+
+        if (window.L) {
+          resolve(window.L);
+          return;
+        }
+
+        const existingScript = document.querySelector(`script[src="${leafletJsSrc}"]`);
+        if (existingScript) {
+          existingScript.addEventListener("load", () => resolve(window.L), { once: true });
+          existingScript.addEventListener("error", () => reject(new Error("Leaflet failed to load")), {
+            once: true,
+          });
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = leafletJsSrc;
+        script.integrity = leafletJsIntegrity;
+        script.crossOrigin = "";
+        script.async = true;
+        script.onload = () => resolve(window.L);
+        script.onerror = () => reject(new Error("Leaflet failed to load"));
+        document.body.appendChild(script);
+      });
+
+    const markerIcon = (L, placeType, selected = false) =>
+      L.divIcon({
+        className: "",
+        html: `<span class="about-map-marker about-map-marker--${placeType}${selected ? " is-selected" : ""}"></span>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+        popupAnchor: [0, -12],
+      });
+
+    const popupMarkup = place =>
+      `<div class="about-map-popup">
+        <img src="${place.image}" alt="Photo placeholder for ${place.title}" loading="lazy" />
+        <div>
+          <p class="about-map-popup__tag">${typeLabels[place.type]}</p>
+          <h3>${place.title}</h3>
+          <p>${place.location}</p>
+          ${place.type !== "travel" && place.period ? `<p>${place.period}</p>` : ""}
+          ${place.type !== "travel" ? `<p>${place.description}</p>` : ""}
+        </div>
+      </div>`;
+
+    const init = async root => {
+      if (!root || root.dataset.mapInit === "true") return;
+      root.dataset.mapInit = "true";
+
+      const mapElement = root.querySelector("[data-map-canvas]");
+      const filterButtons = Array.from(root.querySelectorAll("[data-filter]"));
+      const cardButtons = Array.from(root.querySelectorAll("[data-place-id]"));
+      const cardsViewport = root.querySelector("[data-cards-viewport]");
+      const cardsPrev = root.querySelector("[data-cards-prev]");
+      const cardsNext = root.querySelector("[data-cards-next]");
+      if (!mapElement || filterButtons.length === 0 || cardButtons.length === 0) return;
+
+      const updateCardsNav = () => {
+        if (!cardsViewport || !cardsPrev || !cardsNext) return;
+        const maxScrollLeft = cardsViewport.scrollWidth - cardsViewport.clientWidth;
+        const canScroll = maxScrollLeft > 2;
+        root.dataset.cardsScrollable = canScroll ? "true" : "false";
+        cardsPrev.disabled = !canScroll || cardsViewport.scrollLeft <= 2;
+        cardsNext.disabled = !canScroll || cardsViewport.scrollLeft >= maxScrollLeft - 2;
+      };
+
+      const scrollCards = direction => {
+        if (!cardsViewport) return;
+        cardsViewport.scrollBy({
+          left: direction * cardsViewport.clientWidth,
+          behavior: "smooth",
+        });
+      };
+
+      cardsPrev?.addEventListener("click", () => {
+        scrollCards(-1);
+      });
+
+      cardsNext?.addEventListener("click", () => {
+        scrollCards(1);
+      });
+
+      cardsViewport?.addEventListener("scroll", () => {
+        updateCardsNav();
+      });
+
+      window.addEventListener("resize", () => {
+        updateCardsNav();
+      });
+
+      const L = await ensureLeafletAssets();
+      const map = L.map(mapElement, {
+        zoomControl: false,
+        worldCopyJump: true,
+      }).setView([23, 4], 2);
+
+      L.control
+        .zoom({
+          position: "bottomright",
+        })
+        .addTo(map);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
+
+      const markersById = new Map();
+      let activeFilter = "all";
+      let activePlaceId = null;
+
+      const highlight = placeId => {
+        activePlaceId = placeId;
+        mapPlaces.forEach(place => {
+          const marker = markersById.get(place.id);
+          if (!marker) return;
+          marker.setIcon(markerIcon(L, place.type, place.id === placeId));
+        });
+        cardButtons.forEach(card => {
+          card.dataset.active = card.dataset.placeId === placeId ? "true" : "false";
+        });
+
+        const activeCard = cardButtons.find(card => card.dataset.placeId === placeId);
+        if (activeCard && activeCard.dataset.hidden !== "true") {
+          activeCard.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "nearest",
+          });
+        }
+      };
+
+      mapPlaces.forEach(place => {
+        const marker = L.marker([place.lat, place.lng], {
+          icon: markerIcon(L, place.type),
+          riseOnHover: true,
+        })
+          .bindPopup(popupMarkup(place), {
+            className: "about-map-leaflet-popup",
+            maxWidth: 280,
+          })
+          .addTo(map);
+
+        marker.on("click", () => {
+          highlight(place.id);
+        });
+
+        marker.on("popupopen", () => {
+          highlight(place.id);
+        });
+
+        markersById.set(place.id, marker);
+      });
+
+      const updateVisibility = () => {
+        const visiblePositions = [];
+
+        mapPlaces.forEach(place => {
+          const isVisible = activeFilter === "all" || place.type === activeFilter;
+          const marker = markersById.get(place.id);
+          const card = root.querySelector(`[data-place-id="${place.id}"]`);
+
+          if (card) {
+            card.dataset.hidden = isVisible ? "false" : "true";
+          }
+
+          if (!marker) return;
+          if (isVisible) {
+            marker.addTo(map);
+            visiblePositions.push([place.lat, place.lng]);
+          } else {
+            map.removeLayer(marker);
+          }
+        });
+
+        if (visiblePositions.length > 0) {
+          const bounds = L.latLngBounds(visiblePositions);
+          map.fitBounds(bounds, { padding: [42, 42], maxZoom: 4 });
+        }
+
+        if (cardsViewport) {
+          cardsViewport.scrollLeft = 0;
+        }
+        updateCardsNav();
+
+        const selectedStillVisible = mapPlaces.some(
+          place => place.id === activePlaceId && (activeFilter === "all" || place.type === activeFilter)
+        );
+        if (!selectedStillVisible) {
+          activePlaceId = null;
+          cardButtons.forEach(card => {
+            card.dataset.active = "false";
+          });
+        }
+      };
+
+      filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          const filter = button.dataset.filter;
+          if (!filter) return;
+          activeFilter = filter;
+          filterButtons.forEach(filterButton => {
+            filterButton.dataset.active = filterButton === button ? "true" : "false";
+          });
+          updateVisibility();
+        });
+      });
+
+      cardButtons.forEach(card => {
+        card.addEventListener("click", () => {
+          const placeId = card.dataset.placeId;
+          if (!placeId || card.dataset.hidden === "true") return;
+          const place = mapPlaces.find(item => item.id === placeId);
+          const marker = markersById.get(placeId);
+          if (!place || !marker) return;
+          highlight(placeId);
+          map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 4), { duration: 0.8 });
+          marker.openPopup();
+        });
+      });
+
+      updateVisibility();
+
+      setTimeout(() => {
+        map.invalidateSize();
+        updateCardsNav();
+      }, 80);
+    };
+
+    const setup = () => {
+      document.querySelectorAll("[data-about-map-root]").forEach(root => {
+        init(root).catch(error => {
+          console.error("Failed to initialize About map demo", error);
+        });
+      });
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", setup, { once: true });
+    } else {
+      setup();
+    }
+
+    document.addEventListener("astro:page-load", setup);
+  })();
+</script>
+
+<style is:global>
+  .about-map {
+    --about-map-card-gap: 0.7rem;
+    margin-top: 2rem;
+    padding: 1.1rem;
+    border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+    border-radius: 1rem;
+    background:
+      radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 36%),
+      linear-gradient(160deg, color-mix(in srgb, var(--muted) 80%, transparent), var(--background));
+    box-shadow: 0 20px 40px color-mix(in srgb, black 10%, transparent);
+  }
+
+  .about-map__header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    align-items: end;
+    justify-content: space-between;
+  }
+
+  .about-map__eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--foreground) 62%, transparent);
+  }
+
+  .about-map__title {
+    margin: 0.2rem 0 0;
+    font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+    line-height: 1.2;
+    color: color-mix(in srgb, var(--foreground) 95%, black 5%);
+  }
+
+  .about-map__subtitle {
+    margin: 0;
+    max-width: 32ch;
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--foreground) 76%, transparent);
+  }
+
+  .about-map__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .about-map__filter {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--background) 85%, var(--muted));
+    padding: 0.35rem 0.8rem;
+    font-size: 0.82rem;
+    transition: all 160ms ease;
+    color: var(--foreground);
+  }
+
+  .about-map__filter[data-active="true"] {
+    transform: translateY(-1px);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 9px 18px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+
+  .about-map__filter[data-tone="all"][data-active="true"] {
+    background: color-mix(in srgb, var(--accent) 86%, #001f4f 14%);
+  }
+
+  .about-map__filter[data-tone="work"][data-active="true"] {
+    background: #3f72e8;
+  }
+
+  .about-map__filter[data-tone="study"][data-active="true"] {
+    background: #23a07f;
+  }
+
+  .about-map__filter[data-tone="travel"][data-active="true"] {
+    background: #cc7a21;
+  }
+
+  .about-map__canvas-shell {
+    margin-top: 0.95rem;
+    border-radius: 0.85rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+    background: color-mix(in srgb, var(--muted) 78%, var(--background));
+  }
+
+  .about-map__canvas {
+    height: clamp(18rem, 45vw, 26rem);
+    width: 100%;
+  }
+
+  .about-map__cards-shell {
+    margin-top: 0.95rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .about-map[data-cards-scrollable="false"] .about-map__cards-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .about-map__cards-viewport {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .about-map__cards-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .about-map__cards-track {
+    display: flex;
+    gap: var(--about-map-card-gap);
+  }
+
+  .about-map__cards-nav {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+    background: color-mix(in srgb, var(--background) 88%, var(--muted));
+    color: var(--foreground);
+    font-size: 1.2rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 160ms ease;
+  }
+
+  .about-map[data-cards-scrollable="false"] .about-map__cards-nav {
+    display: none;
+  }
+
+  .about-map__cards-nav:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .about-map__cards-nav:not(:disabled):hover {
+    border-color: color-mix(in srgb, var(--accent) 72%, transparent);
+    color: color-mix(in srgb, var(--accent) 88%, var(--foreground));
+  }
+
+  .about-map__card {
+    flex: 0 0 calc((100% - (var(--about-map-card-gap) * 2)) / 3);
+    min-width: 0;
+    scroll-snap-align: start;
+    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+    background: color-mix(in srgb, var(--background) 87%, var(--muted));
+    border-radius: 0.8rem;
+    overflow: hidden;
+    text-align: left;
+    transition: all 160ms ease;
+  }
+
+  .about-map__card[data-hidden="true"] {
+    display: none;
+  }
+
+  .about-map__card img {
+    width: 100%;
+    height: 6rem;
+    object-fit: cover;
+    object-position: 50% 40%;
+    display: block;
+  }
+
+  .about-map__card-text {
+    padding: 0.68rem 0.72rem 0.82rem;
+  }
+
+  .about-map__card-text h3 {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.3;
+  }
+
+  .about-map__card-text p {
+    margin: 0.18rem 0 0;
+    font-size: 0.78rem;
+    color: color-mix(in srgb, var(--foreground) 78%, transparent);
+  }
+
+  .about-map__card-type {
+    margin: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--foreground) 62%, transparent);
+  }
+
+  .about-map__card[data-active="true"] {
+    border-color: color-mix(in srgb, var(--accent) 72%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 34%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .about-map-marker {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 7px 13px rgba(0, 0, 0, 0.18);
+    transition: transform 140ms ease;
+  }
+
+  .about-map-marker.is-selected {
+    transform: scale(1.18);
+  }
+
+  .about-map-marker--work {
+    background: #3f72e8;
+  }
+
+  .about-map-marker--study {
+    background: #23a07f;
+  }
+
+  .about-map-marker--travel {
+    background: #cc7a21;
+  }
+
+  .about-map-popup {
+    display: grid;
+    gap: 0.55rem;
+    grid-template-columns: 88px 1fr;
+  }
+
+  .about-map-popup img {
+    width: 88px;
+    height: 100%;
+    min-height: 90px;
+    border-radius: 0.42rem;
+    object-fit: cover;
+    object-position: 50% 40%;
+  }
+
+  .about-map-popup h3 {
+    margin: 0;
+    font-size: 0.93rem;
+    line-height: 1.2;
+  }
+
+  .about-map-popup p {
+    margin: 0.16rem 0 0;
+    font-size: 0.74rem;
+    line-height: 1.34;
+  }
+
+  .about-map-popup__tag {
+    margin: 0;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: color-mix(in srgb, var(--foreground) 64%, transparent);
+  }
+
+  .about-map-leaflet-popup .leaflet-popup-content-wrapper {
+    border-radius: 0.8rem;
+    background: color-mix(in srgb, var(--background) 94%, var(--muted));
+    border: 1px solid color-mix(in srgb, var(--border) 76%, transparent);
+    color: var(--foreground);
+    box-shadow: 0 16px 30px color-mix(in srgb, black 18%, transparent);
+  }
+
+  .about-map-leaflet-popup .leaflet-popup-content {
+    margin: 0.7rem;
+  }
+
+  .about-map-leaflet-popup .leaflet-popup-tip {
+    background: color-mix(in srgb, var(--background) 96%, var(--muted));
+  }
+
+  [data-theme="dark"] .about-map {
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.45);
+  }
+
+  @media (max-width: 520px) {
+    .about-map {
+      padding: 0.85rem;
+    }
+
+    .about-map__subtitle {
+      max-width: 100%;
+    }
+
+    .about-map__cards-nav {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  }
+</style>
