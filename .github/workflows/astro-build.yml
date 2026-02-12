@@ -27,6 +27,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run Unit and Regression Tests
+        run: npm test
+
+      - name: Run Astro Type Check
+        run: npm run astro -- check
+
       - name: Build Astro site
         run: npm run build
 
