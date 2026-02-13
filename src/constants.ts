@@ -36,6 +36,13 @@ export const SOCIALS = [
     icon: "linkedin",
     active: true,
   },
+  {
+    name: "Email",
+    href: "mailto:noeflandre@gmail.com",
+    linkTitle: `Email ${SITE.title}`,
+    icon: "mail",
+    active: true,
+  },
 ] as const;
 
 export const SHARE_LINKS = [
