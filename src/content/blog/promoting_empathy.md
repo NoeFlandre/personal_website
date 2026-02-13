@@ -2,6 +2,7 @@
 title: "Can we turn agent-based models into empathetic stories (without getting poetic)?"
 description: "We test whether GPT-4 can translate agents’ simulated lives into readable, empathetic narratives—and show that style transfer beats ‘please be empathetic’ prompts."
 pubDatetime: 2025-09-03T12:00:00Z
+heroImage: /assets/img/2025/promoting-empathy/journal-of-simulation.png
 tags: ["LLM", "Research", "Agent-Based Modeling", "Narratives", "Empathy"]
 featured: true
 readingTime: "5 min read"
