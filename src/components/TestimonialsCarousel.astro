@@ -62,7 +62,10 @@ const testimonials = [
   </div>
 
   <div class="relative mt-3">
-    <div class="overflow-hidden rounded-lg border border-border bg-muted/60 shadow-sm text-foreground dark:border-white/20 dark:bg-white/10 dark:text-white">
+    <div
+      class="overflow-hidden rounded-lg border border-border bg-muted/60 shadow-sm text-foreground transition-[height] duration-300 ease-out dark:border-white/20 dark:bg-white/10 dark:text-white"
+      data-carousel-viewport
+    >
       <ul class="flex transition-transform duration-300 ease-out" data-track>
         {testimonials.map((item, index) => (
           <li class="min-w-full p-6 sm:p-7" data-slide>
@@ -112,14 +115,21 @@ const testimonials = [
       root.dataset.carouselInit = "true";
 
       const track = root.querySelector("[data-track]");
+      const viewport = root.querySelector("[data-carousel-viewport]");
       const slides = Array.from(root.querySelectorAll("[data-slide]"));
       const dots = Array.from(root.querySelectorAll("[data-dot]"));
       const prev = root.querySelector('[data-action="prev"]');
       const next = root.querySelector('[data-action="next"]');
 
-      if (!track || slides.length === 0 || !prev || !next) return;
+      if (!track || !viewport || slides.length === 0 || !prev || !next) return;
 
       let index = 0;
+
+      const syncViewportHeight = () => {
+        const activeSlide = slides[index];
+        if (!activeSlide) return;
+        viewport.style.height = `${activeSlide.offsetHeight}px`;
+      };
 
       const update = () => {
         track.style.transform = `translateX(-${index * 100}%)`;
@@ -129,6 +139,7 @@ const testimonials = [
         dots.forEach((dot, i) => {
           dot.setAttribute("data-active", i === index ? "true" : "false");
         });
+        window.requestAnimationFrame(syncViewportHeight);
       };
 
       prev.addEventListener("click", () => {
@@ -147,6 +158,18 @@ const testimonials = [
           update();
         });
       });
+
+      if ("ResizeObserver" in window) {
+        const resizeObserver = new ResizeObserver(() => {
+          syncViewportHeight();
+        });
+
+        slides.forEach((slide) => {
+          resizeObserver.observe(slide);
+        });
+      } else {
+        window.addEventListener("resize", syncViewportHeight);
+      }
 
       update();
     };
