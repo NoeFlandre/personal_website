@@ -735,6 +735,40 @@ const filters = [
         let activeFilter = "all";
         let activePlaceId = null;
 
+        const applyPopupViewportOptions = popup => {
+          if (!popup) return;
+          popup.options.maxWidth = popupMaxWidth();
+          popup.options.autoPanPaddingTopLeft = popupPanPadding();
+          popup.options.autoPanPaddingBottomRight = popupPanPadding();
+        };
+
+        const openPopupFromCardSelection = marker => {
+          if (!map.hasLayer(marker)) return;
+          const popup = marker.getPopup();
+          if (!popup) {
+            marker.openPopup();
+            return;
+          }
+
+          applyPopupViewportOptions(popup);
+          const { autoPan, keepInView } = popup.options;
+          popup.options.autoPan = false;
+          popup.options.keepInView = false;
+          marker.openPopup();
+          popup.options.autoPan = autoPan;
+          popup.options.keepInView = keepInView;
+        };
+
+        const getCardSelectionCenter = (place, targetZoom) => {
+          const isMobile = typeof window !== "undefined" && window.innerWidth <= 520;
+          const mapHeight = mapElement.clientHeight || 0;
+          const verticalOffset = Math.round(
+            Math.min(isMobile ? 120 : 96, Math.max(isMobile ? 72 : 56, mapHeight * (isMobile ? 0.24 : 0.18)))
+          );
+          const projected = map.project([place.lat, place.lng], targetZoom).subtract([0, verticalOffset]);
+          return map.unproject(projected, targetZoom);
+        };
+
         const highlight = placeId => {
           activePlaceId = placeId;
           mapPlaces.forEach(place => {
@@ -843,29 +877,41 @@ const filters = [
             const marker = markersById.get(placeId);
             if (!place || !marker) return;
             highlight(placeId);
-            const openPopup = () => {
-              if (!map.hasLayer(marker)) return;
-              const popup = marker.getPopup();
-              if (popup) {
-                popup.options.maxWidth = popupMaxWidth();
-                popup.options.autoPanPaddingTopLeft = popupPanPadding();
-                popup.options.autoPanPaddingBottomRight = popupPanPadding();
-              }
-              marker.openPopup();
-            };
 
             const targetId = placeId;
-            let opened = false;
-            map.once("moveend", () => {
+            const targetZoom = Math.max(map.getZoom(), 4);
+            const targetCenter = getCardSelectionCenter(place, targetZoom);
+            const shouldMove =
+              Math.abs(map.getZoom() - targetZoom) > 0.01 || map.getCenter().distanceTo(targetCenter) > 18;
+
+            const revealPopup = () => {
               if (activePlaceId !== targetId) return;
-              opened = true;
-              openPopup();
-            });
-            map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 4), { duration: 0.8 });
-            setTimeout(() => {
-              if (opened || activePlaceId !== targetId) return;
-              openPopup();
-            }, 920);
+              openPopupFromCardSelection(marker);
+            };
+
+            if (!shouldMove) {
+              revealPopup();
+              return;
+            }
+
+            map.stop();
+            map.closePopup();
+
+            let fallbackTimer = null;
+            const onMoveEnd = () => {
+              if (fallbackTimer) {
+                clearTimeout(fallbackTimer);
+                fallbackTimer = null;
+              }
+              revealPopup();
+            };
+
+            map.once("moveend", onMoveEnd);
+            map.flyTo(targetCenter, targetZoom, { duration: 0.72, easeLinearity: 0.25 });
+            fallbackTimer = setTimeout(() => {
+              map.off("moveend", onMoveEnd);
+              revealPopup();
+            }, 900);
           });
         });
 
