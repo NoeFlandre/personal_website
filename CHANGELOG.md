@@ -7,15 +7,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
-- steipete.md domain support for markdown-only viewing (#130, #139)
-  - Visit steipete.md to automatically see markdown versions of all pages
+- noeflandre.md domain support for markdown-only viewing (#130, #139)
+  - Visit noeflandre.md to automatically see markdown versions of all pages
   - Client-side redirect handles domain detection and .md routing
   - Works around Vercel's limitations with domain-based rewrites for static sites
 - Markdown (.md) endpoint support for all pages - append `.md` to any URL to get raw markdown content
   - Blog posts: `/posts/YEAR/post-slug.md`
   - Root pages: `/about.md`
 - Raw markdown served with `Content-Type: text/plain` and proper caching headers
-- Redirect from steipete.me/*.md URLs to steipete.md/* (#133)
+- Redirect from noeflandre.com/*.md URLs to noeflandre.md/* (#133)
 
 ### Fixed
 - Slow theme switching animation on iPhone Safari (#122)
@@ -26,7 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [2025-01-06]
 
 ### Changed
-- Updated email address from steipete@gmail.com to peter@steipete.me site-wide (#120)
+- Updated site email address to noeflandre@gmail.com (#120)
 
 ### Added
 - Smooth transitions for theme switching with CSS transitions (#119)
@@ -67,7 +67,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [2025-01-04]
 
 ### Technical Infrastructure
-- Migrated from steipete.com to steipete.me
+- Migrated to noeflandre.com
 - Set up modern Astro-based static site architecture
 - Implemented automatic builds and deployments via Vercel
 - Added PWA support with service worker
