@@ -9,16 +9,48 @@ import Hr from "@/components/Hr.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import Socials from "@/components/Socials.astro";
 import StructuredData from "@/components/StructuredData.astro";
-import { SITE, SOCIALS } from "@/config";
+import { SOCIALS } from "@/config";
 import Layout from "@/layouts/Layout.astro";
+import { getPath } from "@/utils/getPath";
 import getSortedPosts from "@/utils/getSortedPosts";
 
 const posts = await getCollection("blog");
+const AIRBUS_GEO_EXPLORE_URL =
+  "https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/";
 
 const sortedPosts = getSortedPosts(posts);
 const posts2024AndLater = sortedPosts.filter(({ data }) => data.pubDatetime.getFullYear() >= 2024);
-const featuredPosts = posts2024AndLater.filter(({ data }) => data.featured);
-const recentPosts = posts2024AndLater.filter(({ data }) => !data.featured);
+const homepageFeaturedTitles = new Set([
+  "Can we turn agent-based models into empathetic stories (without getting poetic)?",
+  "Can LLMs learn conceptual modeling from slide decks?",
+]);
+const featuredPosts = posts2024AndLater.filter(({ data }) => homepageFeaturedTitles.has(data.title));
+const publicationPost = featuredPosts.find(
+  ({ data }) => data.title === "Can we turn agent-based models into empathetic stories (without getting poetic)?",
+);
+const featuredWorkCards = [
+  {
+    label: "Internship",
+    title: "Airbus Defence and Space",
+    description: "Fine-tuning of VLMs on satellite imagery and benchmark-driven training evaluation.",
+    image: "/assets/img/about-map/airbus_defence_and_space_work.jpeg",
+    href: AIRBUS_GEO_EXPLORE_URL,
+  },
+  {
+    label: "Publication",
+    title: "Empathetic Narratives from ABMs",
+    description: "Research on turning agent-based simulations into readable, faithful stories with LLMs.",
+    image: "/assets/img/about-map/miami_university_work.jpeg",
+    href: publicationPost ? getPath(publicationPost.id, publicationPost.filePath) : "/posts",
+  },
+  {
+    label: "Humanitarian Impact",
+    title: "Tsiky Zanaka Classroom Project",
+    description: "Classroom construction support in Namibia with field coordination and community partners.",
+    image: "/assets/img/about-map/namibia_near_opuwo_humanitarian.jpeg",
+    href: "https://tsikyzanaka.org/2025/02/09/projet-2023/",
+  },
+];
 ---
 
 <Layout description="Noé Flandre: AI Research Engineer // Shipping side projects on GitHub - all open">
@@ -72,43 +104,57 @@ const recentPosts = posts2024AndLater.filter(({ data }) => !data.featured);
       </div>
     </section>
 
+    <section id="featured-work" class="pt-4 pb-8">
+      <h2 class="text-2xl font-semibold tracking-wide">Featured Work</h2>
+      <p class="mt-2 text-foreground/70">
+        Selected work across industry, publications, and field impact.
+      </p>
+      <div class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-3">
+        {featuredWorkCards.map((item) => (
+          <a
+            href={item.href}
+            target={item.href.startsWith("http") ? "_blank" : undefined}
+            rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+            class="group overflow-hidden rounded-xl border border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <img
+              src={item.image}
+              alt={item.title}
+              class="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              loading="eager"
+            />
+            <div class="p-4">
+              <span class="text-xs font-semibold uppercase tracking-[0.12em] text-accent/80">{item.label}</span>
+              <h3 class="mt-2 text-lg font-semibold leading-tight">{item.title}</h3>
+              <p class="mt-2 text-sm text-foreground/70">{item.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
     <Hr />
 
     {
       featuredPosts.length > 0 && (
         <>
           <section id="featured" class="pt-12 pb-6">
-            <h2 class="text-2xl font-semibold tracking-wide">Featured</h2>
+            <h2 class="text-2xl font-semibold tracking-wide">Featured Blog Posts</h2>
             <ul>
               {featuredPosts.map((data) => (
                 <Card variant="h3" {...data} showImage={false} />
               ))}
             </ul>
           </section>
-          {recentPosts.length > 0 && <Hr />}
+          <div class="my-8 text-center">
+            <LinkButton href="/posts">
+              All Posts
+              <IconArrowRight class="inline-block" />
+            </LinkButton>
+          </div>
         </>
       )
     }
-
-    {
-      recentPosts.length > 0 && (
-        <section id="recent-posts" class="pt-12 pb-6">
-          <ul>
-            {recentPosts.map(
-              (data, index) =>
-                index < SITE.postPerIndex && <Card variant="h3" {...data} showImage={false} />,
-            )}
-          </ul>
-        </section>
-      )
-    }
-
-    <div class="my-8 text-center">
-      <LinkButton href="/posts">
-        All Posts
-        <IconArrowRight class="inline-block" />
-      </LinkButton>
-    </div>
   </main>
   <Footer />
 </Layout>

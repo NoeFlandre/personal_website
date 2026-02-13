@@ -10,12 +10,15 @@ interface Place {
   location: string;
   period: string;
   description: string;
+  link?: string;
   lat: number;
   lng: number;
   image: string;
 }
 
 const getMapImage = (fileName: string) => `/assets/img/about-map/${fileName}`;
+const AIRBUS_GEO_EXPLORE_URL =
+  "https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/";
 
 const places: Place[] = [
   {
@@ -81,6 +84,7 @@ const places: Place[] = [
     period: "",
     description:
       "Fine-tuned vision-language models on satellite imagery and built remote sensing benchmarks to compare captioning strategies.",
+    link: AIRBUS_GEO_EXPLORE_URL,
     lat: 43.6047,
     lng: 1.4442,
     image: getMapImage("airbus_defence_and_space_work.jpeg"),
@@ -634,6 +638,7 @@ const filters = [
           <p>${place.location}</p>
           ${place.type !== "travel" && place.period ? `<p>${place.period}</p>` : ""}
           ${place.type !== "travel" ? `<p>${place.description}</p>` : ""}
+          ${place.link ? `<p><a href="${place.link}" target="_blank" rel="noopener noreferrer">Airbus Geo Explore Early Testing Programme</a></p>` : ""}
         </div>
       </div>`;
 

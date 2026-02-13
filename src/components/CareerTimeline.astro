@@ -9,6 +9,9 @@ interface TimelineItem {
   link?: string;
 }
 
+const AIRBUS_GEO_EXPLORE_URL =
+  "https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/";
+
 const experience: TimelineItem[] = [
   {
     year: "Jun 2025 — Nov 2025",
@@ -16,8 +19,9 @@ const experience: TimelineItem[] = [
     subtitle: "Airbus Defence and Space",
     location: "Toulouse, France",
     description: "Fine-tuning of Vision-Language Models on Satellite Images",
+    link: AIRBUS_GEO_EXPLORE_URL,
     details: [
-      "Conducted research on the underlying AI model of Airbus Geo Explore",
+      `Conducted research on the underlying AI model of <a href="${AIRBUS_GEO_EXPLORE_URL}" target="_blank" rel="noopener noreferrer">Airbus Geo Explore</a>`,
       "State-of-the-art review of fine-tuning techniques for VLMs in remote sensing",
       "Built a remote sensing benchmark suite to compare models and training strategies",
       "Implemented end-to-end fine-tuning pipelines on GCP"
@@ -202,14 +206,22 @@ const publications: TimelineItem[] = [
         <div class="relative pl-8">
           <div class="absolute -left-[11px] top-1.5 w-5 h-5 rounded-full bg-background border-4 border-accent"></div>
           <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
-            <h3 class="text-xl font-bold leading-tight">{item.title} — {item.subtitle}</h3>
+            <h3 class="text-xl font-bold leading-tight">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="hover:text-accent underline decoration-accent/30 underline-offset-4">
+                  {item.title} {item.subtitle && `— ${item.subtitle}`}
+                </a>
+              ) : (
+                `${item.title} ${item.subtitle ? `— ${item.subtitle}` : ""}`
+              )}
+            </h3>
             <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
           </div>
           {item.location && <p class="text-sm text-foreground/50 italic mb-2">{item.location}</p>}
           {item.description && <p class="text-base font-medium text-foreground/80 mb-2 italic">{item.description}</p>}
           {item.details && (
             <ul class="list-disc list-outside ml-4 space-y-1 text-base text-foreground/70">
-              {item.details.map(detail => <li>{detail}</li>)}
+              {item.details.map(detail => <li set:html={detail} />)}
             </ul>
           )}
         </div>
