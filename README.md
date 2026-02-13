@@ -1,6 +1,6 @@
 # Noe Flandre's Personal Website
 
-This is the source code for my personal website, built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.com).
+This is the source code for my personal website, built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.com). The source code is forked from Peter Steinberger [repository](https://github.com/steipete/steipete.me) and adapted with new features (interactive map...).
 
 ## About
 
@@ -53,4 +53,4 @@ See the [LICENSE](LICENSE) file for full details.
 
 ## Special Thanks
 
-Special thanks to [Sat Naing](https://github.com/satnaing) for creating the excellent [AstroPaper theme](https://astro-paper.pages.dev/) that served as the foundation for this website. Their thoughtful design and clean architecture made it a joy to build upon.
+Special thanks to Peter Steinberger for open sourcing this amazing code! [repository](https://github.com/steipete/steipete.me)
