@@ -94,6 +94,39 @@ const projects: TimelineItem[] = [
   }
 ];
 
+const awards: TimelineItem[] = [
+  {
+    year: "March 2024",
+    title: "Ariane Group Hackathon (Third Prize)",
+    location: "Palaiseau, France",
+    link: "https://www.linkedin.com/posts/no%C3%A9flandre_hackathon-innovation-teamwork-activity-7175134273731973122-KtDT?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD2wbbAB_3d2pVuDRoklgIPJBlWHL849Vdg",
+    details: [
+      "Optimized Ariane 6 boosters delivery planning (CO2 emissions, time, and cost)",
+      "Developed a web app with Streamlit and Flask, integrating a map",
+      "Managed booster logistics data with MongoDB"
+    ]
+  },
+  {
+    year: "October 2023",
+    title: "Altemed Hackathon (First Prize)",
+    location: "Montpellier, France",
+    link: "https://www.linkedin.com/posts/no%C3%A9flandre_hackathon-by-alt%C3%A9med-activity-7120041569784578048-zFd-?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD2wbbAB_3d2pVuDRoklgIPJBlWHL849Vdg",
+    details: [
+      "Developed a real-time supervision dashboard and map",
+      "Used Power BI to visualize data for predictive maintenance of housing equipment"
+    ]
+  },
+  {
+    year: "February 2023",
+    title: "Best Speaker - French Debating Association",
+    location: "Paris, France",
+    link: "https://www.linkedin.com/posts/no%C3%A9flandre_such-an-amazing-evening-it-was-yesterday-activity-7030221869802770432-b3Af?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD2wbbAB_3d2pVuDRoklgIPJBlWHL849Vdg",
+    details: [
+      "Best Speaker Award: English debate between IMT Mines Alès and IESEG"
+    ]
+  }
+];
+
 const publications: TimelineItem[] = [
   {
     year: "2025",
@@ -212,6 +245,36 @@ const publications: TimelineItem[] = [
             <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
           </div>
           {item.description && <p class="text-base text-foreground/80 mt-2">{item.description}</p>}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* Awards Section */}
+  <section class="!p-0 !m-0">
+    <h2 class="text-2xl font-bold mb-8 border-b border-border pb-2 italic">Awards</h2>
+    <div class="relative border-l-2 border-border ml-3 md:ml-4 space-y-12">
+      {awards.map((item) => (
+        <div class="relative pl-8">
+          <div class="absolute -left-[11px] top-1.5 w-5 h-5 rounded-full bg-background border-4 border-accent"></div>
+          <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+            <h3 class="text-xl font-bold leading-tight">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="hover:text-accent underline decoration-accent/30 underline-offset-4">
+                  {item.title}
+                </a>
+              ) : (
+                item.title
+              )}
+            </h3>
+            <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
+          </div>
+          {item.location && <p class="text-sm text-foreground/50 italic mb-2">{item.location}</p>}
+          {item.details && (
+            <ul class="list-disc list-outside ml-4 space-y-1 text-base text-foreground/70">
+              {item.details.map(detail => <li>{detail}</li>)}
+            </ul>
+          )}
         </div>
       ))}
     </div>
