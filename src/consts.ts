@@ -31,9 +31,9 @@ interface Site {
 
 // Site configuration
 export const SITE: Site = {
-  website: "https://noeflandre.github.io/",
+  website: "https://noeflandre.com/",
   author: "Noé Flandre",
-  profile: "https://noeflandre.github.io/about",
+  profile: "https://noeflandre.com/about",
   desc: "AI Research Engineer, vibe-learning. Daily meal : curating datasets & training models",
   title: "Noé Flandre",
   ogImage: "noe-avatar.jpg",
