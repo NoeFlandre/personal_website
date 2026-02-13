@@ -127,6 +127,21 @@ const awards: TimelineItem[] = [
   }
 ];
 
+const humanitarianImpact: TimelineItem[] = [
+  {
+    year: "2022 — 2023",
+    title: "Classroom Construction Project Management",
+    subtitle: "Tsiky Zanaka",
+    location: "Omuangete (near Opuwo), Namibia",
+    description: "Managed an 11,500€ classroom construction project, overseeing stakeholders and field coordination",
+    details: [
+      "Supported the construction of a primary classroom at Omuangete Primary School",
+      "Contributed to a six-week on-site mission (June 30 to August 9, 2023) with student volunteers"
+    ],
+    link: "https://tsikyzanaka.org/2025/02/09/projet-2023/"
+  }
+];
+
 const publications: TimelineItem[] = [
   {
     year: "2025",
@@ -270,6 +285,37 @@ const publications: TimelineItem[] = [
             <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
           </div>
           {item.location && <p class="text-sm text-foreground/50 italic mb-2">{item.location}</p>}
+          {item.details && (
+            <ul class="list-disc list-outside ml-4 space-y-1 text-base text-foreground/70">
+              {item.details.map(detail => <li>{detail}</li>)}
+            </ul>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* Humanitarian Impact Section */}
+  <section class="!p-0 !m-0">
+    <h2 class="text-2xl font-bold mb-8 border-b border-border pb-2 italic">Humanitarian Impact</h2>
+    <div class="relative border-l-2 border-border ml-3 md:ml-4 space-y-12">
+      {humanitarianImpact.map((item) => (
+        <div class="relative pl-8">
+          <div class="absolute -left-[11px] top-1.5 w-5 h-5 rounded-full bg-background border-4 border-accent"></div>
+          <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+            <h3 class="text-xl font-bold leading-tight">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="hover:text-accent underline decoration-accent/30 underline-offset-4">
+                  {item.title} {item.subtitle && `— ${item.subtitle}`}
+                </a>
+              ) : (
+                `${item.title} ${item.subtitle ? `— ${item.subtitle}` : ""}`
+              )}
+            </h3>
+            <span class="text-sm font-semibold text-accent/80 whitespace-nowrap">{item.year}</span>
+          </div>
+          {item.location && <p class="text-sm text-foreground/50 italic mb-2">{item.location}</p>}
+          {item.description && <p class="text-base font-medium text-foreground/80 mb-2 italic">{item.description}</p>}
           {item.details && (
             <ul class="list-disc list-outside ml-4 space-y-1 text-base text-foreground/70">
               {item.details.map(detail => <li>{detail}</li>)}
