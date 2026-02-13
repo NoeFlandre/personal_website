@@ -42,7 +42,7 @@ const welcomePost: BlogPost = {
 You can easily embed Twitter/X posts and YouTube videos using simple shortcodes in your markdown content.
 
 ### Twitter Embed
-{% twitter https://x.com/steipete/status/1899505804677677188 %}
+{% twitter https://x.com/OpenAI/status/1722058479122192550 %}
 
 ### YouTube Embed
 {% youtube https://www.youtube.com/watch?v=dQw4w9WgXcQ %}

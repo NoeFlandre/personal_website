@@ -41,7 +41,7 @@ The site uses the `MDXTwitterTransform.astro` component to scan for these patter
 Twitter embeds work in a similar way:
 
 ```
-{% twitter https://twitter.com/steipete/status/1134003594804547584 %}
+{% twitter https://x.com/OpenAI/status/1722058479122192550 %}
 ```
 
 ## Best Practices
