@@ -12,15 +12,155 @@ export interface Props {
 }
 
 const { frontmatter } = Astro.props;
+
+const outlineLinks = [
+  { href: "#about-intro", label: "About" },
+  { href: "#journey-map", label: "Journey Map" },
+  { href: "#github-activity", label: "GitHub Activity" },
+  { href: "#recommendations", label: "Recommendations" },
+  { href: "#publications", label: "Publications" },
+  { href: "#experience", label: "Experience" },
+  { href: "#awards", label: "Awards" },
+  { href: "#humanitarian-impact", label: "Humanitarian Impact" },
+];
 ---
 
 <Layout title={`${frontmatter.title} | ${SITE.title}`} description={frontmatter.description}>
   <Header />
-  <main id="main-content" class="mx-auto w-full max-w-3xl px-4 pb-12">
-    <section id="about" class="prose mb-28 max-w-3xl prose-img:border-0 mt-8">
-      <h1 class="text-2xl tracking-wider sm:text-3xl">{frontmatter.title}</h1>
-      <slot />
-    </section>
+  <main id="main-content" class="mx-auto w-full max-w-6xl px-4 pb-12">
+    <div class="mt-8 grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <aside class="hidden lg:block">
+        <nav class="about-outline" data-about-outline aria-label="About page sections">
+          <p class="about-outline__label">On This Page</p>
+          <ul class="about-outline__list">
+            {outlineLinks.map((link) => (
+              <li>
+                <a href={link.href} class="about-outline__link" data-outline-link>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      <section id="about" class="prose mb-28 max-w-3xl prose-img:border-0">
+        <h1 class="text-2xl tracking-wider sm:text-3xl">{frontmatter.title}</h1>
+        <slot />
+      </section>
+    </div>
   </main>
   <Footer />
 </Layout>
+
+<script is:inline>
+  const initAboutOutline = () => {
+    const outline = document.querySelector("[data-about-outline]");
+    if (!outline || outline.dataset.initialized === "true") return;
+
+    const links = Array.from(outline.querySelectorAll("[data-outline-link]"));
+    const sections = links
+      .map((link) => {
+        const href = link.getAttribute("href");
+        if (!href || !href.startsWith("#")) return null;
+        return document.getElementById(href.slice(1));
+      })
+      .filter(Boolean);
+
+    if (links.length === 0 || sections.length === 0) return;
+
+    const setActive = (id) => {
+      links.forEach((link) => {
+        const isActive = link.getAttribute("href") === `#${id}`;
+        link.dataset.active = isActive ? "true" : "false";
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+        if (visible.length > 0) {
+          setActive(visible[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-35% 0px -55% 0px",
+        threshold: [0, 1],
+      },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    links.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const href = link.getAttribute("href");
+        if (!href || !href.startsWith("#")) return;
+        const section = document.getElementById(href.slice(1));
+        if (!section) return;
+        event.preventDefault();
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+        setActive(section.id);
+      });
+    });
+
+    outline.dataset.initialized = "true";
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAboutOutline, { once: true });
+  } else {
+    initAboutOutline();
+  }
+  document.addEventListener("astro:page-load", initAboutOutline);
+</script>
+
+<style>
+  .about-outline {
+    position: sticky;
+    top: 5.5rem;
+    border-left: 2px solid color-mix(in srgb, var(--border) 78%, transparent);
+    padding-left: 0.85rem;
+  }
+
+  .about-outline__label {
+    margin: 0 0 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--foreground) 62%, transparent);
+  }
+
+  .about-outline__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .about-outline__link {
+    display: inline-flex;
+    width: 100%;
+    border-radius: 0.4rem;
+    padding: 0.28rem 0.45rem;
+    color: color-mix(in srgb, var(--foreground) 85%, transparent);
+    text-decoration: none;
+    transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
+  }
+
+  .about-outline__link:hover {
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--muted) 82%, transparent);
+    transform: translateX(2px);
+  }
+
+  .about-outline__link[data-active="true"] {
+    color: var(--background);
+    background: var(--accent);
+    font-weight: 700;
+  }
+</style>

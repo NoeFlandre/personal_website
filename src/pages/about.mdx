@@ -8,6 +8,7 @@ import CareerTimeline from '../components/CareerTimeline.astro';
 import TestimonialsCarousel from '../components/TestimonialsCarousel.astro';
 import AboutTravelMap from '../components/AboutTravelMap.astro';
 
+<section id="about-intro" class="scroll-mt-24">
 <div class="flex flex-col md:flex-row gap-8 items-start">
   <div class="w-full md:w-auto md:flex-shrink-0 flex justify-center">
     <img src="/image.png" alt="Noé Flandre" class="w-full max-w-[281px] h-auto rounded-lg object-cover object-[60%_35%] scale-110 shadow-lg" />
@@ -19,12 +20,13 @@ import AboutTravelMap from '../components/AboutTravelMap.astro';
     <p>Feel free to reach out!</p>
   </div>
 </div>
+</section>
 
-## Journey Map
+<h2 id="journey-map" class="scroll-mt-24">Journey Map</h2>
 
 <AboutTravelMap />
 
-## GitHub Activity
+<h2 id="github-activity" class="scroll-mt-24">GitHub Activity</h2>
 
 <div class="bg-secondary p-0 rounded-lg">
   <img 
@@ -36,7 +38,7 @@ import AboutTravelMap from '../components/AboutTravelMap.astro';
   />
 </div>
 
-## Recommendations
+<h2 id="recommendations" class="scroll-mt-24">Recommendations</h2>
 
 <TestimonialsCarousel />
 
