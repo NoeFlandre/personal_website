@@ -66,10 +66,10 @@ const testimonials = [
       class="overflow-hidden rounded-lg border border-border bg-muted/60 shadow-sm text-foreground transition-[height] duration-300 ease-out dark:border-white/20 dark:bg-white/10 dark:text-white"
       data-carousel-viewport
     >
-      <ul class="flex transition-transform duration-300 ease-out" data-track>
+      <ul class="flex items-start transition-transform duration-300 ease-out" data-track>
         {testimonials.map((item, index) => (
           <li class="min-w-full p-6 sm:p-7" data-slide>
-            <article class="flex h-full flex-col gap-4">
+            <article class="flex flex-col gap-4">
               <header class="flex flex-col gap-1">
                 <p class="text-base font-semibold">
                   <a
@@ -128,6 +128,7 @@ const testimonials = [
       const syncViewportHeight = () => {
         const activeSlide = slides[index];
         if (!activeSlide) return;
+        viewport.style.height = "auto";
         viewport.style.height = `${activeSlide.offsetHeight}px`;
       };
 
