@@ -29,43 +29,24 @@ const outlineLinks = [
 
 <Layout title={`${frontmatter.title} | ${SITE.title}`} description={frontmatter.description}>
   <Header />
-  <main id="main-content" class="mx-auto w-full max-w-6xl px-4 pb-12">
-    <div class="mt-8 grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <aside class="hidden lg:block">
-        <nav class="about-outline" data-about-outline aria-label="About page sections">
-          <p class="about-outline__label">On This Page</p>
-          <ul class="about-outline__list">
-            {outlineLinks.map((link) => (
-              <li>
-                <a href={link.href} class="about-outline__link" data-outline-link>
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
+  <main id="main-content" class="mx-auto mt-8 w-full max-w-3xl px-4 pb-12">
+    <details class="about-outline-mobile" data-about-outline-mobile>
+      <summary class="about-outline-mobile__summary">Jump To Section</summary>
+      <ul class="about-outline-mobile__list">
+        {outlineLinks.map((link) => (
+          <li>
+            <a href={link.href} class="about-outline__link" data-outline-link>
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
 
-      <div>
-        <details class="about-outline-mobile lg:hidden" data-about-outline-mobile>
-          <summary class="about-outline-mobile__summary">Jump To Section</summary>
-          <ul class="about-outline-mobile__list">
-            {outlineLinks.map((link) => (
-              <li>
-                <a href={link.href} class="about-outline__link" data-outline-link>
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </details>
-
-        <section id="about" class="about-content prose mb-28 max-w-3xl prose-img:border-0">
-          <h1 class="text-2xl tracking-wider sm:text-3xl">{frontmatter.title}</h1>
-          <slot />
-        </section>
-      </div>
-    </div>
+    <section id="about" class="about-content prose mb-28 max-w-3xl prose-img:border-0">
+      <h1 class="text-2xl tracking-wider sm:text-3xl">{frontmatter.title}</h1>
+      <slot />
+    </section>
   </main>
   <Footer />
 </Layout>
