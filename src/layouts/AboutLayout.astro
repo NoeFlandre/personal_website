@@ -56,6 +56,7 @@ const outlineLinks = [
     if (document.documentElement.dataset.aboutOutlineInit === "true") return;
 
     const links = Array.from(document.querySelectorAll("[data-outline-link]"));
+    const mobileOutlines = Array.from(document.querySelectorAll("[data-about-outline-mobile]"));
     const sectionMap = new Map();
 
     links.forEach((link) => {
@@ -112,6 +113,19 @@ const outlineLinks = [
         }
       });
     });
+
+    if (mobileOutlines.length > 0) {
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Node)) return;
+
+        mobileOutlines.forEach((mobileOutline) => {
+          if (!mobileOutline.hasAttribute("open")) return;
+          if (mobileOutline.contains(target)) return;
+          mobileOutline.removeAttribute("open");
+        });
+      });
+    }
 
     document.documentElement.dataset.aboutOutlineInit = "true";
   };
