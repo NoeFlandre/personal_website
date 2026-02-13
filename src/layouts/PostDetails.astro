@@ -52,7 +52,8 @@ if (typeof initOgImage === "string") {
 
 // Use dynamic OG image if enabled and no remote|local ogImage
 if (!ogImageUrl && SITE.dynamicOgImage) {
-  ogImageUrl = `${getPath(post.id, post.filePath)}/index.png`;
+  // Bust stale social-card caches when branding or template changes.
+  ogImageUrl = `${getPath(post.id, post.filePath)}/index.png?v=noeflandre-com`;
 }
 
 // Resolve OG image URL (or fallback to SITE.ogImage / default `og.png`)
