@@ -644,14 +644,11 @@ const filters = [
 
     const popupMaxWidth = () => {
       if (typeof window === "undefined") return 280;
-      if (window.innerWidth <= 520) {
-        return Math.min(320, Math.max(232, window.innerWidth - 28));
-      }
-      return Math.min(300, Math.max(220, window.innerWidth - 140));
+      return Math.min(280, Math.max(196, window.innerWidth - 68));
     };
 
     const popupPanPadding = () => {
-      const padding = typeof window !== "undefined" && window.innerWidth <= 520 ? 16 : 22;
+      const padding = typeof window !== "undefined" && window.innerWidth <= 520 ? 14 : 22;
       return L.point(padding, padding);
     };
 
@@ -765,20 +762,8 @@ const filters = [
         const getCardSelectionCenter = (place, targetZoom) => {
           const isMobile = typeof window !== "undefined" && window.innerWidth <= 520;
           const mapHeight = mapElement.clientHeight || 0;
-          const estimatedPopupHeight = isMobile
-            ? place.type === "travel"
-              ? 170
-              : 220
-            : place.type === "travel"
-              ? 140
-              : 176;
-          const maxOffset = Math.max(
-            isMobile ? 72 : 56,
-            Math.round(mapHeight * (isMobile ? 0.38 : 0.26))
-          );
-          const verticalOffset = Math.min(
-            maxOffset,
-            Math.round(estimatedPopupHeight * (isMobile ? 0.56 : 0.46))
+          const verticalOffset = Math.round(
+            Math.min(isMobile ? 120 : 96, Math.max(isMobile ? 72 : 56, mapHeight * (isMobile ? 0.24 : 0.18)))
           );
           const projected = map.project([place.lat, place.lng], targetZoom).subtract([0, verticalOffset]);
           return map.unproject(projected, targetZoom);
@@ -1299,7 +1284,7 @@ const filters = [
     }
 
     .about-map__canvas {
-      height: clamp(16rem, 74vw, 20rem);
+      height: clamp(14.5rem, 65vw, 18rem);
     }
 
     .about-map__cards-shell {
@@ -1329,24 +1314,22 @@ const filters = [
     }
 
     .about-map-popup {
-      grid-template-columns: 72px minmax(0, 1fr);
-      gap: 0.52rem;
-      align-items: start;
-      max-width: min(88vw, 19rem);
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+      max-width: min(78vw, 14.5rem);
     }
 
     .about-map-popup img {
-      width: 72px;
-      height: 100%;
-      min-height: 96px;
-    }
-
-    .about-map-leaflet-popup .leaflet-popup-content-wrapper {
-      max-width: min(88vw, 19rem);
+      width: 100%;
+      height: 5rem;
+      min-height: 0;
     }
 
     .about-map-leaflet-popup .leaflet-popup-content {
-      margin: 0.62rem;
+      margin: 0.58rem;
+      max-height: min(42vw, 10.5rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
   }
 </style>
