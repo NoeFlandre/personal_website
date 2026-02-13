@@ -9,11 +9,12 @@ import Datetime from "./Datetime.astro";
 export interface Props extends CollectionEntry<"blog"> {
   variant?: "h2" | "h3";
   showImage?: boolean;
+  showTags?: boolean;
 }
 
-const { variant = "h2", data, id, filePath, body, showImage = true } = Astro.props;
+const { variant = "h2", data, id, filePath, body, showImage = true, showTags = true } = Astro.props;
 
-const { title, description, pubDatetime, modDatetime, timezone, heroImage, readingTime: manualReadingTime } = data;
+const { title, description, pubDatetime, modDatetime, timezone, heroImage, tags, readingTime: manualReadingTime } = data;
 const readingTime = manualReadingTime || calculateReadingTime(body ?? "");
 
 const headerProps = {
@@ -61,5 +62,21 @@ const headerProps = {
       )}
       <p class="opacity-80 flex-1">{description}</p>
     </div>
+    {
+      showTags && tags.length > 0 && (
+        <ul class="mt-3 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <li>
+              <a
+                href={`/tags/${slugifyStr(tag)}`}
+                class="inline-flex rounded-full border border-border px-2 py-0.5 text-xs text-foreground/85 hover:border-accent/60 hover:text-accent"
+              >
+                {tag}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </div>
 </li>

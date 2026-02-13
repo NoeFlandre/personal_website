@@ -30,6 +30,13 @@ const months = [
   <main id="main-content" class="mx-auto w-full max-w-3xl px-4 pb-4">
     <h1 class="text-2xl font-semibold sm:text-3xl mt-8">All Posts</h1>
     <p class="mt-2 mb-6 italic">Browse all blog posts by year and month</p>
+    <div class="mb-8 flex flex-wrap items-center gap-2">
+      <span class="text-sm font-semibold text-foreground/70">Filter:</span>
+      <a href="/tags/publication" class="rounded-full border border-border px-3 py-1 text-sm hover:border-accent/60 hover:text-accent">Publication</a>
+      <a href="/tags/paper-review" class="rounded-full border border-border px-3 py-1 text-sm hover:border-accent/60 hover:text-accent">Paper Review</a>
+      <a href="/tags/project" class="rounded-full border border-border px-3 py-1 text-sm hover:border-accent/60 hover:text-accent">Project</a>
+      <a href="/tags/post" class="rounded-full border border-border px-3 py-1 text-sm hover:border-accent/60 hover:text-accent">Post</a>
+    </div>
     {
       Object.entries(
         getPostsByGroupCondition(posts, (post) => {

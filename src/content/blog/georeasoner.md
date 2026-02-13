@@ -4,10 +4,7 @@ description: "A breakdown of the GeoReasoner paper, which leverages both linguis
 pubDatetime: 2026-02-03T21:49:52+05:30
 heroImage: /georeasoner.png
 tags:
-  - Wikipedia
-  - Geospatial
-  - LLM
-  - OSM
+  - Paper Review
 featured: true
 readingTime: "15 min read"
 ---

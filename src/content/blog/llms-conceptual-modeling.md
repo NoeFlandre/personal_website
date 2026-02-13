@@ -3,7 +3,7 @@ title: "Can LLMs learn conceptual modeling from slide decks?"
 description: "Our new study asks if LLMs can learn enough conceptual modeling to pass graduate quizzes by using the same course materials as students."
 pubDatetime: 2024-10-26T12:00:00Z
 heroImage: /assets/img/2024/llms-conceptual-modeling/conceptual-modeling.png
-tags: ["LLM", "Research", "Conceptual Modeling", "Education"]
+tags: ["Publication"]
 featured: true
 readingTime: "4 min read"
 ---

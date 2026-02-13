@@ -3,7 +3,7 @@ title: "Building FineWeb-Legal: A 10B Token Pilot"
 description: "How I extracted 67 million words of legal text from 10B tokens of web data using heuristics and classifiers."
 pubDatetime: 2026-01-03T12:00:00+01:00
 heroImage: /fineweb-legal.png
-tags: ["AI", "LegalTech", "Dataset", "FineWeb"]
+tags: ["Project"]
 featured: true
 ---
 

@@ -46,10 +46,25 @@ const outlineLinks = [
         </nav>
       </aside>
 
-      <section id="about" class="prose mb-28 max-w-3xl prose-img:border-0">
-        <h1 class="text-2xl tracking-wider sm:text-3xl">{frontmatter.title}</h1>
-        <slot />
-      </section>
+      <div>
+        <details class="about-outline-mobile lg:hidden" data-about-outline-mobile>
+          <summary class="about-outline-mobile__summary">Jump To Section</summary>
+          <ul class="about-outline-mobile__list">
+            {outlineLinks.map((link) => (
+              <li>
+                <a href={link.href} class="about-outline__link" data-outline-link>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
+
+        <section id="about" class="prose mb-28 max-w-3xl prose-img:border-0">
+          <h1 class="text-2xl tracking-wider sm:text-3xl">{frontmatter.title}</h1>
+          <slot />
+        </section>
+      </div>
     </div>
   </main>
   <Footer />
@@ -57,17 +72,20 @@ const outlineLinks = [
 
 <script is:inline>
   const initAboutOutline = () => {
-    const outline = document.querySelector("[data-about-outline]");
-    if (!outline || outline.dataset.initialized === "true") return;
+    if (document.documentElement.dataset.aboutOutlineInit === "true") return;
 
-    const links = Array.from(outline.querySelectorAll("[data-outline-link]"));
-    const sections = links
-      .map((link) => {
-        const href = link.getAttribute("href");
-        if (!href || !href.startsWith("#")) return null;
-        return document.getElementById(href.slice(1));
-      })
-      .filter(Boolean);
+    const links = Array.from(document.querySelectorAll("[data-outline-link]"));
+    const sectionMap = new Map();
+
+    links.forEach((link) => {
+      const href = link.getAttribute("href");
+      if (!href || !href.startsWith("#")) return;
+      const section = document.getElementById(href.slice(1));
+      if (!section) return;
+      sectionMap.set(section.id, section);
+    });
+
+    const sections = Array.from(sectionMap.values());
 
     if (links.length === 0 || sections.length === 0) return;
 
@@ -95,6 +113,7 @@ const outlineLinks = [
     );
 
     sections.forEach((section) => observer.observe(section));
+    setActive(sections[0].id);
 
     links.forEach((link) => {
       link.addEventListener("click", (event) => {
@@ -105,10 +124,15 @@ const outlineLinks = [
         event.preventDefault();
         section.scrollIntoView({ behavior: "smooth", block: "start" });
         setActive(section.id);
+
+        const mobileDropdown = link.closest("[data-about-outline-mobile]");
+        if (mobileDropdown) {
+          mobileDropdown.removeAttribute("open");
+        }
       });
     });
 
-    outline.dataset.initialized = "true";
+    document.documentElement.dataset.aboutOutlineInit = "true";
   };
 
   if (document.readyState === "loading") {
@@ -164,5 +188,45 @@ const outlineLinks = [
     color: var(--background);
     background: var(--accent);
     font-weight: 700;
+  }
+
+  .about-outline-mobile {
+    margin-bottom: 1rem;
+    border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+    border-radius: 0.7rem;
+    background: color-mix(in srgb, var(--background) 90%, var(--muted));
+    overflow: hidden;
+  }
+
+  .about-outline-mobile__summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .about-outline-mobile__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .about-outline-mobile__summary::after {
+    content: "▾";
+    float: right;
+    opacity: 0.7;
+    transform: translateY(-1px);
+  }
+
+  .about-outline-mobile[open] .about-outline-mobile__summary::after {
+    content: "▴";
+  }
+
+  .about-outline-mobile__list {
+    margin: 0;
+    padding: 0.25rem 0.6rem 0.7rem;
+    list-style: none;
+    display: grid;
+    gap: 0.25rem;
   }
 </style>
