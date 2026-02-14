@@ -43,6 +43,13 @@ export const SOCIALS = [
     icon: "mail",
     active: true,
   },
+  {
+    name: "CV",
+    href: "/assets/docs/noe-flandre-cv.pdf",
+    linkTitle: `View ${SITE.title} CV (PDF)`,
+    icon: "cv",
+    active: true,
+  },
 ] as const;
 
 export const SHARE_LINKS = [
