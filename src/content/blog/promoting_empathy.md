@@ -12,9 +12,9 @@ Our new publication just came out! Let's break it down
 
 Source paper : [https://doi.org/10.1080/17477778.2025.2536663](https://doi.org/10.1080/17477778.2025.2536663)
 
-Instead of asking “can ABMs predict?”, we ask something more human:
+Our question here is the following :
 
-**Can an LLM help decision-makers *feel* what simulated agents go through, by turning ABM traces into first-person stories, while staying faithful to the underlying dynamics?**
+**Can an LLM help decision-makers *feel* what simulated agents go through, by turning Agent Based Models (ABMs) traces into first-person stories, while staying faithful to the underlying dynamics?**
 
 ## The idea in one line
 
@@ -28,9 +28,9 @@ So we try to **keep the ABM for structure** and use the LLM for **narrative band
 
 - **Case studies (3 ABMs):** two evacuation models (fire/flood; hurricane) + one migration model.
 
-### 2) The pipeline (from traces → story)
+### 2) The pipeline
 
-- **Pipeline:** simulation outputs (time series per agent) → “journey” summary → GPT-4 as *narrativizer* producing a story.
+Given simulation outputs (time series per agent) we leverage GPT-4 as a *narrativizer* for it to produce a story.
 
 ### 3) The two ways we prompted empathy
 
@@ -41,7 +41,7 @@ We compared two prompting strategies:
 
 ## What we measured (and why)
 
-We didn’t just eyeball the stories, we measured **readability** (Flesch Reading Ease), **quality + faithfulness** (does the story reflect initial/final states and trends), **human perception of empathy** via validated questionnaires (pilot user study).
+We measured **readability** (Flesch Reading Ease), **quality + faithfulness** (does the story reflect initial/final states and trends), **human perception of empathy** via validated questionnaires (pilot user study).
 
 ## Results
 
@@ -57,7 +57,7 @@ The biggest lever is **indirect prompting (style transfer)**:
 
 In plain terms: **shorter sentences + simpler words**, without explicitly pleading for empathy.
 
-### 2) Faithfulness improves (at least on the checks we ran)
+### 2) Faithfulness improves 
 
 With the indirect setup, **every story had a human name**, and the text reflected **initial/final/trends** for the agent across all stories, an improvement over the direct approach’s already-high rates.
 

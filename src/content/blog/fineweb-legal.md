@@ -7,20 +7,20 @@ tags: ["Project"]
 featured: true
 ---
 
-I've been wanting to work on legal AI for a while. The problem is data. The good stuff (case law, statutes, court filings) lives behind expensive paywalls. Westlaw and LexisNexis aren't exactly giving away access.
+I've been wanting to work on legal AI for a while. The problem is data. The good material (case law, statutes, court filings) lives behind expensive paywalls. Westlaw and LexisNexis aren't exactly giving away access.
 
 So I built something myself.
 
 **The idea**
 
-FineWeb is this massive dataset of web crawl data that HuggingFace released. It's already cleaned up and ready to use. I figured: there's got to be legal content in there. Court opinions get published online. Government sites post regulations. Law schools put up research papers.
+FineWeb is this massive dataset of web crawl data that HuggingFace released. It's already cleaned up and ready to use. I thought there might probably be some legal content in this dataset. Court opinions get published online. Government sites post regulations. Law schools put up research papers.
 
-Someone just has to filter that data.
+Someone just has to filter that data. They already did something similar with FinewebEdu which is focusing on educational content. So the dataset is already here, their method is publicly released, we just have to tailor it to a different domain : legal in this case.
 
 **What I built**
 
 1. A heuristic filter to find candidate legal documents (looking for keywords like "plaintiff", "statute", citation patterns like "U.S.C." or "F.3d")
-2. A classifier trained on 6,500 samples I annotated with Mistral
+2. A classifier trained on 6,500 samples I annotated with Mistral API
 3. A pipeline to score millions of documents
 
 The classifier ended up at 97.99% F1, which is better than I expected. It's a LoRA adapter on Gemma-Embedding-300M, so it's small and fast. I am renting some GPUs for few experiments but I don't have infinite budget so I try to keep things at tiny scale most of the time. 
