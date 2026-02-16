@@ -20,11 +20,19 @@ const AIRBUS_GEO_EXPLORE_URL =
 
 const sortedPosts = getSortedPosts(posts);
 const posts2024AndLater = sortedPosts.filter(({ data }) => data.pubDatetime.getFullYear() >= 2024);
-const homepageFeaturedTitles = new Set([
+const homepageFeaturedTitles = [
+  "A survival guide in AI",
   "Can we turn agent-based models into empathetic stories (without getting poetic)?",
   "Can LLMs learn conceptual modeling from slide decks?",
-]);
-const featuredPosts = posts2024AndLater.filter(({ data }) => homepageFeaturedTitles.has(data.title));
+];
+const homepageFeaturedOrder = new Map(homepageFeaturedTitles.map((title, index) => [title, index]));
+const featuredPosts = posts2024AndLater
+  .filter(({ data }) => homepageFeaturedOrder.has(data.title))
+  .sort(
+    (a, b) =>
+      (homepageFeaturedOrder.get(a.data.title) ?? Number.MAX_SAFE_INTEGER) -
+      (homepageFeaturedOrder.get(b.data.title) ?? Number.MAX_SAFE_INTEGER)
+  );
 const publicationPost = featuredPosts.find(
   ({ data }) => data.title === "Can we turn agent-based models into empathetic stories (without getting poetic)?",
 );
