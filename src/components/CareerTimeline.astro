@@ -21,6 +21,7 @@ const experience: TimelineItem[] = [
     description: "Fine-tuning of Vision-Language Models on Satellite Images",
     link: AIRBUS_GEO_EXPLORE_URL,
     details: [
+      "Supervisor: <a href=\"https://www.linkedin.com/in/fahdbenatia/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Fahd Benatia</a>",
       `Conducted research on the underlying AI model of <a href="${AIRBUS_GEO_EXPLORE_URL}" target="_blank" rel="noopener noreferrer">Airbus Geo Explore</a>`,
       "State-of-the-art review of fine-tuning techniques for VLMs in remote sensing",
       "Built a remote sensing benchmark suite to compare models and training strategies",
@@ -34,6 +35,7 @@ const experience: TimelineItem[] = [
     location: "Suffolk, VA, USA",
     description: "Applied LLMs to simulation and decision-making",
     details: [
+      "Supervisor: <a href=\"https://giabbanelli.com/author/philippe-j.-giabbanelli/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Philippe J. Giabbanelli</a>",
       "Leveraged GPT-4o and Claude 3.5 to explain simulation outputs",
       "Applied BERT/BART for extractive/abstractive summaries",
       "Evaluated outputs with BLEU, ROUGE, and METEOR"
@@ -46,9 +48,54 @@ const experience: TimelineItem[] = [
     location: "Oxford, OH, USA",
     description: "LLMs for conceptual modeling and multimodal evaluation",
     details: [
+      "Supervisor: <a href=\"https://giabbanelli.com/author/philippe-j.-giabbanelli/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Philippe J. Giabbanelli</a>",
       "Linked causal maps using LLMs and word embeddings",
       "Assessed LLMs on master-level conceptual modeling tasks",
       "Studied prompt engineering impacts on task performance and reliability"
+    ]
+  },
+  {
+    year: "Jan 2024 — May 2024",
+    title: "AI Research Engineer",
+    subtitle: "EuroMov",
+    location: "Alès, Occitanie, France",
+    description: "Generative AI applied to artistic movement analysis",
+    details: [
+      "Supervisor: <a href=\"https://www.linkedin.com/in/gerard-dray/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Gérard Dray</a>",
+      "Analyzed artist movement data from raw sensor spreadsheets",
+      "Leveraged StableDiffusion with ControlNet and specialized models to generate artistic imagery from movement data",
+      "Implemented MATLAB scripts to superpose and composite multiple generated images using depth-based blending techniques",
+      "Designed an iterative refinement workflow, adjusting key model parameters (e.g Denoising, CFG Scale, Steps) and recursively processing composite images",
+      "Configured and accessed a remote GPU container to run computationally intensive diffusion model tasks",
+    ]
+  },
+  {
+    year: "Nov 2023 — Dec 2023",
+    title: "Data Analyst",
+    subtitle: "Centre Hospitalier de Thuir",
+    location: "Thuir, Occitanie, France",
+    description: "BI dashboards to modernize hospital data reporting",
+    details: [
+      "Supervisor: <a href=\"https://www.linkedin.com/in/cl%C3%A9ment-naudy-7270b114a/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Clément Naudy</a>",
+      "Replaced manual export processes with real-time QlikView dashboards connected to admin (Cpage) and medical (Cortexte) ERPs",
+      "Wrote SQL queries and QlikView load scripts to extract, transform, and model hospital data",
+      "Built dashboards tracking key indicators: medical activity, absenteeism, and FTE (ETP)",
+      "Authored technical documentation to ensure project sustainability"
+    ]
+  },
+  {
+    year: "May 2023 — Jun 2023",
+    title: "Market Analyst",
+    subtitle: "Haï Mask",
+    location: "Alès, Occitanie, France",
+    description: "Market study for a connected sports mask project",
+    details: [
+      "Supervisor: <a href=\"https://www.linkedin.com/in/maxime-menardo-ab437a159/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Maxime Menardo</a>",
+      "5-week market study: PESTEL analysis, competitive mapping, and target audience profiling",
+      "Surveyed 22 high-level athletes to validate features (VO2 max, personalized training) and test price sensitivity",
+      "Built a 4P marketing plan, CRM strategy, and go-to-market action plan",
+      "Designed a multi-platform communication strategy and promotional content mockups",
+      "Analyzed pro sports club budgets (football, rugby) to identify B2B prospects"
     ]
   }
 ];
@@ -57,11 +104,10 @@ const education: TimelineItem[] = [
   {
     year: "2022 — 2025",
     title: "IMT Mines Alès",
-    subtitle: "MEng",
+    subtitle: "MEng (Computer Science / AI)",
     location: "Alès, France",
     details: [
-      "Major : Data Science and AI",
-      "Class representative."
+      "Class representative",
     ]
   },
   {
@@ -70,9 +116,9 @@ const education: TimelineItem[] = [
     subtitle: "Exchange Semester",
     location: "Mumbai, India",
     details: [
-      "Human-Centered AI",
-      "Advanced Image processing",
-      "Medical Image processing"
+      "Human-Centered AI — Prof. <a href=\"https://www.linkedin.com/in/arpitagarwal729/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Arpit Agarwal</a>",
+      "Advanced Image processing — Prof. <a href=\"https://www.cse.iitb.ac.in/~ajitvr/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Ajit Rajwade</a>",
+      "Medical Image processing — Prof. <a href=\"https://www.cse.iitb.ac.in/~suyash/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Suyash P. Awate</a>"
     ]
   }
 ];
@@ -244,7 +290,7 @@ const publications: TimelineItem[] = [
           {item.description && <p class="text-base text-foreground/80 mb-2">{item.description}</p>}
           {item.details && (
             <ul class="list-dash list-outside ml-4 space-y-1 text-base text-foreground/70">
-              {item.details.map(detail => <li>{detail}</li>)}
+              {item.details.map(detail => <li set:html={detail} />)}
             </ul>
           )}
         </div>
