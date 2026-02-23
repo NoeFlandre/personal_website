@@ -4,6 +4,7 @@ interface TimelineItem {
   title: string;
   subtitle?: string;
   description?: string;
+  body?: string;
   details?: string[];
   location?: string;
   link?: string;
@@ -20,13 +21,7 @@ const experience: TimelineItem[] = [
     location: "Toulouse, France",
     description: "Fine-tuning of Vision-Language Models on Satellite Images",
     link: AIRBUS_GEO_EXPLORE_URL,
-    details: [
-      "Supervisor: <a href=\"https://www.linkedin.com/in/fahdbenatia/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline decoration-accent/30 underline-offset-4 hover:text-accent\">Fahd Benatia</a>",
-      `Conducted research on the underlying AI model of <a href="${AIRBUS_GEO_EXPLORE_URL}" target="_blank" rel="noopener noreferrer">Airbus Geo Explore</a>`,
-      "State-of-the-art review of fine-tuning techniques for VLMs in remote sensing",
-      "Built a remote sensing benchmark suite to compare models and training strategies",
-      "Implemented end-to-end fine-tuning pipelines on GCP"
-    ]
+    body: `Under the supervision of <a href="https://www.linkedin.com/in/fahdbenatia/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Fahd Benatia</a>, I conducted research on the underlying AI model of <a href="${AIRBUS_GEO_EXPLORE_URL}" target="_blank" rel="noopener noreferrer">Airbus Geo Explore</a>. The work involved reviewing state-of-the-art fine-tuning techniques for VLMs in remote sensing, building a benchmark suite to compare models and training strategies, and implementing end-to-end fine-tuning pipelines on GCP.`
   },
   {
     year: "Aug 2024",
@@ -271,6 +266,7 @@ const publications: TimelineItem[] = [
           </div>
           {item.location && <p class="text-sm text-foreground/50 italic mb-2">{item.location}</p>}
           {item.description && <p class="text-base font-medium text-foreground/80 mb-2 italic">{item.description}</p>}
+          {item.body && <p class="text-base text-foreground/70 mb-2" set:html={item.body} />}
           {item.details && (
             <ul class="list-disc list-outside ml-4 space-y-1 text-base text-foreground/70">
               {item.details.map(detail => <li set:html={detail} />)}
