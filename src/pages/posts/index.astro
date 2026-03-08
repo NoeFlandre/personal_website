@@ -5,7 +5,7 @@ import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
 import Layout from "@/layouts/Layout.astro";
 import { SITE } from "@/site-config.js";
-import getPostsByGroupCondition from "@/utils/getPostsByGroupCondition";
+import getPostsByGroupCondition from "@/features/blog/utils/getPostsByGroupCondition";
 
 const posts = await getCollection("blog", ({ data }) => !data.draft);
 

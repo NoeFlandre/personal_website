@@ -11,8 +11,8 @@ import Socials from "@/components/Socials.astro";
 import StructuredData from "@/components/StructuredData.astro";
 import Layout from "@/layouts/Layout.astro";
 import { SOCIALS } from "@/site-config.js";
-import { getPath } from "@/utils/getPath";
-import getSortedPosts from "@/utils/getSortedPosts";
+import { getPath } from "@/features/blog/utils/getPath";
+import getSortedPosts from "@/features/blog/utils/getSortedPosts";
 
 const posts = await getCollection("blog");
 const AIRBUS_GEO_EXPLORE_URL =

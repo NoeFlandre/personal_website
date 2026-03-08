@@ -1,6 +1,6 @@
 import satori from "satori";
 // import { html } from "satori-html";
-import loadGoogleFonts from "../loadGoogleFont";
+import loadGoogleFonts from "../../../../utils/loadGoogleFont.ts";
 
 /**
  * Open Graph Image Template for Blog Posts

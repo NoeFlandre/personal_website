@@ -1,6 +1,6 @@
 import satori from "satori";
-import { SITE } from "@/site-config.js";
-import loadGoogleFonts from "../loadGoogleFont";
+import { SITE } from "../../../../site-config.js";
+import loadGoogleFonts from "../../../../utils/loadGoogleFont.ts";
 
 export default async () => {
   return satori(

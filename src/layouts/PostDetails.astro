@@ -13,9 +13,9 @@ import StructuredData from "@/components/StructuredData.astro";
 import Tag from "@/components/Tag.astro";
 import Layout from "@/layouts/Layout.astro";
 import { SITE } from "@/site-config.js";
-import { getAdjacentEntries } from "@/utils/getAdjacentEntries.js";
-import { getPath } from "@/utils/getPath";
-import { calculateReadingTime } from "@/utils/readingTime";
+import { getAdjacentEntries } from "@/features/blog/utils/getAdjacentEntries.js";
+import { getPath } from "@/features/blog/utils/getPath";
+import { calculateReadingTime } from "@/features/blog/utils/readingTime";
 import { slugifyStr } from "@/utils/slugify";
 
 export interface Props {
