@@ -9,8 +9,8 @@ import Hr from "@/components/Hr.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import Socials from "@/components/Socials.astro";
 import StructuredData from "@/components/StructuredData.astro";
-import { SOCIALS } from "@/site-config.js";
 import Layout from "@/layouts/Layout.astro";
+import { SOCIALS } from "@/site-config.js";
 import { getPath } from "@/utils/getPath";
 import getSortedPosts from "@/utils/getSortedPosts";
 
@@ -34,27 +34,32 @@ const featuredPosts = posts2024AndLater
       (homepageFeaturedOrder.get(b.data.title) ?? Number.MAX_SAFE_INTEGER)
   );
 const publicationPost = featuredPosts.find(
-  ({ data }) => data.title === "Can we turn agent-based models into empathetic stories (without getting poetic)?",
+  ({ data }) =>
+    data.title ===
+    "Can we turn agent-based models into empathetic stories (without getting poetic)?"
 );
 const featuredWorkCards = [
   {
     label: "Internship",
     title: "Airbus Defence and Space",
-    description: "Fine-tuning of VLMs on satellite imagery and benchmark-driven training evaluation.",
+    description:
+      "Fine-tuning of VLMs on satellite imagery and benchmark-driven training evaluation.",
     image: "/assets/img/about-map/airbus_defence_and_space_work.jpeg",
     href: AIRBUS_GEO_EXPLORE_URL,
   },
   {
     label: "Publication",
     title: "Empathetic Narratives from ABMs",
-    description: "Research on turning agent-based simulations into readable, faithful stories with LLMs.",
+    description:
+      "Research on turning agent-based simulations into readable, faithful stories with LLMs.",
     image: "/assets/img/about-map/miami_university_work.jpeg",
     href: publicationPost ? getPath(publicationPost.id, publicationPost.filePath) : "/posts",
   },
   {
     label: "Humanitarian Impact",
     title: "Tsiky Zanaka Classroom Project",
-    description: "Classroom construction support in Namibia with field coordination and community partners.",
+    description:
+      "Classroom construction support in Namibia with field coordination and community partners.",
     image: "/assets/img/about-map/namibia_near_opuwo_humanitarian.jpeg",
     href: "https://tsikyzanaka.org/2025/02/09/projet-2023/",
   },

@@ -21,10 +21,7 @@ const fontsConfig = [
 
 async function loadLocalFont(filePath: string): Promise<ArrayBuffer> {
   const fontBuffer = await readFile(filePath);
-  return fontBuffer.buffer.slice(
-    fontBuffer.byteOffset,
-    fontBuffer.byteOffset + fontBuffer.byteLength
-  );
+  return Uint8Array.from(fontBuffer).buffer;
 }
 
 async function loadGoogleFonts() {
