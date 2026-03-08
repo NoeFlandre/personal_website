@@ -13,6 +13,7 @@ import StructuredData from "@/components/StructuredData.astro";
 import Tag from "@/components/Tag.astro";
 import { SITE } from "@/config";
 import Layout from "@/layouts/Layout.astro";
+import { getAdjacentEntries } from "@/utils/getAdjacentEntries.js";
 import { getPath } from "@/utils/getPath";
 import { calculateReadingTime } from "@/utils/readingTime";
 import { slugifyStr } from "@/utils/slugify";
@@ -78,15 +79,12 @@ const layoutProps = {
 
 /* ========== Prev/Next Posts ========== */
 
-const allPosts = posts.map(({ data: { title }, id }) => ({
-  slug: id,
+const allPosts = posts.map(({ data: { title }, id, filePath }) => ({
+  path: getPath(id, filePath),
   title,
 }));
 
-const currentPostIndex = allPosts.findIndex((a) => a.slug === post.id);
-
-const prevPost = currentPostIndex !== 0 ? allPosts[currentPostIndex - 1] : null;
-const nextPost = currentPostIndex !== allPosts.length ? allPosts[currentPostIndex + 1] : null;
+const { prevEntry: prevPost, nextEntry: nextPost } = getAdjacentEntries(allPosts, postPath);
 
 // Calculate word count for structured data
 const wordCount = (post.body ?? "").split(/\s+/).length;
@@ -182,13 +180,13 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
     <div 
       data-pagefind-ignore 
       class="flex flex-col sm:flex-row justify-between gap-6"
-      data-prev-url={prevPost ? `/posts/${prevPost.slug}` : ''}
-      data-next-url={nextPost ? `/posts/${nextPost.slug}` : ''}
+      data-prev-url={prevPost ? prevPost.path : ""}
+      data-next-url={nextPost ? nextPost.path : ""}
     >
       {
         prevPost && (
           <a
-            href={`/posts/${prevPost.slug}`}
+            href={prevPost.path}
             class="flex gap-2 hover:opacity-75 items-start"
             id="prev-post-link"
           >
@@ -203,7 +201,7 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
       {
         nextPost && (
           <a
-            href={`/posts/${nextPost.slug}`}
+            href={nextPost.path}
             class="flex gap-2 hover:opacity-75 items-start justify-end text-right ml-auto"
             id="next-post-link"
           >
