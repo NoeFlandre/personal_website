@@ -1,8 +1,7 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 import { SITE } from "@/site-config.js";
-
-export const BLOG_PATH = "src/content/blog";
+import { BLOG_PATH } from "./features/blog/contentPaths.ts";
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${BLOG_PATH}` }),

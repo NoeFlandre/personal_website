@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { getAdjacentEntries } from "../src/utils/getAdjacentEntries.js";
+import { getAdjacentEntries } from "../src/features/blog/utils/getAdjacentEntries.js";
 
 test("getAdjacentEntries returns previous and next entries around the current path", () => {
   const entries = [

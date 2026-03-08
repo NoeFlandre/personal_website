@@ -4,7 +4,7 @@
 		import FormattedDate from "../../components/FormattedDate.astro";
 		import { SITE } from "../../site-config.js";
 		import Layout from "../../layouts/Layout.astro";
-		import { getPath } from "../../utils/getPath";
+		import { getPath } from "@/features/blog/utils/getPath";
 
 	export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 	  const allPosts = await getCollection("blog");

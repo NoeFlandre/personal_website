@@ -8,8 +8,8 @@ import Pagination from "@/components/Pagination.astro";
 import Layout from "@/layouts/Layout.astro";
 import Main from "@/layouts/Main.astro";
 import { SITE } from "@/site-config.js";
-import getPostsByTag from "@/utils/getPostsByTag";
-import getUniqueTags from "@/utils/getUniqueTags";
+import getPostsByTag from "@/features/blog/utils/getPostsByTag";
+import getUniqueTags from "@/features/blog/utils/getUniqueTags";
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const posts = await getCollection("blog");

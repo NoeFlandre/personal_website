@@ -1,5 +1,5 @@
 import type { CollectionEntry } from "astro:content";
-import { SITE } from "@/site-config.js";
+import { SITE } from "../../../site-config.js";
 
 const postFilter = ({ data }: CollectionEntry<"blog">) => {
   const isPublishTimePassed =
