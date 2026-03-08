@@ -19,6 +19,17 @@ const AIRBUS_GEO_EXPLORE_URL =
 
 export const ABOUT_MAP_PLACES: AboutMapPlace[] = [
   {
+    id: "bangkok-travel",
+    type: "travel",
+    title: "Bangkok",
+    location: "Thailand",
+    period: "Travel",
+    description: "Wat Pho visit and temple photography.",
+    lat: 13.7563,
+    lng: 100.5018,
+    image: getMapImage("bangkok_travel.JPG"),
+  },
+  {
     id: "jodhpur-travel",
     type: "travel",
     title: "Jodhpur",
