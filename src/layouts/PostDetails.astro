@@ -385,8 +385,6 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
     // Look for YouTube embeds
     const youtubeEmbedRegex = /\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/g;
     
-    let foundYoutubeEmbeds = false;
-
     // 1) Pre-pass: replace whole-paragraph shortcodes (most common case)
     const pNodes = article.querySelectorAll("p");
     pNodes.forEach((p) => {
@@ -394,10 +392,12 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
       const ytMatch = text.match(/\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/);
 
       if (ytMatch && ytMatch[1]) {
-        foundYoutubeEmbeds = true;
         const container = document.createElement("div");
         container.innerHTML = buildYouTubeEmbedMarkup(ytMatch[1]);
-        p.replaceWith(container.firstElementChild);
+        const embed = container.firstElementChild;
+        if (embed) {
+          p.replaceWith(embed);
+        }
       }
     });
 
@@ -420,8 +420,7 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
       let hasChanges = false;
 
       // Process YouTube embeds
-      content = content.replace(youtubeEmbedRegex, (match, videoId) => {
-        foundYoutubeEmbeds = true;
+      content = content.replace(youtubeEmbedRegex, (_match, videoId) => {
         hasChanges = true;
 
         return buildYouTubeEmbedMarkup(videoId);

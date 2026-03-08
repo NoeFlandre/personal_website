@@ -24,8 +24,6 @@ const { content } = Astro.props;
     const paragraphs = mdxContent.querySelectorAll("p");
 
     let foundTwitterEmbeds = false;
-    let foundYoutubeEmbeds = false;
-
     paragraphs.forEach((paragraph) => {
       const content = paragraph.innerHTML;
       const twitterMatch = content.match(twitterEmbedRegex);
@@ -48,12 +46,14 @@ const { content } = Astro.props;
         // Replace the paragraph with our placeholder
         paragraph.replaceWith(placeholder);
       } else if (youtubeMatch && youtubeMatch[1]) {
-        foundYoutubeEmbeds = true;
         const container = document.createElement("div");
         container.innerHTML = buildYouTubeEmbedMarkup(youtubeMatch[1]);
 
         // Replace the paragraph with our container
-        paragraph.replaceWith(container.firstElementChild);
+        const embed = container.firstElementChild;
+        if (embed) {
+          paragraph.replaceWith(embed);
+        }
       }
     });
 
