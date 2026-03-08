@@ -8,7 +8,7 @@ import {
   CAREER_TIMELINE_HUMANITARIAN_IMPACT,
   CAREER_TIMELINE_PROJECTS,
   CAREER_TIMELINE_PUBLICATIONS,
-} from "../src/data/careerTimelineData.ts";
+} from "../src/features/about/data/careerTimelineData.ts";
 
 test("career timeline data exports all expected sections", () => {
   assert.ok(CAREER_TIMELINE_EXPERIENCE.length > 0);
