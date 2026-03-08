@@ -1,4 +1,28 @@
-import { SITE } from "./consts";
+export const SITE = {
+  website: "https://noeflandre.com/",
+  author: "Noé Flandre",
+  profile: "https://noeflandre.com/about",
+  desc: "AI Research Engineer, vibe-learning. Daily meal : curating datasets & training models",
+  title: "Noé Flandre",
+  ogImage: "noe-avatar.jpg",
+  lightAndDarkMode: true,
+  postPerIndex: 10,
+  postPerPage: 10,
+  scheduledPostMargin: 15 * 60 * 1000,
+  showArchives: false,
+  showBackButton: false,
+  editPost: {
+    enabled: true,
+    text: "Edit on GitHub",
+    url: "https://github.com/NoeFlandre/personal_website/edit/main/",
+  },
+  dynamicOgImage: true,
+  lang: "en",
+  timezone: "America/Los_Angeles",
+};
+
+export const SITE_TITLE = SITE.title;
+export const SITE_DESCRIPTION = SITE.desc;
 
 export const SOCIALS = [
   {
@@ -50,55 +74,55 @@ export const SOCIALS = [
     icon: "cv",
     active: true,
   },
-] as const;
+];
 
 export const SHARE_LINKS = [
   {
     name: "X",
     href: "https://x.com/intent/post?url=",
-    linkTitle: `Share this post on X`,
+    linkTitle: "Share this post on X",
     icon: "twitter",
   },
   {
     name: "BlueSky",
     href: "https://bsky.app/intent/compose?text=",
-    linkTitle: `Share this post on BlueSky`,
+    linkTitle: "Share this post on BlueSky",
     icon: "bluesky",
   },
   {
     name: "LinkedIn",
     href: "https://www.linkedin.com/sharing/share-offsite/?url=",
-    linkTitle: `Share this post on LinkedIn`,
+    linkTitle: "Share this post on LinkedIn",
     icon: "linkedin",
   },
   {
     name: "WhatsApp",
     href: "https://wa.me/?text=",
-    linkTitle: `Share this post via WhatsApp`,
+    linkTitle: "Share this post via WhatsApp",
     icon: "whatsapp",
   },
   {
     name: "Facebook",
     href: "https://www.facebook.com/sharer.php?u=",
-    linkTitle: `Share this post on Facebook`,
+    linkTitle: "Share this post on Facebook",
     icon: "facebook",
   },
   {
     name: "Telegram",
     href: "https://t.me/share/url?url=",
-    linkTitle: `Share this post via Telegram`,
+    linkTitle: "Share this post via Telegram",
     icon: "telegram",
   },
   {
     name: "Pinterest",
     href: "https://pinterest.com/pin/create/button/?url=",
-    linkTitle: `Share this post on Pinterest`,
+    linkTitle: "Share this post on Pinterest",
     icon: "pinterest",
   },
   {
     name: "Mail",
     href: "mailto:?subject=See%20this%20post&body=",
-    linkTitle: `Share this post via email`,
+    linkTitle: "Share this post via email",
     icon: "mail",
   },
-] as const;
+];

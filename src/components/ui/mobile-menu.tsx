@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NAV_LINKS } from "../../consts";
+import { NAV_LINKS } from "../../site-config.js";
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
