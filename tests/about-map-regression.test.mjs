@@ -6,7 +6,7 @@ import {
   parsePlacesDataset,
   shouldRetryMapInit,
   sortPlacesForUi,
-} from "../src/utils/aboutMap.js";
+} from "../src/features/about/utils/aboutMap.js";
 
 test("sortPlacesForUi keeps work first, then study, then travel", () => {
   const input = [

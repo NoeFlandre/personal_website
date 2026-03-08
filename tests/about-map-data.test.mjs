@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { ABOUT_MAP_PLACES } from "../src/data/aboutMapPlaces.ts";
+import { ABOUT_MAP_PLACES } from "../src/features/about/data/aboutMapPlaces.ts";
 
 test("ABOUT_MAP_PLACES covers the expected place types", () => {
   const types = new Set(ABOUT_MAP_PLACES.map((place) => place.type));
