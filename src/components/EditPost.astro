@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import IconEdit from "@/assets/icons/IconEdit.svg";
-import { SITE } from "@/config";
+import { SITE } from "@/site-config.js";
 
 export interface Props {
   hideEditPost?: CollectionEntry<"blog">["data"]["hideEditPost"];

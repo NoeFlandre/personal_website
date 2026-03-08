@@ -1,6 +1,6 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import type { APIRoute } from "astro";
-import { SITE } from "@/config";
+import { SITE } from "@/site-config.js";
 import { generateOgImageForPost } from "@/utils/generateOgImages";
 import { getPath } from "@/utils/getPath";
 
