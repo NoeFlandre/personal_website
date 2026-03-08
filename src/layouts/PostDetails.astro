@@ -218,7 +218,9 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
   <Footer />
 </Layout>
 
-<script is:inline data-astro-rerun>
+<script data-astro-rerun>
+  import { buildYouTubeEmbedMarkup } from "../utils/youtubeEmbeds.js";
+
   /** Create a progress indicator
    *  at the top */
   function createProgressBar() {
@@ -384,24 +386,6 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
     const youtubeEmbedRegex = /\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/g;
     
     let foundYoutubeEmbeds = false;
-    
-    // Helper to extract a YouTube video ID from various URL formats
-    const extractYouTubeId = (input) => {
-      let videoId = input;
-      try {
-        if (videoId.includes("youtube.com/watch")) {
-          const url = new URL(videoId);
-          videoId = url.searchParams.get("v") || "";
-        } else if (videoId.includes("youtu.be/")) {
-          videoId = videoId.split("youtu.be/")[1]?.split("?")[0] || "";
-        } else if (videoId.includes("youtube.com/embed/")) {
-          videoId = videoId.split("youtube.com/embed/")[1]?.split("?")[0] || "";
-        }
-      } catch (_) {
-        // If URL parsing fails, fall back to the raw input
-      }
-      return videoId;
-    };
 
     // 1) Pre-pass: replace whole-paragraph shortcodes (most common case)
     const pNodes = article.querySelectorAll("p");
@@ -411,21 +395,9 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
 
       if (ytMatch && ytMatch[1]) {
         foundYoutubeEmbeds = true;
-        const videoId = extractYouTubeId(ytMatch[1]);
         const container = document.createElement("div");
-        container.className = "youtube-embed-container";
-        container.innerHTML = `
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/${videoId}"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        `;
-        p.replaceWith(container);
+        container.innerHTML = buildYouTubeEmbedMarkup(ytMatch[1]);
+        p.replaceWith(container.firstElementChild);
       }
     });
 
@@ -451,19 +423,8 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
       content = content.replace(youtubeEmbedRegex, (match, videoId) => {
         foundYoutubeEmbeds = true;
         hasChanges = true;
-        videoId = extractYouTubeId(videoId);
 
-        return `<div class="youtube-embed-container">
-            <iframe
-              width="560"
-              height="315"
-              src="https://www.youtube.com/embed/${videoId}"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>`;
+        return buildYouTubeEmbedMarkup(videoId);
       });
 
       if (hasChanges) {

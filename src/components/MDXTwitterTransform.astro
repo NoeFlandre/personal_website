@@ -8,6 +8,8 @@ const { content } = Astro.props;
 </div>
 
 <script>
+  import { buildYouTubeEmbedMarkup } from "../utils/youtubeEmbeds.js";
+
   // Find all Twitter and YouTube embed placeholders and replace them with the actual components
   document.addEventListener("DOMContentLoaded", () => {
     const mdxContent = document.querySelector(".mdx-content");
@@ -47,35 +49,11 @@ const { content } = Astro.props;
         paragraph.replaceWith(placeholder);
       } else if (youtubeMatch && youtubeMatch[1]) {
         foundYoutubeEmbeds = true;
-        let videoId = youtubeMatch[1];
-
-        // Extract video ID from URL if needed
-        if (videoId.includes("youtube.com/watch")) {
-          const url = new URL(videoId);
-          videoId = url.searchParams.get("v") || "";
-        } else if (videoId.includes("youtu.be/")) {
-          videoId = videoId.split("youtu.be/")[1]?.split("?")[0] || "";
-        } else if (videoId.includes("youtube.com/embed/")) {
-          videoId = videoId.split("youtube.com/embed/")[1]?.split("?")[0] || "";
-        }
-
-        // Create responsive container for the YouTube iframe
         const container = document.createElement("div");
-        container.className = "youtube-embed-container";
-        container.innerHTML = `
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/${videoId}"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        `;
+        container.innerHTML = buildYouTubeEmbedMarkup(youtubeMatch[1]);
 
         // Replace the paragraph with our container
-        paragraph.replaceWith(container);
+        paragraph.replaceWith(container.firstElementChild);
       }
     });
 
