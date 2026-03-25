@@ -14,6 +14,13 @@ const AIRBUS_GEO_EXPLORE_URL =
 
 export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
   {
+    year: "Dec 2025 — Present",
+    title: "Independent Researcher",
+    location: "India",
+    description: "Agentic AI workflows and LLM applications",
+    body: `Following graduation, I pursued independent research focusing on agentic AI workflows and the application of LLMs to both agent-based models and conceptual modeling (<a href="https://github.com/NoeFlandre/distill-abm" target="_blank" rel="noopener noreferrer">example project</a>).`,
+  },
+  {
     year: "Jun 2025 — Nov 2025",
     title: "AI Engineer Intern",
     subtitle: "Airbus Defence and Space",
