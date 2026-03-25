@@ -25,6 +25,7 @@ const blog = defineCollection({
       source: z.string().optional(),
       AIDescription: z.boolean().optional(),
       readingTime: z.string().optional(),
+      layoutStyle: z.string().optional(),
     }),
 });
 

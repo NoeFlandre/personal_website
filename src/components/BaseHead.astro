@@ -1,6 +1,7 @@
 ---
 import { getPageCriticalCSS } from "@/utils/criticalCSS";
 import { SITE } from "../site-config.js";
+import "katex/dist/katex.min.css";
 
 interface Props {
   title?: string;
@@ -87,6 +88,8 @@ const criticalCSS = getPageCriticalCSS(Astro.url.pathname);
 
 <!-- Sitemap -->
 <link rel="sitemap" href="/sitemap-index.xml" />
+
+
 
 <!-- Font Preloading -->
 <link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />

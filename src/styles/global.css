@@ -112,3 +112,21 @@ html[data-theme="dark"] {
 .active-nav {
   @apply underline decoration-wavy decoration-2 underline-offset-4;
 }
+
+/* KaTeX: hide MathML accessibility layer (Tailwind preflight overrides KaTeX's default hiding) */
+.prose .katex,
+.prose .katex-display,
+.prose .katex-display > .katex {
+  color: var(--foreground) !important;
+  opacity: 1 !important;
+}
+
+.katex-mathml {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  height: 1px !important;
+  width: 1px !important;
+  overflow: hidden !important;
+}
