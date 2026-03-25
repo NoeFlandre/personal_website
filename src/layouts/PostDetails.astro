@@ -37,6 +37,7 @@ const {
   tags,
   hideEditPost,
   heroImage,
+  layoutStyle,
 } = post.data;
 
 const { Content } = await render(post);
@@ -137,17 +138,34 @@ const wordCount = (post.body ?? "").split(/\s+/).length;
       <EditPost class="max-sm:hidden" {hideEditPost} {post} />
     </div>
     <article id="article" class="mx-auto prose mt-6 max-w-3xl">
-      {
-        heroImage && (
-          <img
-            src={heroImage}
-            alt=""
-            class="mb-8 aspect-video w-full rounded-md object-cover"
-            loading="lazy"
-          />
-        )
-      }
-      <Content />
+      {layoutStyle === "split" ? (
+        <>
+          {heroImage && (
+            <img
+              src={heroImage}
+              alt=""
+              class="w-full sm:w-1/2 float-left mr-6 sm:mr-8 mb-4 sm:mb-6 rounded-lg object-contain shadow-lg"
+              loading="lazy"
+            />
+          )}
+          <Content />
+          <div class="clear-both"></div>
+        </>
+      ) : (
+        <>
+          {
+            heroImage && (
+              <img
+                src={heroImage}
+                alt=""
+                class="mb-8 aspect-video w-full rounded-md object-cover"
+                loading="lazy"
+              />
+            )
+          }
+          <Content />
+        </>
+      )}
     </article>
 
 
