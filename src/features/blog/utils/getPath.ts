@@ -1,6 +1,10 @@
 import { slugifyStr } from "../../../utils/slugify.ts";
 import { BLOG_PATH } from "../contentPaths.ts";
 
+function normalizePostSlug(slug: string) {
+  return slug.replace(/^\d{4}-\d{2}-\d{2}-/, "");
+}
+
 /**
  * Get full path of a blog post
  * @param id - id of the blog post (aka slug)
@@ -21,7 +25,8 @@ export function getPath(id: string, filePath: string | undefined, includeBase = 
 
   // Making sure `id` does not contain the directory
   const blogId = id.split("/");
-  const slug = blogId.length > 0 ? blogId.slice(-1) : blogId;
+  const slugParts = blogId.length > 0 ? blogId.slice(-1) : blogId;
+  const slug = normalizePostSlug(String(slugParts[0] ?? ""));
 
   // If not inside the sub-dir, simply return the file path
   if (!pathSegments || pathSegments.length < 1) {
