@@ -5,6 +5,7 @@ import { getPath } from "../src/features/blog/utils/getPath.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
 import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
+import { createTagInfo, postHasTag } from "../src/features/blog/utils/tags.ts";
 import postFilter, { isPostVisible } from "../src/features/blog/utils/postFilter.ts";
 
 function createPost({
@@ -141,4 +142,19 @@ test("getPostsByTag returns matching visible posts in sorted order", () => {
     getPostsByTag(posts, "paper-review").map((post) => post.id),
     ["second", "first"]
   );
+});
+
+test("tag helpers normalize tag names consistently across blog utilities", () => {
+  const post = createPost({
+    id: "tagged",
+    tags: ["Paper Review", "Open Source"],
+  });
+
+  assert.deepEqual(createTagInfo("Paper Review"), {
+    tag: "paper-review",
+    tagName: "Paper Review",
+  });
+  assert.equal(postHasTag(post, "paper-review"), true);
+  assert.equal(postHasTag(post, "open-source"), true);
+  assert.equal(postHasTag(post, "swift"), false);
 });
