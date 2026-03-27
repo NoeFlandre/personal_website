@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { getPath } from "../src/features/blog/utils/getPath.ts";
+import { getPostStaticPathParams } from "../src/features/blog/utils/staticPaths.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
 import { countWords } from "../src/features/blog/utils/readingMetrics.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
@@ -47,6 +48,16 @@ test("getPath builds canonical blog URLs from nested content paths", () => {
   assert.equal(
     getPath("deep-dive", "src/content/blog/Research Notes/deep-dive.md", false),
     "/research-notes/deep-dive"
+  );
+});
+
+test("getPostStaticPathParams reuses canonical slug generation without the posts base", () => {
+  assert.deepEqual(
+    getPostStaticPathParams({
+      id: "deep-dive",
+      filePath: "src/content/blog/Research Notes/deep-dive.md",
+    }),
+    { slug: "/research-notes/deep-dive" }
   );
 });
 

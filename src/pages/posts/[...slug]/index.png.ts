@@ -1,7 +1,7 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import { generateOgImageForPost } from "@/features/blog/og/generateOgImages";
-import { getPath } from "@/features/blog/utils/getPath";
+import { getPostStaticPathParams } from "@/features/blog/utils/staticPaths";
 import { SITE } from "@/site-config.js";
 
 export async function getStaticPaths() {
@@ -14,7 +14,7 @@ export async function getStaticPaths() {
   );
 
   return posts.map((post) => ({
-    params: { slug: getPath(post.id, post.filePath, false) },
+    params: getPostStaticPathParams(post),
     props: post,
   }));
 }
