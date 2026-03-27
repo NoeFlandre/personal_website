@@ -26,14 +26,16 @@ export function extractYouTubeId(input) {
   return trimmedInput;
 }
 
-export function buildYouTubeEmbedMarkup(input) {
-  const videoId = extractYouTubeId(input);
+export function getYouTubeEmbedSrc(input) {
+  return `https://www.youtube.com/embed/${extractYouTubeId(input)}`;
+}
 
+export function buildYouTubeEmbedMarkup(input) {
   return `<div class="${YOUTUBE_EMBED_CLASS}">
     <iframe
       width="560"
       height="315"
-      src="https://www.youtube.com/embed/${videoId}"
+      src="${getYouTubeEmbedSrc(input)}"
       title="YouTube video player"
       frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
