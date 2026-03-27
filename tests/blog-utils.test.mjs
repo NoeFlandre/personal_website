@@ -10,7 +10,7 @@ import { countWords } from "../src/features/blog/utils/readingMetrics.ts";
 import { getDisplayReadingTime, getReadingTimeForPost } from "../src/features/blog/utils/readingTimeText.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
 import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
-import { createTagInfo, postHasTag } from "../src/features/blog/utils/tags.ts";
+import { createTagInfo, getTagPath, postHasTag } from "../src/features/blog/utils/tags.ts";
 import postFilter, {
   isDraftFreePost,
   isListedPost,
@@ -198,6 +198,7 @@ test("tag helpers normalize tag names consistently across blog utilities", () =>
     tag: "paper-review",
     tagName: "Paper Review",
   });
+  assert.equal(getTagPath("Paper Review"), "/tags/paper-review");
   assert.equal(postHasTag(post, "paper-review"), true);
   assert.equal(postHasTag(post, "open-source"), true);
   assert.equal(postHasTag(post, "swift"), false);

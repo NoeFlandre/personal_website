@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { getPostPath } from "@/features/blog/utils/postPath";
 import { getDisplayReadingTime } from "@/features/blog/utils/readingTimeText";
+import { getTagPath } from "@/features/blog/utils/tags";
 import { slugifyStr } from "@/utils/slugify";
 import Datetime from "./Datetime.astro";
 
@@ -77,7 +78,7 @@ const headerProps = {
           {tags.map((tag) => (
             <li>
               <a
-                href={`/tags/${slugifyStr(tag)}`}
+                href={getTagPath(tag)}
                 class="inline-flex rounded-full border border-border px-2 py-0.5 text-xs text-foreground/85 hover:border-accent/60 hover:text-accent"
               >
                 {tag}
