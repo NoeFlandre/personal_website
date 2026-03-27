@@ -6,7 +6,7 @@ import { shouldGenerateDynamicOgImage } from "../src/features/blog/utils/ogImage
 import { getPostStaticPathParams } from "../src/features/blog/utils/staticPaths.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
 import { countWords } from "../src/features/blog/utils/readingMetrics.ts";
-import { getReadingTimeForPost } from "../src/features/blog/utils/readingTimeText.ts";
+import { getDisplayReadingTime, getReadingTimeForPost } from "../src/features/blog/utils/readingTimeText.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
 import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
 import { createTagInfo, postHasTag } from "../src/features/blog/utils/tags.ts";
@@ -208,4 +208,9 @@ test("shouldGenerateDynamicOgImage keeps draft and custom-og posts excluded", ()
   assert.equal(shouldGenerateDynamicOgImage({ data: { draft: false, ogImage: undefined } }), true);
   assert.equal(shouldGenerateDynamicOgImage({ data: { draft: true, ogImage: undefined } }), false);
   assert.equal(shouldGenerateDynamicOgImage({ data: { draft: false, ogImage: "/custom.png" } }), false);
+});
+
+test("getDisplayReadingTime preserves manual overrides before fallback calculation", () => {
+  assert.equal(getDisplayReadingTime({ readingTime: "9 min read" }, "short body"), "9 min read");
+  assert.equal(getDisplayReadingTime({}, ""), "5 min read");
 });
