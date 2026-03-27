@@ -5,6 +5,7 @@ import { getPath } from "../src/features/blog/utils/getPath.ts";
 import { getPostStaticPathParams } from "../src/features/blog/utils/staticPaths.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
 import { countWords } from "../src/features/blog/utils/readingMetrics.ts";
+import { getReadingTimeForPost } from "../src/features/blog/utils/readingTimeText.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
 import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
 import { createTagInfo, postHasTag } from "../src/features/blog/utils/tags.ts";
@@ -175,4 +176,10 @@ test("countWords matches the structured-data word count logic", () => {
   assert.equal(countWords("one two three"), 3);
   assert.equal(countWords(" spaced   words "), 4);
   assert.equal(countWords(""), 1);
+});
+
+test("getReadingTimeForPost keeps the existing fallback behavior for missing post bodies", () => {
+  assert.equal(getReadingTimeForPost(undefined), "5 min read");
+  assert.equal(getReadingTimeForPost({ body: "" }), "5 min read");
+  assert.equal(getReadingTimeForPost({ body: "one two three four five" }), "1 min read");
 });
