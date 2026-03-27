@@ -16,7 +16,7 @@ import { SITE } from "@/site-config.js";
 import { getAdjacentEntries } from "@/features/blog/utils/getAdjacentEntries.js";
 import { getPath } from "@/features/blog/utils/getPath";
 import { countWords } from "@/features/blog/utils/readingMetrics";
-import { calculateReadingTime } from "@/features/blog/utils/readingTime";
+import { getDisplayReadingTime } from "@/features/blog/utils/readingTimeText";
 import { slugifyStr } from "@/utils/slugify";
 import { toAbsoluteUrl } from "@/utils/url";
 
@@ -43,7 +43,7 @@ const {
 } = post.data;
 
 const { Content } = await render(post);
-const readingTime = post.data.readingTime || calculateReadingTime(post.body ?? "");
+const readingTime = getDisplayReadingTime(post.data, post.body);
 
 let ogImageUrl: string | undefined;
 

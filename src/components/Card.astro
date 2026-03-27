@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { getPath } from "@/features/blog/utils/getPath";
-import { calculateReadingTime } from "@/features/blog/utils/readingTime";
+import { getDisplayReadingTime } from "@/features/blog/utils/readingTimeText";
 import { slugifyStr } from "@/utils/slugify";
 import Datetime from "./Datetime.astro";
 
@@ -22,9 +22,8 @@ const {
   timezone,
   heroImage,
   tags,
-  readingTime: manualReadingTime,
 } = data;
-const readingTime = manualReadingTime || calculateReadingTime(body ?? "");
+const readingTime = getDisplayReadingTime(data, body);
 
 const headerProps = {
   style: { viewTransitionName: slugifyStr(title) },
