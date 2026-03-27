@@ -6,13 +6,27 @@ interface VisibilityOptions {
   isDev?: boolean;
 }
 
+type BlogPostData = CollectionEntry<"blog">["data"];
+
+export function isDraftFreePost(data: Pick<BlogPostData, "draft">) {
+  return !data.draft;
+}
+
+export function isListedPost(data: Pick<BlogPostData, "draft" | "unlisted">) {
+  return isDraftFreePost(data) && !data.unlisted;
+}
+
+export function isUnlistedPost(data: Pick<BlogPostData, "draft" | "unlisted">) {
+  return isDraftFreePost(data) && !!data.unlisted;
+}
+
 export function isPostVisible(
-  data: CollectionEntry<"blog">["data"],
+  data: BlogPostData,
   { now = Date.now(), isDev = import.meta.env?.DEV ?? false }: VisibilityOptions = {}
 ) {
   const isPublishTimePassed = now > new Date(data.pubDatetime).getTime() - SITE.scheduledPostMargin;
 
-  return !data.draft && !data.unlisted && (isDev || isPublishTimePassed);
+  return isListedPost(data) && (isDev || isPublishTimePassed);
 }
 
 const postFilter = ({ data }: CollectionEntry<"blog">) => {
