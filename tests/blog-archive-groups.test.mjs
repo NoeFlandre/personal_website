@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
+import { countArchivePosts, MONTH_NAMES } from "../src/features/blog/utils/archivePresentation.ts";
 import { getArchiveGroups } from "../src/features/blog/utils/getArchiveGroups.ts";
 
 function createPost({
@@ -57,5 +58,17 @@ test("getArchiveGroups excludes hidden posts and orders years, months, and posts
         months: [{ month: 12, posts: ["prev-year"] }],
       },
     ]
+  );
+});
+
+test("archive presentation helpers keep month labels and year counts centralized", () => {
+  assert.equal(MONTH_NAMES[0], "January");
+  assert.equal(MONTH_NAMES[11], "December");
+  assert.equal(
+    countArchivePosts([
+      { month: 1, posts: [{ id: "a" }, { id: "b" }] },
+      { month: 2, posts: [{ id: "c" }] },
+    ]),
+    3
   );
 });
