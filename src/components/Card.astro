@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import { getPath } from "@/features/blog/utils/getPath";
+import { getPostPath } from "@/features/blog/utils/postPath";
 import { getDisplayReadingTime } from "@/features/blog/utils/readingTimeText";
 import { slugifyStr } from "@/utils/slugify";
 import Datetime from "./Datetime.astro";
@@ -24,6 +24,7 @@ const {
   tags,
 } = data;
 const readingTime = getDisplayReadingTime(data, body);
+const postPath = getPostPath({ id, filePath });
 
 const headerProps = {
   style: { viewTransitionName: slugifyStr(title) },
@@ -34,7 +35,7 @@ const headerProps = {
 <li class="my-8">
   <div>
     <a
-      href={getPath(id, filePath)}
+      href={postPath}
       class="inline-block text-lg font-medium text-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
     >
       {
@@ -52,7 +53,7 @@ const headerProps = {
     <div class="flex gap-4 items-start">
       {showImage && heroImage && (
         <a 
-          href={getPath(id, filePath)}
+          href={postPath}
           class="flex-shrink-0 hidden sm:block group"
         >
           <Image

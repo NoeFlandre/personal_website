@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content";
-import { getPath } from "./getPath.ts";
 import getSortedPosts from "./getSortedPosts.ts";
+import { getPostPath } from "./postPath.ts";
 
 export function buildPostsMarkdown(posts: CollectionEntry<"blog">[]) {
   const sortedPosts = getSortedPosts(posts);
@@ -26,7 +26,7 @@ export function buildPostsMarkdown(posts: CollectionEntry<"blog">[]) {
         month: "short",
         day: "numeric",
       });
-      markdownContent += `- ${date}: [${post.data.title}](${getPath(post.id, post.filePath)})\n`;
+      markdownContent += `- ${date}: [${post.data.title}](${getPostPath(post)})\n`;
     }
 
     markdownContent += "\n";
