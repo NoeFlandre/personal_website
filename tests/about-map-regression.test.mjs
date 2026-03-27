@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   getMapRetryDelayMs,
+  getPlaceTypeLabel,
   parsePlacesDataset,
   shouldRetryMapInit,
   sortPlacesForUi,
@@ -64,6 +65,13 @@ test("parsePlacesDataset returns [] for invalid payloads", () => {
   assert.deepEqual(parsePlacesDataset(""), []);
   assert.deepEqual(parsePlacesDataset("not-json"), []);
   assert.deepEqual(parsePlacesDataset("{\"foo\":1}"), []);
+});
+
+test("getPlaceTypeLabel returns consistent copy for known and unknown types", () => {
+  assert.equal(getPlaceTypeLabel("work"), "Worked");
+  assert.equal(getPlaceTypeLabel("study"), "Studied");
+  assert.equal(getPlaceTypeLabel("travel"), "Traveled");
+  assert.equal(getPlaceTypeLabel("unknown"), "");
 });
 
 test("shouldRetryMapInit allows first three attempts only", () => {
