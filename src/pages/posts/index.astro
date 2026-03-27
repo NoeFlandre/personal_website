@@ -3,27 +3,13 @@ import { getCollection } from "astro:content";
 import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+import { countArchivePosts, MONTH_NAMES } from "@/features/blog/utils/archivePresentation";
 import { getArchiveGroups } from "@/features/blog/utils/getArchiveGroups";
 import Layout from "@/layouts/Layout.astro";
 import { SITE } from "@/site-config.js";
 
 const posts = await getCollection("blog");
 const archiveGroups = getArchiveGroups(posts);
-
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 ---
 
 <Layout title={`Posts | ${SITE.title}`} description="Archive of all blog posts by Noe Flandre. AI research, datasets, and engineering insights.">
@@ -43,14 +29,12 @@ const months = [
           <div class="mb-8">
             <h2 class="text-2xl font-bold mb-6 border-b border-accent pb-2">
               {yearGroup.year}
-              <sup class="text-sm ml-1">
-                {yearGroup.months.reduce((count, monthGroup) => count + monthGroup.posts.length, 0)}
-              </sup>
+              <sup class="text-sm ml-1">{countArchivePosts(yearGroup.months)}</sup>
             </h2>
             {yearGroup.months.map((monthGroup) => (
                 <div class="mt-8">
                   <h3 class="text-xl font-bold mb-4">
-                    {months[monthGroup.month - 1]}
+                    {MONTH_NAMES[monthGroup.month - 1]}
                     <sup class="text-sm ml-1">{monthGroup.posts.length}</sup>
                   </h3>
                   <ul>
