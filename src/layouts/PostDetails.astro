@@ -14,11 +14,11 @@ import Tag from "@/components/Tag.astro";
 import Layout from "@/layouts/Layout.astro";
 import { SITE } from "@/site-config.js";
 import { getAdjacentEntries } from "@/features/blog/utils/getAdjacentEntries.js";
+import { buildPostLayoutMetadata } from "@/features/blog/utils/postLayoutMetadata";
 import { getPath } from "@/features/blog/utils/getPath";
 import { countWords } from "@/features/blog/utils/readingMetrics";
 import { getDisplayReadingTime } from "@/features/blog/utils/readingTimeText";
 import { slugifyStr } from "@/utils/slugify";
-import { toAbsoluteUrl } from "@/utils/url";
 
 export interface Props {
   post: CollectionEntry<"blog">;
@@ -31,8 +31,6 @@ const {
   title,
   author,
   description,
-  ogImage: initOgImage,
-  canonicalURL,
   pubDatetime,
   modDatetime,
   timezone,
@@ -44,41 +42,13 @@ const {
 
 const { Content } = await render(post);
 const readingTime = getDisplayReadingTime(post.data, post.body);
-
-let ogImageUrl: string | undefined;
-
-// Determine OG image source
-if (typeof initOgImage === "string") {
-  ogImageUrl = initOgImage; // Remote OG image (absolute URL)
-} else if (initOgImage?.src) {
-  ogImageUrl = initOgImage.src; // Local asset
-}
-
-// Use dynamic OG image if enabled and no remote|local ogImage
-if (!ogImageUrl && SITE.dynamicOgImage) {
-  // Bust stale social-card caches when branding or template changes.
-  ogImageUrl = `${getPath(post.id, post.filePath)}/og.png?v=noeflandre-com-3`;
-}
-
-// Resolve OG image URL (or fallback to SITE.ogImage / default `og.png`)
-const ogImage = ogImageUrl ? toAbsoluteUrl(ogImageUrl, Astro.url.origin) : undefined;
-
-// Generate the canonical URL - always use the full path with year
-const postPath = getPath(post.id, post.filePath, true);
-const computedCanonicalURL =
-  canonicalURL ||
-  (Astro.site ? toAbsoluteUrl(postPath, Astro.site) : toAbsoluteUrl(postPath, Astro.url.origin));
-
-const layoutProps = {
-  title: `${title} | ${SITE.title}`,
-  author,
-  description,
-  pubDatetime,
-  modDatetime,
-  canonicalURL: computedCanonicalURL,
-  ogImage,
-  scrollSmooth: true,
-};
+const { postPath, canonicalURL: computedCanonicalURL, ogImage, layoutProps } = buildPostLayoutMetadata({
+  post,
+  siteTitle: SITE.title,
+  siteBase: Astro.site,
+  currentOrigin: Astro.url.origin,
+  dynamicOgImageEnabled: SITE.dynamicOgImage,
+});
 
 /* ========== Prev/Next Posts ========== */
 

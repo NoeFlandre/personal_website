@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { getPath } from "../src/features/blog/utils/getPath.ts";
+import { buildPostLayoutMetadata } from "../src/features/blog/utils/postLayoutMetadata.ts";
 import { getPostPath } from "../src/features/blog/utils/postPath.ts";
 import { shouldGenerateDynamicOgImage } from "../src/features/blog/utils/ogImages.ts";
 import { getPostStaticPathParams } from "../src/features/blog/utils/staticPaths.ts";
@@ -225,4 +226,67 @@ test("shouldGenerateDynamicOgImage keeps draft and custom-og posts excluded", ()
 test("getDisplayReadingTime preserves manual overrides before fallback calculation", () => {
   assert.equal(getDisplayReadingTime({ readingTime: "9 min read" }, "short body"), "9 min read");
   assert.equal(getDisplayReadingTime({}, ""), "5 min read");
+});
+
+test("buildPostLayoutMetadata centralizes canonical and OG image resolution", () => {
+  const metadata = buildPostLayoutMetadata({
+    post: {
+      id: "deep-dive",
+      filePath: "src/content/blog/Research Notes/deep-dive.md",
+      data: {
+        title: "Deep Dive",
+        author: "Noe",
+        description: "Research notes",
+        pubDatetime: new Date("2025-01-01T00:00:00.000Z"),
+        modDatetime: new Date("2025-01-02T00:00:00.000Z"),
+        ogImage: undefined,
+      },
+    },
+    siteTitle: "Noe Flandre",
+    siteBase: "https://example.com/",
+    currentOrigin: "https://preview.local",
+    dynamicOgImageEnabled: true,
+  });
+
+  assert.equal(metadata.postPath, "/posts/research-notes/deep-dive");
+  assert.equal(metadata.canonicalURL, "https://example.com/posts/research-notes/deep-dive");
+  assert.equal(
+    metadata.ogImage,
+    "https://example.com/posts/research-notes/deep-dive/og.png?v=noeflandre-com-3"
+  );
+  assert.deepEqual(metadata.layoutProps, {
+    title: "Deep Dive | Noe Flandre",
+    author: "Noe",
+    description: "Research notes",
+    pubDatetime: new Date("2025-01-01T00:00:00.000Z"),
+    modDatetime: new Date("2025-01-02T00:00:00.000Z"),
+    canonicalURL: "https://example.com/posts/research-notes/deep-dive",
+    ogImage: "https://example.com/posts/research-notes/deep-dive/og.png?v=noeflandre-com-3",
+    scrollSmooth: true,
+  });
+});
+
+test("buildPostLayoutMetadata preserves explicit canonical and local asset OG images", () => {
+  const metadata = buildPostLayoutMetadata({
+    post: {
+      id: "deep-dive",
+      filePath: "src/content/blog/deep-dive.md",
+      data: {
+        title: "Deep Dive",
+        author: "Noe",
+        description: "Research notes",
+        pubDatetime: new Date("2025-01-01T00:00:00.000Z"),
+        modDatetime: undefined,
+        canonicalURL: "https://canonical.example/post",
+        ogImage: { src: "/assets/hero.png" },
+      },
+    },
+    siteTitle: "Noe Flandre",
+    siteBase: undefined,
+    currentOrigin: "https://preview.local",
+    dynamicOgImageEnabled: true,
+  });
+
+  assert.equal(metadata.canonicalURL, "https://canonical.example/post");
+  assert.equal(metadata.ogImage, "https://preview.local/assets/hero.png");
 });
