@@ -17,6 +17,10 @@ export function createTagInfo(tagName: string): TagInfo {
   };
 }
 
+export function getTagPath(tagName: string): string {
+  return `/tags/${slugifyStr(tagName)}`;
+}
+
 /**
  * Checks whether a blog post contains the provided normalized tag slug.
  */
