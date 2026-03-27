@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import { getPath } from "../src/features/blog/utils/getPath.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
+import { countWords } from "../src/features/blog/utils/readingMetrics.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
 import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
 import { createTagInfo, postHasTag } from "../src/features/blog/utils/tags.ts";
@@ -157,4 +158,10 @@ test("tag helpers normalize tag names consistently across blog utilities", () =>
   assert.equal(postHasTag(post, "paper-review"), true);
   assert.equal(postHasTag(post, "open-source"), true);
   assert.equal(postHasTag(post, "swift"), false);
+});
+
+test("countWords matches the structured-data word count logic", () => {
+  assert.equal(countWords("one two three"), 3);
+  assert.equal(countWords(" spaced   words "), 4);
+  assert.equal(countWords(""), 1);
 });

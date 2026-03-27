@@ -15,6 +15,7 @@ import Layout from "@/layouts/Layout.astro";
 import { SITE } from "@/site-config.js";
 import { getAdjacentEntries } from "@/features/blog/utils/getAdjacentEntries.js";
 import { getPath } from "@/features/blog/utils/getPath";
+import { countWords } from "@/features/blog/utils/readingMetrics";
 import { calculateReadingTime } from "@/features/blog/utils/readingTime";
 import { slugifyStr } from "@/utils/slugify";
 
@@ -88,7 +89,7 @@ const allPosts = posts.map(({ data: { title }, id, filePath }) => ({
 const { prevEntry: prevPost, nextEntry: nextPost } = getAdjacentEntries(allPosts, postPath);
 
 // Calculate word count for structured data
-const wordCount = (post.body ?? "").split(/\s+/).length;
+const wordCount = countWords(post.body ?? "");
 ---
 
 <Layout {...layoutProps}>
