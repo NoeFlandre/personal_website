@@ -1,5 +1,6 @@
 ---
 import { getPageCriticalCSS } from "@/utils/criticalCSS";
+import { toAbsoluteUrl } from "@/utils/url";
 import { SITE } from "../site-config.js";
 import "katex/dist/katex.min.css";
 
@@ -16,7 +17,7 @@ const {
   description = SITE.desc,
   image = "/images/og.png",
   type = "website",
-  canonicalURL = new URL(Astro.url.pathname, Astro.site),
+  canonicalURL = toAbsoluteUrl(Astro.url.pathname, Astro.site),
 } = Astro.props;
 
 const fullTitle = title === SITE.title ? title : `${title} | ${SITE.title}`;
@@ -65,7 +66,7 @@ const criticalCSS = getPageCriticalCSS(Astro.url.pathname);
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.site)} />
+<meta property="og:image" content={toAbsoluteUrl(image, Astro.site)} />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -73,7 +74,7 @@ const criticalCSS = getPageCriticalCSS(Astro.url.pathname);
 <meta name="twitter:creator" content="@NoeFlandre" />
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={new URL(image, Astro.site)} />
+<meta name="twitter:image" content={toAbsoluteUrl(image, Astro.site)} />
 
 <!-- Canonical -->
 <link rel="canonical" href={canonicalURL} />

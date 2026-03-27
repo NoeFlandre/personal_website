@@ -1,6 +1,7 @@
 ---
 import { ViewTransitions } from "astro:transitions";
 import { SITE } from "@/site-config.js";
+import { toAbsoluteUrl } from "@/utils/url";
 import "@/styles/global.css";
 import Analytics from "@/components/Analytics.astro";
 
@@ -24,13 +25,13 @@ const {
   profile = SITE.profile,
   description = SITE.desc,
   ogImage = SITE.ogImage ? `/${SITE.ogImage}` : "/og.png",
-  canonicalURL = new URL(Astro.url.pathname, Astro.url),
+  canonicalURL = toAbsoluteUrl(Astro.url.pathname, Astro.url),
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
 } = Astro.props;
 
-const socialImageURL = new URL(ogImage, Astro.url);
+const socialImageURL = toAbsoluteUrl(ogImage, Astro.url);
 
 const structuredData = {
   "@context": "https://schema.org",
