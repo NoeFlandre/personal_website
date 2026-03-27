@@ -1,14 +1,14 @@
 ---
 import { ABOUT_MAP_PLACES } from "../data/aboutMapPlaces.ts";
-import { sortPlacesForUi } from "../utils/aboutMap.js";
+import { getPlaceTypeLabel, sortPlacesForUi } from "../utils/aboutMap.js";
 
 const placesForUi = sortPlacesForUi(ABOUT_MAP_PLACES);
 
 const filters = [
   { id: "all", label: "All", tone: "all" },
-  { id: "work", label: "Worked", tone: "work" },
-  { id: "study", label: "Studied", tone: "study" },
-  { id: "travel", label: "Traveled", tone: "travel" },
+  { id: "work", label: getPlaceTypeLabel("work"), tone: "work" },
+  { id: "study", label: getPlaceTypeLabel("study"), tone: "study" },
+  { id: "travel", label: getPlaceTypeLabel("travel"), tone: "travel" },
 ];
 ---
 
@@ -57,7 +57,7 @@ const filters = [
             <img src={place.image} alt={`Photo placeholder for ${place.title}`} loading="lazy" />
             <div class="about-map__card-text">
               <p class="about-map__card-type">
-                {place.type === "travel" ? "Traveled" : place.type === "work" ? "Worked" : "Studied"}
+                {getPlaceTypeLabel(place.type)}
               </p>
               <h3>{place.title}</h3>
               <p>{place.location}</p>
@@ -82,15 +82,14 @@ const filters = [
   // @ts-nocheck
   import L from "leaflet";
   import "leaflet/dist/leaflet.css";
-  import { getMapRetryDelayMs, parsePlacesDataset, shouldRetryMapInit } from "../utils/aboutMap.js";
+  import {
+    getMapRetryDelayMs,
+    getPlaceTypeLabel,
+    parsePlacesDataset,
+    shouldRetryMapInit
+  } from "../utils/aboutMap.js";
 
   (() => {
-    const typeLabels = {
-      work: "Worked",
-      study: "Studied",
-      travel: "Traveled",
-    };
-
     const markerIcon = (placeType, selected = false) =>
       L.divIcon({
         className: "",
@@ -104,7 +103,7 @@ const filters = [
       `<div class="about-map-popup">
         <img src="${place.image}" alt="Photo placeholder for ${place.title}" loading="lazy" />
         <div>
-          <p class="about-map-popup__tag">${typeLabels[place.type]}</p>
+          <p class="about-map-popup__tag">${getPlaceTypeLabel(place.type)}</p>
           <h3>${place.title}</h3>
           <p>${place.location}</p>
           ${place.type !== "travel" && place.period ? `<p>${place.period}</p>` : ""}
