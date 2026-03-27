@@ -10,6 +10,7 @@ import Main from "@/layouts/Main.astro";
 import { SITE } from "@/site-config.js";
 import getPostsByTag from "@/features/blog/utils/getPostsByTag";
 import getUniqueTags from "@/features/blog/utils/getUniqueTags";
+import { getTagPath } from "@/features/blog/utils/tags";
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const posts = await getCollection("blog");
@@ -51,7 +52,7 @@ const switchableTags = getUniqueTags(posts);
       </a>
       {switchableTags.map(({ tag: nextTag, tagName: nextTagName }) => (
         <a
-          href={`/tags/${nextTag}`}
+          href={getTagPath(nextTagName)}
           class:list={[
             "rounded-full border px-3 py-1 text-sm transition-colors hover:border-accent/60 hover:text-accent",
             nextTag === tag
