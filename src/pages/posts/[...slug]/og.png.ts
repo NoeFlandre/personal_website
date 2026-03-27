@@ -1,6 +1,7 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import { generateOgImageForPost } from "@/features/blog/og/generateOgImages";
+import { shouldGenerateDynamicOgImage } from "@/features/blog/utils/ogImages";
 import { getPostStaticPathParams } from "@/features/blog/utils/staticPaths";
 import { SITE } from "@/site-config.js";
 
@@ -9,9 +10,7 @@ export async function getStaticPaths() {
     return [];
   }
 
-  const posts = await getCollection("blog").then((p) =>
-    p.filter(({ data }) => !data.draft && !data.ogImage)
-  );
+  const posts = await getCollection("blog").then((p) => p.filter(shouldGenerateDynamicOgImage));
 
   return posts.map((post) => ({
     params: getPostStaticPathParams(post),

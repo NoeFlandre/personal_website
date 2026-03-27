@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { getPath } from "../src/features/blog/utils/getPath.ts";
+import { shouldGenerateDynamicOgImage } from "../src/features/blog/utils/ogImages.ts";
 import { getPostStaticPathParams } from "../src/features/blog/utils/staticPaths.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
 import { countWords } from "../src/features/blog/utils/readingMetrics.ts";
@@ -182,4 +183,10 @@ test("getReadingTimeForPost keeps the existing fallback behavior for missing pos
   assert.equal(getReadingTimeForPost(undefined), "5 min read");
   assert.equal(getReadingTimeForPost({ body: "" }), "5 min read");
   assert.equal(getReadingTimeForPost({ body: "one two three four five" }), "1 min read");
+});
+
+test("shouldGenerateDynamicOgImage keeps draft and custom-og posts excluded", () => {
+  assert.equal(shouldGenerateDynamicOgImage({ data: { draft: false, ogImage: undefined } }), true);
+  assert.equal(shouldGenerateDynamicOgImage({ data: { draft: true, ogImage: undefined } }), false);
+  assert.equal(shouldGenerateDynamicOgImage({ data: { draft: false, ogImage: "/custom.png" } }), false);
 });
