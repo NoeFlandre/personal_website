@@ -1,5 +1,6 @@
 ---
 import IconHash from "@/assets/icons/IconHash.svg";
+import { getTagPath } from "@/features/blog/utils/tags";
 
 export interface Props {
   tag: string;
@@ -17,7 +18,7 @@ const { tag, tagName, size = "sm" } = Astro.props;
   ]}
 >
   <a
-    href={`/tags/${tag}`}
+    href={getTagPath(tagName)}
     transition:name={tag}
     class:list={[
       "relative pr-2 text-lg underline decoration-dashed group-hover:-top-0.5 group-hover:text-accent focus-visible:p-1",
