@@ -10,7 +10,12 @@ import { getReadingTimeForPost } from "../src/features/blog/utils/readingTimeTex
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
 import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
 import { createTagInfo, postHasTag } from "../src/features/blog/utils/tags.ts";
-import postFilter, { isPostVisible } from "../src/features/blog/utils/postFilter.ts";
+import postFilter, {
+  isDraftFreePost,
+  isListedPost,
+  isPostVisible,
+  isUnlistedPost,
+} from "../src/features/blog/utils/postFilter.ts";
 
 function createPost({
   id,
@@ -91,6 +96,20 @@ test("postFilter delegates to the pure visibility helper", () => {
   const post = createPost({ id: "visible" });
 
   assert.equal(postFilter(post), isPostVisible(post.data));
+});
+
+test("post inclusion helpers keep listed, unlisted, and draft semantics explicit", () => {
+  const listed = { draft: false, unlisted: false };
+  const unlisted = { draft: false, unlisted: true };
+  const draft = { draft: true, unlisted: false };
+
+  assert.equal(isDraftFreePost(listed), true);
+  assert.equal(isDraftFreePost(unlisted), true);
+  assert.equal(isDraftFreePost(draft), false);
+  assert.equal(isListedPost(listed), true);
+  assert.equal(isListedPost(unlisted), false);
+  assert.equal(isUnlistedPost(unlisted), true);
+  assert.equal(isUnlistedPost(listed), false);
 });
 
 test("getSortedPosts keeps only visible posts and sorts by modified date first", () => {
