@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { getPath } from "../src/features/blog/utils/getPath.ts";
+import { getPostPath } from "../src/features/blog/utils/postPath.ts";
 import { shouldGenerateDynamicOgImage } from "../src/features/blog/utils/ogImages.ts";
 import { getPostStaticPathParams } from "../src/features/blog/utils/staticPaths.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
@@ -65,6 +66,16 @@ test("getPostStaticPathParams reuses canonical slug generation without the posts
       filePath: "src/content/blog/Research Notes/deep-dive.md",
     }),
     { slug: "/research-notes/deep-dive" }
+  );
+});
+
+test("getPostPath derives canonical post URLs directly from a blog entry", () => {
+  assert.equal(
+    getPostPath({
+      id: "deep-dive",
+      filePath: "src/content/blog/Research Notes/deep-dive.md",
+    }),
+    "/posts/research-notes/deep-dive"
   );
 });
 

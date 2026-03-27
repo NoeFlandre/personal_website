@@ -1,7 +1,7 @@
 import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
-import { getPath } from "@/features/blog/utils/getPath";
 import getSortedPosts from "@/features/blog/utils/getSortedPosts";
+import { getPostPath } from "@/features/blog/utils/postPath";
 import { SITE } from "@/site-config.js";
 
 export async function GET() {
@@ -12,7 +12,7 @@ export async function GET() {
     description: SITE.desc,
     site: SITE.website,
     items: sortedPosts.map(({ data, id, filePath }) => ({
-      link: getPath(id, filePath),
+      link: getPostPath({ id, filePath }),
       title: data.title,
       description: data.description,
       pubDate: new Date(data.modDatetime ?? data.pubDatetime),
