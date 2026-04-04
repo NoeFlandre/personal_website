@@ -1,7 +1,7 @@
 ---
 title: "I am joining the EVERGREEN research team"
 description: "Next month, I will be joining INRIA in Montpellier, within the EVERGREEN research team as a research engineer."
-pubDatetime: 2026-04-04T12:00:00Z
+pubDatetime: 2026-04-04T11:00:00Z
 heroImage: /evergreen_logo.png
 tags: ["Post"]
 featured: true
