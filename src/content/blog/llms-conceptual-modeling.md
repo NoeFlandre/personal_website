@@ -4,7 +4,7 @@ description: "Our new study asks if LLMs can learn enough conceptual modeling to
 pubDatetime: 2024-10-26T12:00:00Z
 heroImage: /assets/img/2024/llms-conceptual-modeling/conceptual-modeling.png
 tags: ["Publication"]
-featured: true
+featured: false
 readingTime: "4 min read"
 ---
 
