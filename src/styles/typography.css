@@ -7,6 +7,9 @@
   .prose a {
     @apply break-words hover:!text-accent;
   }
+  .prose p:has(img) {
+    @apply text-center text-sm opacity-80;
+  }
   .prose thead th:first-child,
   tbody td:first-child,
   tfoot td:first-child {
