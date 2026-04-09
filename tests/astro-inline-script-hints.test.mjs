@@ -22,6 +22,9 @@ test("scripts that Astro already treats as inline declare is:inline explicitly",
   );
   assert.doesNotMatch(layout, /ViewTransitions/);
   assert.match(layout, /ClientRouter/);
-  assert.match(postDetails, /<script\s+is:inline\s+type="module"\s+data-astro-rerun>/);
+  assert.match(
+    postDetails,
+    /<script\s+is:inline\s+type="module"\s+data-astro-rerun\s+define:vars=\{\{\s*postDetailsRerunUrl\s*\}\}>[\s\S]*import\(postDetailsRerunUrl\)\.then\(\(\{\s*initPostDetails\s*\}\)\s*=>\s*initPostDetails\(\)\);[\s\S]*<\/script>/
+  );
   assert.doesNotMatch(themeToggle, /await\s+document\.startViewTransition\(/);
 });
