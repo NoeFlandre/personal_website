@@ -67,7 +67,7 @@ const testimonials = [
       data-carousel-viewport
     >
       <ul class="flex items-start transition-transform duration-300 ease-out" data-track>
-        {testimonials.map((item, index) => (
+        {testimonials.map((item) => (
           <li class="min-w-full p-6 sm:p-7" data-slide>
             <article class="flex flex-col gap-4">
               <header class="flex flex-col gap-1">
@@ -95,7 +95,7 @@ const testimonials = [
     </div>
 
     <div class="mt-3 flex items-center justify-center gap-2">
-      {testimonials.map((item, index) => (
+      {testimonials.map((_, index) => (
         <button
           type="button"
           class="h-2.5 w-2.5 rounded-full bg-border/70 transition-colors data-[active=true]:bg-accent dark:bg-white/30 data-[active=true]:dark:bg-white"
