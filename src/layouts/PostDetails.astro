@@ -42,7 +42,7 @@ const {
 
 const { Content } = await render(post);
 const readingTime = getDisplayReadingTime(post.data, post.body);
-const { postPath, canonicalURL: computedCanonicalURL, ogImage, layoutProps } = buildPostLayoutMetadata({
+const { postPath, ogImage, layoutProps } = buildPostLayoutMetadata({
   post,
   siteTitle: SITE.title,
   siteBase: Astro.site,
