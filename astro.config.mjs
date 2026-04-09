@@ -184,6 +184,7 @@ export default defineConfig({
     },
     plugins: [tailwindcss()],
     optimizeDeps: {
+      include: ["leaflet"],
       exclude: ["@resvg/resvg-js"],
     },
   },
