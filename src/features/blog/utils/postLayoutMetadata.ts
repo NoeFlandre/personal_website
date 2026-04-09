@@ -11,7 +11,7 @@ type PostLike = {
     ogImage?: string | { src?: string };
     canonicalURL?: string;
     pubDatetime?: Date;
-    modDatetime?: Date;
+    modDatetime?: Date | null;
   };
 };
 
