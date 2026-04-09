@@ -19,6 +19,7 @@ test("buildYouTubeEmbedMarkup uses the normalized video id", () => {
 
   assert.match(markup, /youtube\.com\/embed\/abc123XYZ/);
   assert.match(markup, /youtube-embed-container/);
+  assert.doesNotMatch(markup, /frameborder=/);
 });
 
 test("getYouTubeEmbedSrc builds the canonical embed URL from any supported input", () => {

@@ -66,7 +66,7 @@ test("getPostStaticPathParams reuses canonical slug generation without the posts
       id: "deep-dive",
       filePath: "src/content/blog/Research Notes/deep-dive.md",
     }),
-    { slug: "/research-notes/deep-dive" }
+    { slug: "research-notes/deep-dive" }
   );
 });
 
