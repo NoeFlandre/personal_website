@@ -20,6 +20,8 @@ test("scripts that Astro already treats as inline declare is:inline explicitly",
     layout,
     /<script\s+is:inline\s+async\s+src="https:\/\/platform\.twitter\.com\/widgets\.js"\s+charset="utf-8"><\/script>/
   );
-  assert.match(postDetails, /<script\s+is:inline\s+data-astro-rerun>/);
+  assert.doesNotMatch(layout, /ViewTransitions/);
+  assert.match(layout, /ClientRouter/);
+  assert.match(postDetails, /<script\s+is:inline\s+type="module"\s+data-astro-rerun>/);
   assert.doesNotMatch(themeToggle, /await\s+document\.startViewTransition\(/);
 });
