@@ -174,7 +174,7 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Distilling the Complexity of Agent-Based Simulations Into Textual Explanations via Large Language Models",
     subtitle: "Big Data and Cognitive Computing",
-    description: "**Flandre N. Y.**, Giabbanelli P. J.",
+    description: "Flandre N. Y., Giabbanelli P. J.",
     link: "https://doi.org/10.3390/bdcc10040121",
   },
   {
