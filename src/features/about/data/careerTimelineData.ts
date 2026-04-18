@@ -170,6 +170,14 @@ export const CAREER_TIMELINE_HUMANITARIAN_IMPACT: TimelineItem[] = [
 
 export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
   {
+    year: "2026",
+    title:
+      "Distilling the Complexity of Agent-Based Simulations Into Textual Explanations via Large Language Models",
+    subtitle: "Big Data and Cognitive Computing",
+    description: "**Flandre N. Y.**, Giabbanelli P. J.",
+    link: "https://doi.org/10.3390/bdcc10040121",
+  },
+  {
     year: "2025",
     title:
       "Promoting empathy in decision-making by turning agent-based models into stories using large-language models",
