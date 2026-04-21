@@ -14,7 +14,17 @@ const AIRBUS_GEO_EXPLORE_URL =
 
 export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
   {
-    year: "Dec 2025 — Present",
+    year: "Apr 2026 — Present",
+    title: "AI Research Engineer",
+    subtitle: "Inria",
+    location: "Montpellier, Occitanie, France",
+    description:
+      "Conducting research on LLM-based geoparsing to link unstructured text to geographic locations and footprints",
+    link: "https://geo-reset.sylvainlobry.com/",
+    body: `Working on the <a href="https://geo-reset.sylvainlobry.com/" target="_blank" rel="noopener noreferrer">GEO-ReSeT</a> project.`,
+  },
+  {
+    year: "Dec 2025 — Apr 2026",
     title: "Independent Researcher",
     location: "India",
     description: "Agentic AI workflows and LLM applications",
