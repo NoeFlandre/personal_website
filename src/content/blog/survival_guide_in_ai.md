@@ -4,7 +4,7 @@ description: "Some advice and resources I have found helpful so far as a junior 
 pubDatetime: 2026-02-16T12:00:00Z
 heroImage: /assets/img/2026/survival_guide_ai/survival_guide.png
 tags: ["Post"]
-featured: true
+featured: false
 readingTime: ""
 ---
 
