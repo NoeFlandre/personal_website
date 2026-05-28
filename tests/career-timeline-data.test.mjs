@@ -38,3 +38,15 @@ test("career timeline entries include titles and years", () => {
     }
   }
 });
+
+test("the about publications section highlights the editor's pick", () => {
+  const empathyPaper = CAREER_TIMELINE_PUBLICATIONS.find((item) =>
+    item.title.includes("Promoting empathy in decision-making")
+  );
+
+  assert.ok(empathyPaper);
+  assert.match(
+    empathyPaper.description ?? "",
+    /Selected as the Editor's Pick/
+  );
+});

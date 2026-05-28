@@ -192,7 +192,7 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Promoting empathy in decision-making by turning agent-based models into stories using large-language models",
     subtitle: "Journal of Simulation",
-    description: "Daumas C., Giabbanelli P. J., **Flandre N.**",
+    description: "Daumas C., Giabbanelli P. J., **Flandre N.** · Selected as the Editor's Pick",
     link: "https://www.researchgate.net/publication/395240074_Promoting_empathy_in_decision-making_by_turning_agent-based_models_into_stories_using_large-language_models",
   },
   {
