@@ -2,10 +2,7 @@
 title: "A small milestone for our empathy and simulation paper"
 description: "Our Journal of Simulation paper on LLMs, agent-based models, and empathetic decision-making was selected as the Editor's Pick."
 pubDatetime: 2026-05-28T16:45:00+02:00
-tags:
-  - Research
-  - LLMs
-  - ABMs
+tags: ["Publication"]
 featured: true
 ---
 

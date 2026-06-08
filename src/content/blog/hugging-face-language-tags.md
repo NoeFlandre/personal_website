@@ -2,10 +2,7 @@
 title: "You should not take Hugging Face language tags at face value"
 description: "A short look at why Hugging Face language tags can be useful while still requiring manual investigation."
 pubDatetime: 2026-06-02T19:50:00+02:00
-tags:
-  - Post
-  - Hugging Face
-  - Data
+tags: ["Post"]
 featured: false
 ---
 

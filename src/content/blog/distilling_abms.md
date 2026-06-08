@@ -3,10 +3,7 @@ title: "Distilling Agent-Based Models into Textual Explanations via LLMs"
 description: "A look at our new research on using LLMs to turn complex ABM simulations into clear textual explanations."
 pubDatetime: 2026-04-15T20:23:06+05:30
 heroImage: /distilling_abms.png
-tags:
-  - Research
-  - LLMs
-  - ABMs
+tags: ["Publication"]
 featured: true
 ---
 
