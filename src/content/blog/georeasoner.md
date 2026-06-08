@@ -3,8 +3,7 @@ title: "One place, two views: the core idea behind GeoReasoner"
 description: "A breakdown of the GeoReasoner paper, which leverages both linguistic and geospatial information to reason on geospatially grounded natural language."
 pubDatetime: 2026-02-03T21:49:52+05:30
 heroImage: /georeasoner.png
-tags:
-  - Paper Review
+tags: ["Paper Review"]
 featured: true
 readingTime: "15 min read"
 ---
