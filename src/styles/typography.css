@@ -43,6 +43,22 @@
     @apply break-all sm:break-normal;
   }
 
+  /* Keep wide tables from breaking the mobile layout.
+     On small screens, let the table scroll horizontally
+     inside its container instead of forcing the page wider. */
+  @media (max-width: 640px) {
+    .prose table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .prose th,
+    .prose td {
+      @apply px-2 py-1 text-xs;
+    }
+  }
+
   pre > code {
     white-space: pre;
   }
