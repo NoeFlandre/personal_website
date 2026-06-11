@@ -299,6 +299,16 @@ Using Minimax M3, we filtered the 413 OSM key families to only keep the ones rel
 
 To put this in perspective, the 26 selected base keys span 90 clusters and account for roughly 90M total occurrences, with `landuse` leading the way at about 30M occurrences.
 
+## Ablations and following questions
+
+Some decisions made in the pipeline above are worth questioning. In this section, we are going to tackle these.
+
+### When should we perform standardization?
+
+Consider the case where you would have the tag `landuse` with 286 occurrences and `Landuse` with 450 occurrences. Using the pipeline defined above, both these tags would get discarded since they both do not satisfy the condition `count_all >= 500`. We could therefore think of first standardizing these tags, essentially unifying them as a single `landuse` tag, for which the number of occurrences would be 450+286 = 736. In such a case, this would mean that the new tag would pass the condition `count_all >= 500` and as a result, not be discarded. Since this pipeline does rescue some tags which were non standardized, we can expect this new appraoch to produce more rows in the thresholded output.
+
+In fact doing standardization first and then filtering for `count_all >= 500` yields 225,684 tags and 3,368,341,528 occurrences, that is, by standardizing first, we rescued +1,561 tags and +18,325,535 occurrences compared to the filter first and standardize later approach. 
+
 ## Discussion
 
 The codebase we used did not tell us when, where or what type of object each tag is associated with, but only “this tags exist N times across the planet”. A future study could improve upon this little analysis to figure out how are these tags distributed geographically, temporarily etc.
