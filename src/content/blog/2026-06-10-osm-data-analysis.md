@@ -309,6 +309,56 @@ Consider the case where you would have the tag `landuse` with 286 occurrences an
 
 In fact doing standardization first and then filtering for `count_all >= 500` yields 225,684 tags and 3,368,341,528 occurrences, that is, by standardizing first, we rescued +1,561 tags and +18,325,535 occurrences compared to the filter first and standardize later approach. Since the later steps of the pipeline are designed to filter these tags down to tags of interest for environment and agriculture, it might be interesting to take the approach of standardizing first in order to rescue more tags and maybe recover more relevant tags for our topics of interest. We cannot purely compare the effect of this choice in our current setting since the clustering algorithm is not purely deterministic and different clusters would be produced in a second run therefore making the comparison unclear.
 
+### What if we use an embedding model instead of TF-IDF?
+
+The clustering we obtained before was mainly based on lexical similarity since two tags would end up in the same cluster if they shared some n-grams. For example "landuse|farmland" and "landuse|farmyard" are very likely to end up in the same cluster while "landuse|meadow" and "landuse|grassland" are not even though they are semantically close. Using an embedding model could help us tackle this problem. 
+
+Some prior work like GeoVectors used fastText as a word-level embedder for OSM tags. However this is a rather heavy option. Modern smaller alternatives exist like BGE or Nomic but they expect sentence input instead of short strings. A pratical middle ground is Model2Vec's `potion-base-8M` which is a 32M static vector table distilled from BGE-base-en-v1.5. On the MTEB benchmark it is reported as outperforming fastText. 
+
+As a sanity check, we are going to use this model to embedd a handful of tags and inspect whether the cosine similarities reflect the underlying semantic structure we are expecting. For example we expect "landuse|meadown" and "landuse|farmland" to rather be close to each other while "landuse|residential" should rather be far away. 
+
+We embedded seven env/agri tags with potion-base-8M and inspected the cosine similarities. The agricultural landuse values (farmland, meadow, grassland) landed at ~0.78 average similarity to each other, clearly above the urban landuse=residential (~0.66) and far from unrelated natural=water and natural=tree (~0.19). The full similarity matrix:
+
+| | farmland | meadow | grassland | forest | residential | natural/water | natural/tree |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| farmland | 1.00 | 0.75 | 0.81 | 0.73 | 0.72 | 0.20 | 0.16 |
+| meadow | 0.75 | 1.00 | 0.80 | 0.69 | 0.62 | 0.17 | 0.18 |
+| grassland | 0.81 | 0.80 | 1.00 | 0.72 | 0.63 | 0.21 | 0.20 |
+| forest | 0.73 | 0.69 | 0.72 | 1.00 | 0.69 | 0.24 | 0.41 |
+| residential | 0.72 | 0.62 | 0.63 | 0.69 | 1.00 | 0.30 | 0.21 |
+| natural/water | 0.20 | 0.17 | 0.21 | 0.24 | 0.30 | 1.00 | 0.62 |
+| natural/tree | 0.16 | 0.18 | 0.20 | 0.41 | 0.21 | 0.62 | 1.00 |
+
+Using the semantic embeddings, we can then rederive our pipeline of 224,123 row through the same SVD-to-50d and HDBSCAN stages. The char n-grams TF-IDF stage is therefore replaced by embeddings of potion-base-8M.
+
+| metric | TF-IDF | Embeddings | delta |
+| --- | --- | --- | --- |
+| number of base key families | 413 | 435 | +22 |
+| total clusters | 8,910 | 5,259 | -3,651 (-41%) |
+| total occurrences captured (top 20 base keys) | 1.68 B | 2.48 B | +799 M (+47%) |
+| noise ratio | 35.3% | 49.3% | +14 pp |
+
+The embedding pipeline produces fewer, larger clusters and pulls significantly more occurrences.
+
+Effect on env/agri base keys
+
+| base_key | tfidf_clusters | embedding_clusters | tfidf_occurrences | embedding_occurrences | occurrences_delta |
+| --- | --- | --- | --- | --- | --- |
+| natural | 3 | 1 | 6,688,616 | 56,559,801 | +49,871,185 (+746%) |
+| waterway | 1 | 1 | 7,062,136 | 32,312,984 | +25,250,848 (+358%) |
+| landuse | 2 | 1 | 30,325,838 | 39,334,360 | +9,008,522 (+30%) |
+| wetland | 1 | 1 | 1,600,723 | 7,097,879 | +5,497,156 (+343%) |
+| boundary | 1 | 1 | 94,892 | 2,196,788 | +2,101,896 (+2215%) |
+| taxon | 5 | 13 | 194,723 | 875,653 | +680,930 (+350%) |
+| genus | 10 | 14 | 1,252,809 | 1,183,437 | -69,372 (-6%) |
+| species | 28 | 22 | 2,320,800 | 1,370,135 | -950,665 (-41%) |
+| generator | 8 | 5 | 18,510,670 | 7,260,035 | -11,250,635 (-61%) |
+| water | 1 | 1 | 11,446,716 | 16,768 | -11,429,948 (-100%) |
+
+natural jumps from 3 spelling-driven clusters to a single semantic cluster that captures 8x the volume: natural=water, natural=wetland, natural=wood, natural=tree, natural=scrub all land together because they describe environmental features. waterway and wetland follow the same pattern. landuse loses a cluster (the orchard-vs-farmland split collapses) and gains 30% more volume. The losses are also informative. water drops to 16k occurrences because embeddings separate water=* (the value water as a tag) from waterway=* and natural=water (which are about water too but they live in different keys). 
+
+Therefore semantic clustering seems to be a better pick since it rescues more occurrences and seems to capture sematically related concept better. 
+
 ## Discussion
 
 The codebase we used did not tell us when, where or what type of object each tag is associated with, but only “this tags exist N times across the planet”. A future study could improve upon this little analysis to figure out how are these tags distributed geographically, temporarily etc.
