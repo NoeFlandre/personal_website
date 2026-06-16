@@ -359,6 +359,34 @@ natural jumps from 3 spelling-driven clusters to a single semantic cluster that 
 
 Therefore semantic clustering seems to be a better pick since it rescues more occurrences and seems to capture sematically related concept better. 
 
+## The method retained
+
+
+Given the previous analysis, we are going to **standardize first and then filter**. Moreover, because both pipelines presented (**TF-IDF** and the **embedding models**) yielded different results that may be complementary, we are going to keep both approaches.
+
+Once the final set of base keys has been computed for both pipelines, we will manually assess each base key for relevance to environmental and agricultural topics.
+
+The two preprocessing paths differ as follows:
+
+| Metric | Filter-first | Standardize-first |
+|----------|-------------:|------------------:|
+| Tags | 224,123 | **225,684** (+1,561) |
+| Occurrences | 3,350,015,993 | **3,368,341,528** (+18,325,535) |
+
+Two parallel clustering pipelines are then run on these sets, and both are retained because they capture complementary information:
+
+| Pipeline | Real clusters | Noise points | Noise volume | Distinct base keys |
+|------------|-------------:|-------------:|-------------:|------------------:|
+| TF-IDF (character n-grams) | 8,832 | 78,270 (34.7%) | 1,122,085,693 (33.3%) | **427** |
+| Embeddings (*potion-base-8M*) | 4,954 | 106,498 (47.2%) | 803,203,928 (23.8%) | **433** |
+
+The base-key families overlap on **307 keys**, with:
+
+- **120** keys identified only by TF-IDF,
+- **126** keys identified only by embeddings,
+
+for a total union of **553 distinct base keys**.
+
 ## Discussion
 
 The codebase we used did not tell us when, where or what type of object each tag is associated with, but only “this tags exist N times across the planet”. A future study could improve upon this little analysis to figure out how are these tags distributed geographically, temporarily etc.
