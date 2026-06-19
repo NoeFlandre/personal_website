@@ -1,6 +1,6 @@
 ---
-title: "OSM data analysis for environment and agriculture"
-description: "Analyzing OpenStreetMap keys and tags to surface what's relevant to environment and agriculture, from raw counts down to clustered key families."
+title: "OSM data analysis for landuse"
+description: "Analyzing OpenStreetMap keys and tags to surface what's relevant to landuse, from raw counts down to clustered key families."
 pubDatetime: 2026-06-10T17:25:00+02:00
 heroImage: /assets/img/2026/osm-data-analysis/pipeline-1.png
 tags: ["Post"]
@@ -11,7 +11,7 @@ draft: false
 
 ## Introduction
 
-In this blog post, we are going to analyze the keys and tags from OpenStreetMap (OSM) with a particular interest on environmental and agricultural topics.
+In this blog post, we are going to analyze the keys and tags from OpenStreetMap (OSM) with a particular interest on landuse topics.
 
 To follow along, here is the codebase associated with this blog post: https://github.com/NoeFlandre/osm-stats
 
@@ -63,65 +63,6 @@ The tags are confirming this first observation:
 8. highway=footway (~31.6 million)
 9. highway=track (~29.6 million)
 10. waterway=stream (~29.0 million)
-
-## Should we just remove some obvious keys?
-
-What we would like is to cut through the noise and only keep the keys and tags we are interested in (anything relevant to topics like agriculture, environment and so on). One could have the idea to directly remove the “building” key completely but before doing that, let’s have a look at the first 20 tags with “building” as a key:
-
-| value | count_all |
-| --- | --- |
-| yes | 556,451,624 |
-| house | 66,181,816 |
-| residential | 16,123,805 |
-| detached | 10,056,176 |
-| garage | 8,122,742 |
-| apartments | 7,784,487 |
-| shed | 4,495,922 |
-| industrial | 2,608,502 |
-| roof | 2,450,761 |
-| hut | 2,447,641 |
-| farm_auxiliary | 2,366,983 |
-| semidetached_house | 1,974,860 |
-| terrace | 1,478,303 |
-| commercial | 1,455,301 |
-| school | 1,345,309 |
-| retail | 1,274,921 |
-| construction | 1,132,478 |
-| outbuilding | 1,084,337 |
-| garages | 1,054,157 |
-| greenhouse | 821,293 |
-| barn | 805,630 |
-| cabin | 657,564 |
-| static_caravan | 557,489 |
-| service | 548,879 |
-| warehouse | 473,553 |
-| bungalow | 440,894 |
-| church | 433,987 |
-| farm | 414,913 |
-| allotment_house | 349,247 |
-| carport | 338,130 |
-| office | 304,623 |
-| ruins | 290,506 |
-| public | 213,143 |
-| civic | 212,355 |
-| university | 176,658 |
-| hospital | 170,684 |
-| hotel | 160,423 |
-| kindergarten | 127,484 |
-| chapel | 119,655 |
-| boathouse | 118,131 |
-| ger | 107,876 |
-| mosque | 107,555 |
-| storage_tank | 105,426 |
-| manufacture | 99,828 |
-| hangar | 95,179 |
-| bunker | 74,512 |
-| dormitory | 73,721 |
-| silo | 65,809 |
-| train_station | 60,106 |
-| college | 55,587 |
-
-As we can see the tags are including many elements we are not interested in (e.g bunker, college and so on). However some tags could be of interest from an environmental / agriculture perspective (e.g greenhouse, farm). So simply discarding all occurrences with a “building” key is not the right solution. On top of that, we saw earlier that the entire set is including 110,706 keys and going through each of them would take a while… We therefore can’t offered to do a fine filtering manually.
 
 ## Filtering at scale
 
@@ -198,106 +139,7 @@ For every cluster, we take the centroid (the mean of all member vectors) and sel
 | barrier | 2 | 14,614,296 | barrier |
 | roof | 27 | 14,258,235 | roof:shape |
 
-A quick analysis lets us see that "addr" is the elephant with 4,790 clusters and 466M occurrences. Likewise "building" has an huge number of occurrences even though its cluster count is small. Environmental and agricultural signal is small but real: landuse (2 clusters, 30M), natural (not in top 20, but 3 clusters, 42M). Moreover the set to human verify is now manageable with 413 key families. We could also think of asking an LLM to only keep labels relevant to these topics based on this list.
-
-## Selecting OSM key families relevant to environment and agriculture
-
-Using Minimax M3, we filtered the 413 OSM key families to only keep the ones relevant to the environment and agriculture. Minimax chose 26 keys as a subset of the 413 which it deemed relevant. The following table summarizes the relevant keys selected:
-
-| base_key | cluster_id | medoid | cluster_size | total_count_all |
-| --- | --- | --- | --- | --- |
-| landuse | 7819 | landuse\|orchard | 29 | 18,776,722 |
-| landuse | 7797 | landuse\|farmland | 5 | 11,549,116 |
-| water | 8154 | water\|ditch | 23 | 11,446,716 |
-| waterway | 8261 | waterway\|ditch | 18 | 7,062,136 |
-| generator | 2372 | generator:source\|diesel | 15 | 6,337,545 |
-| leisure | 7934 | leisure\|dog_park | 17 | 6,327,674 |
-| generator | 6260 | generator:method\|battery-storage | 7 | 6,190,190 |
-| generator | 4174 | generator:output:electricity\|2.3 mw | 73 | 5,750,401 |
-| natural | 8342 | natural\|tundra | 20 | 4,163,927 |
-| natural | 8101 | natural\|landslide | 5 | 2,442,862 |
-| crop | 8250 | crop\|cana-de-açúcar | 14 | 1,934,912 |
-| wetland | 7942 | wetland\|dambo | 28 | 1,600,723 |
-| genus | 8114 | genus\|celtis | 65 | 693,939 |
-| species | 8021 | species:es\|falso pimiento | 138 | 518,947 |
-| species | 221 | species:wikidata\|q163760 | 112 | 441,244 |
-| survey_point | 4987 | survey_point\|suppl | 18 | 418,591 |
-| embankment | 7043 | embankment\|left | 11 | 357,670 |
-| diameter_crown | 5882 | diameter_crown\|9 | 10 | 305,345 |
-| species | 7953 | species\|platanus × acerifolia | 8 | 204,191 |
-| diameter_crown | 5878 | diameter_crown\|14 | 9 | 138,082 |
-| crop | 7147 | crop\|native_pasture | 6 | 138,059 |
-| taxon | 7880 | taxon\|sapindaceae | 19 | 129,205 |
-| plant | 5850 | plant:source\|oil | 10 | 128,360 |
-| trees | 7357 | trees\|pitaya_plants | 12 | 128,305 |
-| species | 6850 | species:en\|pin oak | 39 | 124,857 |
-| genus | 7546 | genus:en\|lime | 20 | 115,365 |
-| diameter_crown | 5881 | diameter_crown\|2m | 5 | 113,180 |
-| monitoring | 6394 | monitoring:water_ph\|yes | 12 | 107,842 |
-| species | 7954 | species\|platanus ×hispanica | 11 | 100,887 |
-| landform | 8100 | landform\|dune_system | 14 | 100,315 |
-| species | 7965 | species\|prunus cerasus | 29 | 100,030 |
-| generator | 6323 | generator:solar:modules\|14 | 9 | 99,247 |
-| species | 6328 | species\|populus canadensis | 23 | 95,434 |
-| boundary | 7483 | boundary\|legal | 17 | 94,892 |
-| generator | 6322 | generator:solar:modules\|3 | 9 | 90,726 |
-| genus | 7674 | genus:de\|hainbuche | 7 | 90,474 |
-| species | 8014 | species:de\|götterbaum | 27 | 87,727 |
-| protect_class | 8136 | protect_class\|3 | 9 | 86,979 |
-| species | 7981 | species:de\|hainbuche | 19 | 84,261 |
-| landcover | 8099 | landcover\|dry_swamp | 6 | 82,892 |
-| natural | 7703 | natural\|valley | 8 | 81,827 |
-| genus | 8019 | genus\|casuarina | 6 | 78,043 |
-| genus | 7950 | genus\|malus | 6 | 73,165 |
-| genus | 8105 | genus:de\|apfel | 9 | 69,296 |
-| species | 5819 | species:wikipedia\|pl:klon polny | 38 | 68,613 |
-| species | 6950 | species:it\|pioppo bianco | 28 | 67,997 |
-| genus | 226 | genus:wikidata\|q127849 | 13 | 56,537 |
-| trees | 7771 | trees\|almond_trees | 15 | 51,415 |
-| species | 7932 | species:nl\|inlandse eik | 16 | 50,113 |
-| species | 8017 | species\|eucalyptus melliodora | 6 | 48,963 |
-| protection_title | 6106 | protection_title\|environmental use | 24 | 47,061 |
-| species | 7999 | species\|prunus domestica | 9 | 40,636 |
-| species | 7722 | species\|fraxinus americana | 11 | 39,711 |
-| genus | 7271 | genus:it\|olivo | 11 | 39,249 |
-| species | 7955 | species\|acer negundo | 5 | 34,234 |
-| species | 8015 | species\|melaleuca nesophila | 11 | 34,034 |
-| taxon | 8135 | taxon\|pinus nigra | 21 | 30,507 |
-| water_source | 6052 | water_source\|tube_well | 5 | 28,555 |
-| species | 8020 | species\|quercus phellos | 8 | 26,295 |
-| survey_point | 4986 | survey_point:purpose\|vertical | 7 | 26,229 |
-| iucn_level | 6926 | iucn_level\|ii | 7 | 25,663 |
-| survey_point | 4976 | survey_point:structure\|pillar | 6 | 25,317 |
-| genus | 8113 | genus\|corylus | 5 | 23,792 |
-| species | 8016 | species\|betula utilis | 8 | 23,466 |
-| species | 7833 | species\|prunus serrulata | 5 | 21,937 |
-| species | 8012 | species:de\|silber-linde | 8 | 21,655 |
-| species | 7956 | species:pl\|klon zwyczajny | 15 | 21,495 |
-| species | 7740 | species\|pinus sylvestris | 5 | 20,562 |
-| species | 7280 | species\|pyrus calleryana chanticleer | 6 | 20,044 |
-| taxon | 7667 | taxon:en\|honeylocust | 11 | 19,579 |
-| wood | 6434 | wood\|deciduous | 6 | 18,843 |
-| generator | 6290 | generator:type\|wind_turbine | 5 | 17,409 |
-| generator | 4117 | generator:orientation\|sw | 11 | 16,948 |
-| genus | 8106 | genus:ru\|берёза | 11 | 12,949 |
-| species | 7351 | species\|adansonia grandidieri | 6 | 10,515 |
-| diameter_crown | 5883 | diameter_crown\|5.00 | 6 | 10,161 |
-| tree | 4326 | tree:ref\|1008 | 13 | 9,502 |
-| taxon | 8357 | taxon:cultivar\|plena | 8 | 9,173 |
-| tree | 4325 | tree:ref\|107 | 12 | 9,097 |
-| generator | 6321 | generator:solar:modules\|22 | 6 | 8,204 |
-| monitoring | 5769 | monitoring:water_quality\|yes | 5 | 7,377 |
-| tree | 4323 | tree:ref\|5 | 9 | 7,310 |
-| tree | 4322 | tree:ref\|2006 | 9 | 6,592 |
-| taxon | 8086 | taxon\|prunus cerasifera 'pissardii' | 7 | 6,259 |
-| species | 6849 | species:en\|maple silver | 5 | 5,292 |
-| diameter_crown | 5884 | diameter_crown\|5.5 | 5 | 5,202 |
-| tree | 4321 | tree:ref\|203 | 6 | 3,911 |
-| species | 7897 | species:ro\|paltin de câmp | 5 | 3,839 |
-| species | 8013 | species:ru\|берёза повислая | 5 | 3,821 |
-| tree | 4324 | tree:ref\|12 | 6 | 3,462 |
-
-To put this in perspective, the 26 selected base keys span 90 clusters and account for roughly 90M total occurrences, with `landuse` leading the way at about 30M occurrences.
+A quick analysis lets us see that "addr" is the elephant with 4,790 clusters and 466M occurrences. Likewise "building" has an huge number of occurrences even though its cluster count is small. The set to human verify is now manageable with 413 key families. We could also think of asking an LLM to only keep labels relevant to landuse topics based on this list.
 
 ## Ablations and following questions
 
@@ -307,7 +149,7 @@ Some decisions made in the pipeline above are worth questioning. In this section
 
 Consider the case where you would have the tag `landuse` with 286 occurrences and `Landuse` with 450 occurrences. Using the pipeline defined above, both these tags would get discarded since they both do not satisfy the condition `count_all >= 500`. We could therefore think of first standardizing these tags, essentially unifying them as a single `landuse` tag, for which the number of occurrences would be 450+286 = 736. In such a case, this would mean that the new tag would pass the condition `count_all >= 500` and as a result, not be discarded. Since this pipeline does rescue some tags which were non standardized, we can expect this new appraoch to produce more rows in the thresholded output.
 
-In fact doing standardization first and then filtering for `count_all >= 500` yields 225,684 tags and 3,368,341,528 occurrences, that is, by standardizing first, we rescued +1,561 tags and +18,325,535 occurrences compared to the filter first and standardize later approach. Since the later steps of the pipeline are designed to filter these tags down to tags of interest for environment and agriculture, it might be interesting to take the approach of standardizing first in order to rescue more tags and maybe recover more relevant tags for our topics of interest. We cannot purely compare the effect of this choice in our current setting since the clustering algorithm is not purely deterministic and different clusters would be produced in a second run therefore making the comparison unclear.
+In fact doing standardization first and then filtering for `count_all >= 500` yields 225,684 tags and 3,368,341,528 occurrences, that is, by standardizing first, we rescued +1,561 tags and +18,325,535 occurrences compared to the filter first and standardize later approach. Since the later steps of the pipeline are designed to filter these tags down to tags of interest for landuse, it might be interesting to take the approach of standardizing first in order to rescue more tags and maybe recover more relevant tags for our topics of interest. We cannot purely compare the effect of this choice in our current setting since the clustering algorithm is not purely deterministic and different clusters would be produced in a second run therefore making the comparison unclear.
 
 ### What if we use an embedding model instead of TF-IDF?
 
@@ -364,7 +206,7 @@ Therefore semantic clustering seems to be a better pick since it rescues more oc
 
 Given the previous analysis, we are going to **standardize first and then filter**. Moreover, because both pipelines presented (**TF-IDF** and the **embedding models**) yielded different results that may be complementary, we are going to keep both approaches.
 
-Once the final set of base keys has been computed for both pipelines, we will manually assess each base key for relevance to environmental and agricultural topics.
+Once the final set of base keys has been computed for both pipelines, we will manually assess each base key for relevance to landuse topics.
 
 The two preprocessing paths differ as follows:
 
@@ -386,6 +228,63 @@ The base-key families overlap on **307 keys**, with:
 - **126** keys identified only by embeddings,
 
 for a total union of **553 distinct base keys**.
+
+### Manual labeling
+
+We assessed manually the outcome of both pipeline and results break down like so:
+
+| Pipeline | Base keys in XLSX | Yes | Uncertain | No |
+| --- | ---: | ---: | ---: | ---: |
+| TF-IDF | 427 | **157** | 54 | 216 |
+| Embeddings | 433 | **169** | 57 | 207 |
+
+The two pipelines overlap on 307 base keys (120 only TF-IDF, 126 only embeddings). The union of kept base keys across both pipelines is 326 (157 + 169, after de-duplication).
+
+To put the kept superclusters in context, here is what they cover out of the full pipeline:
+
+#### TF-IDF: 157 kept out of 427 superclusters
+
+| Subset | Tags | Occurrences | Real clusters |
+| --- | ---: | ---: | ---: |
+| All cluster memberships (incl. noise) | 225,684 | 3,368,341,528 | 8,832 |
+| &nbsp;&nbsp;Real clusters (noise excluded) | 147,414 | 2,246,255,835 | 8,832 |
+| &nbsp;&nbsp;Noise (cluster_id = -1) | 78,270 | 1,122,085,693 | — |
+| Real, 157 yes kept | **14,858** | **1,167,476,227** | **859** |
+| Real, 270 not-kept (54 uncertain + 216 no) | 132,556 | 1,078,779,608 | 7,973 |
+
+#### Embeddings: 169 kept out of 433 superclusters
+
+| Subset | Tags | Occurrences | Real clusters |
+| --- | ---: | ---: | ---: |
+| All cluster memberships (incl. noise) | 225,684 | 3,368,341,528 | 4,954 |
+| &nbsp;&nbsp;Real clusters (noise excluded) | 119,186 | 2,565,137,600 | 4,954 |
+| &nbsp;&nbsp;Noise (cluster_id = -1) | 106,498 | 803,203,928 | — |
+| Real, 169 yes kept | **17,612** | **978,614,046** | **511** |
+| Real, 264 not-kept (57 uncertain + 207 no) | 101,574 | 1,586,523,554 | 4,443 |
+
+So the 157 TF-IDF "yes" labels cover 10.1 % of all real-cluster tags but 52.0 % of all real-cluster occurrences (1.17 B / 2.25 B); the 169 embeddings "yes" labels cover 14.8 % of tags and 38.2 % of occurrences. The kept superclusters are the high-volume ones (building, highway, landuse, natural, tiger, area, surface, water, wetland).
+
+A supercluster is flagged `is_polygon_friendly` when `(count_ways + count_relations) / count_all >= 0.5`, i.e. more than half of its occurrences are on closed or linear features, not isolated nodes.
+
+#### TF-IDF (157 kept)
+
+| Metric | Polygon-friendly | Point-heavy | All 157 |
+| --- | ---: | ---: | ---: |
+| Base keys (superclusters) | **110 / 157 (70.1 %)** | 47 / 157 (29.9 %) | 157 |
+| Occurrences | **1,061,684,644 (90.9 %)** | 105,791,583 (9.1 %) | 1,167,476,227 |
+| Tags (cluster members) | **12,504 (84.2 %)** | 2,354 (15.8 %) | 14,858 |
+| Real clusters | **670 (78.0 %)** | 189 (22.0 %) | 859 |
+
+#### Embeddings (169 kept)
+
+| Metric | Polygon-friendly | Point-heavy | All 169 |
+| --- | ---: | ---: | ---: |
+| Base keys (superclusters) | **118 / 169 (69.8 %)** | 51 / 169 (30.2 %) | 169 |
+| Occurrences | **798,138,011 (81.6 %)** | 180,476,035 (18.4 %) | 978,614,046 |
+| Tags (cluster members) | **15,683 (89.0 %)** | 1,929 (11.0 %) | 17,612 |
+| Real clusters | **359 (70.3 %)** | 152 (29.7 %) | 511 |
+
+Both pipelines converge on the same shape: about 70 % of kept base keys and 80–90 % of kept occurrences are polygon-friendly. The 11 TF-IDF point-heavy superclusters include the obvious point-only keys (tree, tumulus, species, taxon, seamark, place, product, geobasenhn) plus natural and removed, which flipped to point-heavy because their cluster members are dominated by `natural=tree` and other node-only tags.
 
 ## Discussion
 
