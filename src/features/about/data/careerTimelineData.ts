@@ -182,6 +182,14 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
   {
     year: "2026",
     title:
+      "Composing Verifiable Conceptual Models via Building Blocks: Towards Design-Time Verification of Agentic AI Workflows",
+    subtitle: "WSC 2026",
+    description: "<strong>Flandre N. Y.</strong>, Nwala A. C., Giabbanelli P. J.",
+    link: "https://arxiv.org/abs/2606.21565",
+  },
+  {
+    year: "2026",
+    title:
       "Distilling the Complexity of Agent-Based Simulations Into Textual Explanations via Large Language Models",
     subtitle: "Big Data and Cognitive Computing",
     description: "Flandre N. Y., Giabbanelli P. J.",
