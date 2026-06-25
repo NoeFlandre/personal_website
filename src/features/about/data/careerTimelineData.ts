@@ -23,7 +23,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     link: "https://geo-reset.sylvainlobry.com/",
     body: `Working on the <a href="https://geo-reset.sylvainlobry.com/" target="_blank" rel="noopener noreferrer">GEO-ReSeT</a> project.`,
     details: [
-      "Supervisors: Diego Marcos, Roberto Interdonato",
+      'Supervisors: <a href="https://scholar.google.com/citations?user=IUqydU0AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Diego Marcos</a>, <a href="https://scholar.google.com/citations?user=GWACYGoAAAAJ&amp;hl=it" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Roberto Interdonato</a>',
       "Team: EVERGREEN (Earth obserVation and machine lEarning foR aGRo-Environmental challENges)",
     ],
   },
