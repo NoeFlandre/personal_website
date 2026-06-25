@@ -22,6 +22,10 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
       "Conducting research on LLM-based geoparsing to link unstructured text to geographic locations and footprints",
     link: "https://geo-reset.sylvainlobry.com/",
     body: `Working on the <a href="https://geo-reset.sylvainlobry.com/" target="_blank" rel="noopener noreferrer">GEO-ReSeT</a> project.`,
+    details: [
+      "Supervisors: Diego Marcos, Roberto Interdonato",
+      "Team: EVERGREEN (Earth obserVation and machine lEarning foR aGRo-Environmental challENges)",
+    ],
   },
   {
     year: "Dec 2025 — Apr 2026",
