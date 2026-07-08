@@ -58,6 +58,13 @@ export const SOCIALS = [
     active: true,
   },
   {
+    name: "ORCID",
+    href: "https://orcid.org/0009-0002-0237-3727",
+    linkTitle: `${SITE.title} on ORCID`,
+    icon: "orcid",
+    active: true,
+  },
+  {
     name: "X",
     href: "https://x.com/NoeFlandre",
     linkTitle: `${SITE.title} on X`,
