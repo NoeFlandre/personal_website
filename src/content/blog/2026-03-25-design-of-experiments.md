@@ -4,7 +4,7 @@ description: "Using the perfect cup of chai to understand the fundamentals of De
 pubDatetime: 2026-03-25T12:00:00+01:00
 heroImage: /assets/img/design-of-experiments.jpeg
 tags: ["Post"]
-featured: false
+featured: true
 layoutStyle: "split"
 ---
 
