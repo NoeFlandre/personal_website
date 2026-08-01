@@ -32,7 +32,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     title: "Independent Researcher",
     location: "India",
     description: "Agentic AI workflows and LLM applications",
-    body: `Following graduation, I pursued independent research focusing on agentic AI workflows and the application of LLMs to both agent-based models and conceptual modeling (<a href="https://github.com/NoeFlandre/distill-abm" target="_blank" rel="noopener noreferrer">example project</a>).`,
+    body: `Following graduation, I pursued independent research focusing on agentic AI workflows and the application of LLMs to both agent-based models and conceptual modeling (<a href="https://arxiv.org/abs/2606.21565" target="_blank" rel="noopener noreferrer">example project</a>).`,
   },
   {
     year: "Jun 2025 — Nov 2025",

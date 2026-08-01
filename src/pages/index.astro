@@ -21,9 +21,9 @@ const AIRBUS_GEO_EXPLORE_URL =
 const sortedPosts = getSortedPosts(posts);
 const posts2024AndLater = sortedPosts.filter(({ data }) => data.pubDatetime.getFullYear() >= 2024);
 const homepageFeaturedTitles = [
-  "A small milestone for our empathy and simulation paper",
-  "Can we turn agent-based models into empathetic stories (without getting poetic)?",
-  "Can LLMs learn conceptual modeling from slide decks?",
+  "I am joining the EVERGREEN research team",
+  "What Is Design of Experiments? Learning It Through a Better Cup of Chai",
+  "From playing Monopoly to AI Research",
 ];
 const homepageFeaturedOrder = new Map(homepageFeaturedTitles.map((title, index) => [title, index]));
 const featuredPosts = posts2024AndLater
@@ -33,10 +33,9 @@ const featuredPosts = posts2024AndLater
       (homepageFeaturedOrder.get(a.data.title) ?? Number.MAX_SAFE_INTEGER) -
       (homepageFeaturedOrder.get(b.data.title) ?? Number.MAX_SAFE_INTEGER)
   );
-const publicationPost = featuredPosts.find(
+const publicationPost = posts2024AndLater.find(
   ({ data }) =>
-    data.title ===
-    "Can we turn agent-based models into empathetic stories (without getting poetic)?"
+    data.title === "A small milestone for our empathy and simulation paper"
 );
 const featuredWorkCards = [
   {
