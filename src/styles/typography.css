@@ -10,6 +10,15 @@
   .prose p:has(img) {
     @apply text-center text-sm opacity-80;
   }
+  .prose figure {
+    @apply mx-auto my-6 flex flex-col items-center text-center;
+  }
+  .prose figure img {
+    @apply !my-0;
+  }
+  .prose figure figcaption {
+    @apply mt-2;
+  }
   .prose thead th:first-child,
   tbody td:first-child,
   tfoot td:first-child {
