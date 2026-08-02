@@ -41,7 +41,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     location: "Toulouse, France",
     description: "Fine-tuning of Vision-Language Models on Satellite Images",
     link: AIRBUS_GEO_EXPLORE_URL,
-    body: `Under the supervision of <a href="https://www.linkedin.com/in/fahdbenatia/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Fahd Benatia</a>, I conducted research on the underlying AI model of <a href="${AIRBUS_GEO_EXPLORE_URL}" target="_blank" rel="noopener noreferrer">Airbus Geo Explore</a>. The work involved reviewing state-of-the-art fine-tuning techniques for VLMs in remote sensing, building a benchmark suite to compare models and training strategies, and implementing end-to-end fine-tuning pipelines on GCP.`,
+    body: `Under the supervision of <a href="https://www.linkedin.com/in/fahdbenatia/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Fahd Benatia</a>, I conducted research on the underlying AI model of <a href="${AIRBUS_GEO_EXPLORE_URL}" target="_blank" rel="noopener noreferrer">Airbus Geo Explore</a>. I conducted a literature review of state-of-the-art fine-tuning techniques for VLMs in remote sensing, I built a benchmark suite to compare models and training strategies, and implemented end-to-end fine-tuning pipelines on Google Cloud Platform.`,
   },
   {
     year: "Aug 2024",
@@ -140,10 +140,9 @@ export const CAREER_TIMELINE_AWARDS: TimelineItem[] = [
     year: "March 2024",
     title: "Ariane Group Hackathon (Third Prize)",
     location: "Palaiseau, France",
-    link: "https://www.linkedin.com/posts/no%C3%A9flandre_hackathon-innovation-teamwork-activity-7175134273731973122-KtDT?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD2wbbAB_3d2pVuDRoklgIPJBlWHL849Vdg",
     details: [
       "Optimized Ariane 6 boosters delivery planning (CO2 emissions, time, and cost)",
-      "Developed a web app with Streamlit and Flask, integrating a map",
+      "Developed a web app with Streamlit and Flask",
       "Managed booster logistics data with MongoDB",
     ],
   },
@@ -151,7 +150,7 @@ export const CAREER_TIMELINE_AWARDS: TimelineItem[] = [
     year: "October 2023",
     title: "Altemed Hackathon (First Prize)",
     location: "Montpellier, France",
-    link: "https://www.linkedin.com/posts/no%C3%A9flandre_hackathon-by-alt%C3%A9med-activity-7120041569784578048-zFd-?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD2wbbAB_3d2pVuDRoklgIPJBlWHL849Vdg",
+    link: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7119954103476072448/",
     details: [
       "Developed a real-time supervision dashboard and map",
       "Used Power BI to visualize data for predictive maintenance of housing equipment",
@@ -172,10 +171,9 @@ export const CAREER_TIMELINE_HUMANITARIAN_IMPACT: TimelineItem[] = [
     title: "Classroom Construction Project Management",
     subtitle: "Tsiky Zanaka",
     location: "Omuangete (near Opuwo), Namibia",
-    description:
-      "Managed an 11,500€ classroom construction project, overseeing stakeholders and field coordination",
+    description: "Helped organizing and building a 11,500 euros project",
     details: [
-      "Supported the construction of a primary classroom at Omuangete Primary School",
+      "Helped throughout the year in collecting funds for the project",
       "Contributed to a six-week on-site mission (June 30 to August 9, 2023) with student volunteers",
     ],
     link: "https://tsikyzanaka.org/2025/02/09/projet-2023/",

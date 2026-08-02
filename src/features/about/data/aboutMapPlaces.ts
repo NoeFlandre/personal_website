@@ -278,10 +278,10 @@ export const ABOUT_MAP_PLACES: AboutMapPlace[] = [
   {
     id: "namibia-humanitarian-work",
     type: "work",
-    title: "Humanitarian Mission",
+    title: "Volunteering",
     location: "Near Opuwo, Namibia",
     period: "",
-    description: "Built a classroom in a local school with community partners.",
+    description: "Helped in building a classroom for a local school",
     lat: -18.0607,
     lng: 13.839,
     image: getMapImage("namibia_near_opuwo_humanitarian.jpeg"),
