@@ -79,6 +79,13 @@ export const SOCIALS = [
     active: true,
   },
   {
+    name: "YouTube",
+    href: "https://www.youtube.com/@NoeFlandre",
+    linkTitle: `${SITE.title} on YouTube`,
+    icon: "youtube",
+    active: true,
+  },
+  {
     name: "Email",
     href: "mailto:noeflandre@gmail.com",
     linkTitle: `Email ${SITE.title}`,
