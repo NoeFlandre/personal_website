@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { SITE } from "@/site-config.js";
 
 export const GET: APIRoute = async () => {
   const markdownContent = `# Noé Flandre (@NoeFlandre)
@@ -21,7 +22,7 @@ Daily meal : curating datasets & training models
 
 ---
 
-*This is the markdown-only version of noeflandre.github.io. Visit [noeflandre.github.io](https://noeflandre.github.io) for the full experience.*`;
+*This is the markdown-only version of ${SITE.website}. Visit [${SITE.website}](${SITE.website}) for the full experience.*`;
 
   return new Response(markdownContent, {
     status: 200,
