@@ -1,9 +1,9 @@
 ---
 import { type CollectionEntry, getCollection } from "astro:content";
-import PostDetails from "@/layouts/PostDetails.astro";
+import getSortedPosts from "@/features/blog/utils/getSortedPosts";
 import { isListedPost, isUnlistedPost } from "@/features/blog/utils/postFilter";
 import { getPostStaticPathParams } from "@/features/blog/utils/staticPaths";
-import getSortedPosts from "@/features/blog/utils/getSortedPosts";
+import PostDetails from "@/layouts/PostDetails.astro";
 
 export interface Props {
   post: CollectionEntry<"blog">;

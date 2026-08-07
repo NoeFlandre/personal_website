@@ -15,15 +15,7 @@ export interface Props extends CollectionEntry<"blog"> {
 
 const { variant = "h2", data, id, filePath, body, showImage = true, showTags = true } = Astro.props;
 
-const {
-  title,
-  description,
-  pubDatetime,
-  modDatetime,
-  timezone,
-  heroImage,
-  tags,
-} = data;
+const { title, description, pubDatetime, modDatetime, timezone, heroImage, tags } = data;
 const readingTime = getDisplayReadingTime(data, body);
 const postPath = getPostPath({ id, filePath });
 
