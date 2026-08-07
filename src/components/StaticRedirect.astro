@@ -1,0 +1,25 @@
+---
+interface Props {
+  from: string;
+  to: string;
+  lang?: string;
+}
+
+const { from, to, lang = "en" } = Astro.props;
+const redirectDelaySeconds = 2;
+const canonicalURL = new URL(to, Astro.site ?? Astro.url);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting to: {to}</title>
+    <meta http-equiv="refresh" content={`${redirectDelaySeconds};url=${to}`} />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonicalURL} />
+  </head>
+  <body data-pagefind-ignore>
+    <a href={to}>Redirecting from <code>{from}</code> to <code>{to}</code></a>
+  </body>
+</html>
