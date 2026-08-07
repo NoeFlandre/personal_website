@@ -1,5 +1,6 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { BLOG_TAGS } from "@/features/blog/contentRules";
 import { SITE } from "@/site-config.js";
 import { BLOG_PATH } from "./features/blog/contentPaths.ts";
 
@@ -12,9 +13,9 @@ const blog = defineCollection({
       modDatetime: z.date().optional().nullable(),
       title: z.string(),
       featured: z.boolean().optional(),
-      draft: z.boolean().optional(),
-      unlisted: z.boolean().optional(),
-      tags: z.array(z.string()).default(["Post"]),
+      draft: z.boolean().default(false),
+      unlisted: z.boolean().default(false),
+      tags: z.array(z.enum(BLOG_TAGS)).length(1).default(["Post"]),
       ogImage: image().or(z.string()).optional(),
       heroImage: z.string().optional(),
       description: z.string(),

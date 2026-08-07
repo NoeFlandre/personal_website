@@ -29,6 +29,10 @@ export function isPostVisible(
   return isListedPost(data) && (isDev || isPublishTimePassed);
 }
 
+export function isPostRoutable(data: BlogPostData, options: VisibilityOptions = {}) {
+  return isPostVisible(data, options) || isUnlistedPost(data);
+}
+
 const postFilter = ({ data }: CollectionEntry<"blog">) => {
   return isPostVisible(data);
 };

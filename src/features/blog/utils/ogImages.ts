@@ -1,5 +1,6 @@
 import type { CollectionEntry } from "astro:content";
+import { isPostRoutable } from "./postFilter.ts";
 
 export function shouldGenerateDynamicOgImage(post: Pick<CollectionEntry<"blog">, "data">): boolean {
-  return !post.data.draft && !post.data.ogImage;
+  return isPostRoutable(post.data) && !post.data.ogImage;
 }

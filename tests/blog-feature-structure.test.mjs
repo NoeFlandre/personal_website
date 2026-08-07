@@ -8,7 +8,12 @@ import { shouldGenerateDynamicOgImage } from "../src/features/blog/utils/ogImage
 import { getPostPath } from "../src/features/blog/utils/postPath.ts";
 import getPostsByGroupCondition from "../src/features/blog/utils/getPostsByGroupCondition.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
-import { isDraftFreePost, isListedPost, isUnlistedPost } from "../src/features/blog/utils/postFilter.ts";
+import {
+  isDraftFreePost,
+  isListedPost,
+  isPostRoutable,
+  isUnlistedPost,
+} from "../src/features/blog/utils/postFilter.ts";
 import { getPostStaticPathParams } from "../src/features/blog/utils/staticPaths.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
 import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
@@ -24,6 +29,7 @@ test("blog feature utilities are available from the feature-local structure", ()
   assert.equal(typeof getPostsByTag, "function");
   assert.equal(typeof isDraftFreePost, "function");
   assert.equal(typeof isListedPost, "function");
+  assert.equal(typeof isPostRoutable, "function");
   assert.equal(typeof isUnlistedPost, "function");
   assert.equal(typeof getPostStaticPathParams, "function");
   assert.equal(typeof getSortedPosts, "function");
