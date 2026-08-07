@@ -137,7 +137,8 @@ export default defineConfig({
       workbox: {
         navigateFallback: "/404",
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-        globPatterns: ["**/*.{css,js,html,svg,png,jpg,jpeg,gif,webp,woff,woff2,ttf,eot,ico}"],
+        // Keep media out of the install-time cache; images are cached on demand below.
+        globPatterns: ["**/*.{css,js,html,woff,woff2,ttf,eot,ico}"],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
