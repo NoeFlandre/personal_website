@@ -1,11 +1,11 @@
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
-import { isDraftFreePost } from "@/features/blog/utils/postFilter";
+import { isPostRoutable } from "@/features/blog/utils/postFilter";
 import { getPostStaticPathParams } from "@/features/blog/utils/staticPaths";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => isDraftFreePost(data));
+  const posts = await getCollection("blog", ({ data }) => isPostRoutable(data));
 
   return posts.map((post) => ({
     params: getPostStaticPathParams(post),

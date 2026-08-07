@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
+import { BLOG_TAGS } from "../src/features/blog/contentRules.ts";
 
-const allowedTags = new Set(["Publication", "Paper Review", "Project", "Post"]);
+const allowedTags = new Set(BLOG_TAGS);
 const blogDir = new URL("../src/content/blog", import.meta.url);
 
 test("blog posts use exactly one supported top-level tag", () => {

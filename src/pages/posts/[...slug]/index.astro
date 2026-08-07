@@ -1,7 +1,7 @@
 ---
 import { type CollectionEntry, getCollection } from "astro:content";
 import getSortedPosts from "@/features/blog/utils/getSortedPosts";
-import { isListedPost, isUnlistedPost } from "@/features/blog/utils/postFilter";
+import { isPostRoutable } from "@/features/blog/utils/postFilter";
 import { getPostStaticPathParams } from "@/features/blog/utils/staticPaths";
 import PostDetails from "@/layouts/PostDetails.astro";
 
@@ -10,20 +10,12 @@ export interface Props {
 }
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => isListedPost(data));
-  const postResult = posts.map((post) => ({
+  const posts = await getCollection("blog", ({ data }) => isPostRoutable(data));
+
+  return posts.map((post) => ({
     params: getPostStaticPathParams(post),
     props: { post },
   }));
-
-  // Also include unlisted posts so they can be accessed via direct URL
-  const unlistedPosts = await getCollection("blog", ({ data }) => isUnlistedPost(data));
-  const unlistedResult = unlistedPosts.map((post) => ({
-    params: getPostStaticPathParams(post),
-    props: { post },
-  }));
-
-  return [...postResult, ...unlistedResult];
 }
 
 const { post } = Astro.props;

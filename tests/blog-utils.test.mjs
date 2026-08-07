@@ -16,6 +16,7 @@ import postFilter, {
   isDraftFreePost,
   isListedPost,
   isPostVisible,
+  isPostRoutable,
   isUnlistedPost,
 } from "../src/features/blog/utils/postFilter.ts";
 
@@ -99,6 +100,34 @@ test("isPostVisible handles drafts, unlisted posts, future posts, and dev mode",
     isPostVisible(
       { ...baseline, pubDatetime: "2099-01-01T00:00:00.000Z" },
       { now: Date.now(), isDev: true }
+    ),
+    true
+  );
+});
+
+test("isPostRoutable includes published and unlisted posts but excludes drafts and future listed posts", () => {
+  const now = Date.parse("2025-01-02T00:00:00.000Z");
+  const published = {
+    pubDatetime: "2025-01-01T00:00:00.000Z",
+    draft: false,
+    unlisted: false,
+    tags: ["Post"],
+  };
+
+  assert.equal(isPostRoutable(published, { now, isDev: false }), true);
+  assert.equal(isPostRoutable({ ...published, unlisted: true }, { now, isDev: false }), true);
+  assert.equal(isPostRoutable({ ...published, draft: true }, { now, isDev: false }), false);
+  assert.equal(
+    isPostRoutable(
+      { ...published, pubDatetime: "2099-01-01T00:00:00.000Z" },
+      { now, isDev: false }
+    ),
+    false
+  );
+  assert.equal(
+    isPostRoutable(
+      { ...published, pubDatetime: "2099-01-01T00:00:00.000Z", unlisted: true },
+      { now, isDev: false }
     ),
     true
   );
@@ -217,10 +246,36 @@ test("getReadingTimeForPost keeps the existing fallback behavior for missing pos
   assert.equal(getReadingTimeForPost({ body: "one two three four five" }), "1 min read");
 });
 
-test("shouldGenerateDynamicOgImage keeps draft and custom-og posts excluded", () => {
-  assert.equal(shouldGenerateDynamicOgImage({ data: { draft: false, ogImage: undefined } }), true);
-  assert.equal(shouldGenerateDynamicOgImage({ data: { draft: true, ogImage: undefined } }), false);
-  assert.equal(shouldGenerateDynamicOgImage({ data: { draft: false, ogImage: "/custom.png" } }), false);
+test("shouldGenerateDynamicOgImage follows routability and custom-og rules", () => {
+  const visiblePost = {
+    draft: false,
+    unlisted: false,
+    pubDatetime: "2025-01-01T00:00:00.000Z",
+    ogImage: undefined,
+  };
+
+  assert.equal(shouldGenerateDynamicOgImage({ data: visiblePost }), true);
+  assert.equal(shouldGenerateDynamicOgImage({ data: { ...visiblePost, draft: true } }), false);
+  assert.equal(
+    shouldGenerateDynamicOgImage({ data: { ...visiblePost, ogImage: "/custom.png" } }),
+    false
+  );
+  assert.equal(
+    shouldGenerateDynamicOgImage({
+      data: { ...visiblePost, pubDatetime: "2099-01-01T00:00:00.000Z" },
+    }),
+    false
+  );
+  assert.equal(
+    shouldGenerateDynamicOgImage({
+      data: {
+        ...visiblePost,
+        pubDatetime: "2099-01-01T00:00:00.000Z",
+        unlisted: true,
+      },
+    }),
+    true
+  );
 });
 
 test("getDisplayReadingTime preserves manual overrides before fallback calculation", () => {
