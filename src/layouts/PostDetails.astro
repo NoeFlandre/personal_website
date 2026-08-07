@@ -11,14 +11,14 @@ import Header from "@/components/Header.astro";
 import ShareLinks from "@/components/ShareLinks.astro";
 import StructuredData from "@/components/StructuredData.astro";
 import Tag from "@/components/Tag.astro";
-import Layout from "@/layouts/Layout.astro";
-import { SITE } from "@/site-config.js";
 import postDetailsRerunUrl from "@/features/blog/client/postDetailsRerun.js?url";
 import { getAdjacentEntries } from "@/features/blog/utils/getAdjacentEntries.js";
-import { buildPostLayoutMetadata } from "@/features/blog/utils/postLayoutMetadata";
 import { getPath } from "@/features/blog/utils/getPath";
+import { buildPostLayoutMetadata } from "@/features/blog/utils/postLayoutMetadata";
 import { countWords } from "@/features/blog/utils/readingMetrics";
 import { getDisplayReadingTime } from "@/features/blog/utils/readingTimeText";
+import Layout from "@/layouts/Layout.astro";
+import { SITE } from "@/site-config.js";
 import { slugifyStr } from "@/utils/slugify";
 
 export interface Props {
@@ -73,12 +73,12 @@ const wordCount = countWords(post.body ?? "");
       author,
       pubDatetime,
       modDatetime,
-      url: Astro.url.href,
+      url: layoutProps.canonicalURL,
       ogImage,
       tags,
       wordCount,
-      readingTime
-    }} 
+      readingTime,
+    }}
   />
   <Header />
   <BackButton />
