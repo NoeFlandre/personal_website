@@ -1,6 +1,7 @@
 ---
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+import aboutOutlineUrl from "@/features/about/client/aboutOutline.js?url";
 import { SITE } from "@/site-config.js";
 import Layout from "./Layout.astro";
 
@@ -29,7 +30,11 @@ const outlineLinks = [
 
 <Layout title={`${frontmatter.title} | ${SITE.title}`} description={frontmatter.description}>
   <Header />
-  <main id="main-content" class="mx-auto mt-8 w-full max-w-3xl px-4 pb-12">
+  <main
+    id="main-content"
+    class="mx-auto mt-8 w-full max-w-3xl px-4 pb-12"
+    data-about-outline-root
+  >
     <details class="about-outline-mobile" data-about-outline-mobile>
       <summary class="about-outline-mobile__summary">Jump To Section</summary>
       <ul class="about-outline-mobile__list">
@@ -51,91 +56,8 @@ const outlineLinks = [
   <Footer />
 </Layout>
 
-<script is:inline>
-  const initAboutOutline = () => {
-    if (document.documentElement.dataset.aboutOutlineInit === "true") return;
-
-    const links = Array.from(document.querySelectorAll("[data-outline-link]"));
-    const mobileOutlines = Array.from(document.querySelectorAll("[data-about-outline-mobile]"));
-    const sectionMap = new Map();
-
-    links.forEach((link) => {
-      const href = link.getAttribute("href");
-      if (!href || !href.startsWith("#")) return;
-      const section = document.getElementById(href.slice(1));
-      if (!section) return;
-      sectionMap.set(section.id, section);
-    });
-
-    const sections = Array.from(sectionMap.values());
-
-    if (links.length === 0 || sections.length === 0) return;
-
-    const setActive = (id) => {
-      links.forEach((link) => {
-        const isActive = link.getAttribute("href") === `#${id}`;
-        link.dataset.active = isActive ? "true" : "false";
-      });
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-
-        if (visible.length > 0) {
-          setActive(visible[0].target.id);
-        }
-      },
-      {
-        rootMargin: "-35% 0px -55% 0px",
-        threshold: [0, 1],
-      },
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    setActive(sections[0].id);
-
-    links.forEach((link) => {
-      link.addEventListener("click", (event) => {
-        const href = link.getAttribute("href");
-        if (!href || !href.startsWith("#")) return;
-        const section = document.getElementById(href.slice(1));
-        if (!section) return;
-        event.preventDefault();
-        section.scrollIntoView({ behavior: "smooth", block: "start" });
-        setActive(section.id);
-
-        const mobileDropdown = link.closest("[data-about-outline-mobile]");
-        if (mobileDropdown) {
-          mobileDropdown.removeAttribute("open");
-        }
-      });
-    });
-
-    if (mobileOutlines.length > 0) {
-      document.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof Node)) return;
-
-        mobileOutlines.forEach((mobileOutline) => {
-          if (!mobileOutline.hasAttribute("open")) return;
-          if (mobileOutline.contains(target)) return;
-          mobileOutline.removeAttribute("open");
-        });
-      });
-    }
-
-    document.documentElement.dataset.aboutOutlineInit = "true";
-  };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initAboutOutline, { once: true });
-  } else {
-    initAboutOutline();
-  }
-  document.addEventListener("astro:page-load", initAboutOutline);
+<script is:inline type="module" data-astro-rerun define:vars={{ aboutOutlineUrl }}>
+  import(aboutOutlineUrl).then(({ initAboutOutline }) => initAboutOutline());
 </script>
 
 <style>

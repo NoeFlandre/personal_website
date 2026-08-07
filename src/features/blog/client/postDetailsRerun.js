@@ -1,8 +1,15 @@
+import { createClientLifecycle } from "../../../utils/clientLifecycle.js";
 import { buildYouTubeEmbedMarkup } from "../../../utils/youtubeEmbeds.js";
 
-function createProgressBar() {
+const lifecycle = createClientLifecycle();
+let transitionHooksBound = false;
+
+function createProgressBar(signal) {
+  if (document.querySelector(".progress-container[data-post-progress]")) return;
+
   const progressContainer = document.createElement("div");
   progressContainer.className = "progress-container fixed top-0 z-10 h-1 w-full bg-background";
+  progressContainer.dataset.postProgress = "true";
 
   const progressBar = document.createElement("div");
   progressBar.className = "progress-bar h-1 w-0 bg-accent";
@@ -10,25 +17,33 @@ function createProgressBar() {
 
   progressContainer.appendChild(progressBar);
   document.body.appendChild(progressContainer);
+
+  signal.addEventListener("abort", () => progressContainer.remove(), { once: true });
 }
 
-function updateScrollProgress() {
-  document.addEventListener("scroll", () => {
+function updateScrollProgress(signal) {
+  const update = () => {
     const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
+    const scrolled = height > 0 ? Math.min(100, Math.max(0, (winScroll / height) * 100)) : 0;
     const myBar = document.getElementById("myBar");
 
     if (myBar) {
       myBar.style.width = `${scrolled}%`;
     }
-  });
+  };
+
+  document.addEventListener("scroll", update, { signal });
+  update();
 }
 
-function addHeadingLinks() {
-  const headings = Array.from(document.querySelectorAll("h2, h3, h4, h5, h6"));
+function addHeadingLinks(article, signal) {
+  const headings = Array.from(article.querySelectorAll("h2, h3, h4, h5, h6"));
+  const links = [];
 
   for (const heading of headings) {
+    if (!heading.id || heading.querySelector(":scope > .heading-link")) continue;
+
     heading.classList.add("group");
     const link = document.createElement("a");
     link.className = "heading-link ml-2 opacity-0 group-hover:opacity-100 focus:opacity-100";
@@ -39,31 +54,62 @@ function addHeadingLinks() {
     span.innerText = "#";
     link.appendChild(span);
     heading.appendChild(link);
+    links.push(link);
   }
+
+  signal.addEventListener(
+    "abort",
+    () => {
+      links.forEach((link) => {
+        link.remove();
+      });
+    },
+    { once: true }
+  );
 }
 
-function attachCopyButtons() {
+function attachCopyButtons(article, signal) {
   const copyButtonLabel = "Copy";
-  const codeBlocks = Array.from(document.querySelectorAll("pre"));
+  const codeBlocks = Array.from(article.querySelectorAll("pre"));
+  const wrappers = [];
 
   for (const codeBlock of codeBlocks) {
+    if (codeBlock.querySelector(":scope > .copy-code")) continue;
+
     const wrapper = document.createElement("div");
     wrapper.style.position = "relative";
 
     const copyButton = document.createElement("button");
     copyButton.className =
       "copy-code absolute right-3 -top-3 rounded bg-muted px-2 py-1 text-xs leading-4 text-foreground font-medium";
-    copyButton.innerHTML = copyButtonLabel;
+    copyButton.textContent = copyButtonLabel;
     codeBlock.setAttribute("tabindex", "0");
     codeBlock.appendChild(copyButton);
 
-    codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
+    codeBlock.parentNode?.insertBefore(wrapper, codeBlock);
     wrapper.appendChild(codeBlock);
+    wrappers.push({ codeBlock, copyButton, wrapper });
 
-    copyButton.addEventListener("click", async () => {
-      await copyCode(codeBlock, copyButton);
-    });
+    copyButton.addEventListener(
+      "click",
+      async () => {
+        await copyCode(codeBlock, copyButton);
+      },
+      { signal }
+    );
   }
+
+  signal.addEventListener(
+    "abort",
+    () => {
+      wrappers.forEach(({ codeBlock, copyButton, wrapper }) => {
+        if (wrapper.parentNode) wrapper.replaceWith(codeBlock);
+        copyButton.remove();
+        codeBlock.removeAttribute("tabindex");
+      });
+    },
+    { once: true }
+  );
 
   async function copyCode(block, button) {
     const code = block.querySelector("code");
@@ -78,45 +124,47 @@ function attachCopyButtons() {
   }
 }
 
-function backToTop() {
-  document.querySelector("#back-to-top")?.addEventListener("click", () => {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-  });
+function backToTop(signal) {
+  document.querySelector("#back-to-top")?.addEventListener(
+    "click",
+    () => {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    },
+    { signal }
+  );
 }
 
-function addLazyLoading() {
-  const article = document.querySelector("#article");
-  if (!article) return;
-
+function addLazyLoading(article) {
   const images = article.querySelectorAll("img:not([loading])");
   images.forEach((img) => {
     img.setAttribute("loading", "lazy");
   });
 }
 
-function setupKeyboardNavigation() {
+function setupKeyboardNavigation(signal) {
   const navContainer = document.querySelector("[data-prev-url]");
   if (!navContainer) return;
 
   const prevUrl = navContainer.getAttribute("data-prev-url");
   const nextUrl = navContainer.getAttribute("data-next-url");
 
-  document.addEventListener("keydown", (e) => {
-    if (e.target.matches('input, textarea, [contenteditable="true"]')) return;
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.target.matches('input, textarea, [contenteditable="true"]')) return;
 
-    if (e.key === "j" && nextUrl) {
-      window.location.href = nextUrl;
-    } else if (e.key === "k" && prevUrl) {
-      window.location.href = prevUrl;
-    }
-  });
+      if (e.key === "j" && nextUrl) {
+        window.location.href = nextUrl;
+      } else if (e.key === "k" && prevUrl) {
+        window.location.href = prevUrl;
+      }
+    },
+    { signal }
+  );
 }
 
-function processEmbeds() {
-  const article = document.querySelector("#article");
-  if (!article) return;
-
+function processEmbeds(article) {
   const youtubeEmbedRegex = /\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/g;
 
   const pNodes = article.querySelectorAll("p");
@@ -164,17 +212,32 @@ function processEmbeds() {
   });
 }
 
-export function initPostDetails() {
-  createProgressBar();
-  updateScrollProgress();
-  addHeadingLinks();
-  attachCopyButtons();
-  backToTop();
+function ensureTransitionHooks() {
+  if (transitionHooksBound) return;
+
+  document.addEventListener("astro:before-swap", () => lifecycle.cleanup());
   document.addEventListener("astro:after-swap", () =>
     window.scrollTo({ left: 0, top: 0, behavior: "instant" })
   );
-  addLazyLoading();
-  setupKeyboardNavigation();
-  processEmbeds();
-  document.addEventListener("astro:page-load", processEmbeds);
+  transitionHooksBound = true;
+}
+
+export function initPostDetails() {
+  const article = document.querySelector("#article");
+  if (!article) {
+    lifecycle.cleanup();
+    return;
+  }
+
+  ensureTransitionHooks();
+  lifecycle.activate(article, (signal) => {
+    createProgressBar(signal);
+    updateScrollProgress(signal);
+    addHeadingLinks(article, signal);
+    attachCopyButtons(article, signal);
+    backToTop(signal);
+    addLazyLoading(article);
+    setupKeyboardNavigation(signal);
+    processEmbeds(article);
+  });
 }
