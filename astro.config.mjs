@@ -1,4 +1,5 @@
 // @ts-check
+import { readFile, writeFile } from "node:fs/promises";
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap, { ChangeFreqEnum } from "@astrojs/sitemap";
@@ -9,8 +10,27 @@ import remarkCollapse from "remark-collapse";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { remarkLazyLoadImages } from "./src/utils/remarkLazyLoadImages.mjs";
+import { removeStylesheetLinksFromStaticRedirect } from "./src/utils/removeStylesheetLinksFromStaticRedirect.mjs";
 import { SITE } from "./src/site-config.js";
 import AstroPWA from "@vite-pwa/astro";
+
+/** @type {import("astro").AstroIntegration} */
+const stripStaticRedirectStylesheet = {
+  name: "strip-static-redirect-stylesheet",
+  hooks: {
+    "astro:build:done": async ({ dir }) => {
+      if (SITE.showArchives) return;
+
+      const archiveRedirectPath = new URL("./archives/index.html", dir);
+      const source = await readFile(archiveRedirectPath, "utf8");
+      const cleaned = removeStylesheetLinksFromStaticRedirect(source);
+
+      if (source !== cleaned) {
+        await writeFile(archiveRedirectPath, cleaned);
+      }
+    },
+  },
+};
 
 // https://astro.build/config
 export default defineConfig({
@@ -176,6 +196,7 @@ export default defineConfig({
         directoryAndTrailingSlashHandler: true,
       },
     }),
+    stripStaticRedirectStylesheet,
   ],
   vite: {
     resolve: {
