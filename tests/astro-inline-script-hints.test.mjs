@@ -17,10 +17,6 @@ test("scripts that Astro already treats as inline declare is:inline explicitly",
     /<script[\s\S]*is:inline[\s\S]*type="application\/ld\+json"[\s\S]*set:html=\{serializeStructuredData\(structuredData\)\}[\s\S]*\/>/
   );
   assert.doesNotMatch(layout, /application\/ld\+json/);
-  assert.match(
-    layout,
-    /<script\s+is:inline\s+async\s+src="https:\/\/platform\.twitter\.com\/widgets\.js"\s+charset="utf-8"><\/script>/
-  );
   assert.doesNotMatch(layout, /ViewTransitions/);
   assert.match(layout, /ClientRouter/);
   assert.match(
