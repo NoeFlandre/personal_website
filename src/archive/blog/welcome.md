@@ -37,12 +37,9 @@ const welcomePost: BlogPost = {
 };
 ```
 
-## 🐦 Social Embeds
+## 🎥 Video Embeds
 
-You can easily embed Twitter/X posts and YouTube videos using simple shortcodes in your markdown content.
-
-### Twitter Embed
-{% twitter https://x.com/OpenAI/status/1722058479122192550 %}
+You can embed YouTube videos using the supported shortcode in your markdown content.
 
 ### YouTube Embed
 {% youtube https://www.youtube.com/watch?v=dQw4w9WgXcQ %}
