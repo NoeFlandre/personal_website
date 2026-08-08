@@ -29,3 +29,11 @@ test("getYouTubeEmbedSrc builds the canonical embed URL from any supported input
   );
   assert.equal(getYouTubeEmbedSrc("abc123XYZ"), "https://www.youtube.com/embed/abc123XYZ");
 });
+
+test("YouTube embed markup rejects unsafe or malformed IDs", () => {
+  const unsafeInput = 'https://www.youtube.com/embed/abc"onload="alert(1)';
+
+  assert.equal(extractYouTubeId(unsafeInput), "");
+  assert.equal(getYouTubeEmbedSrc(unsafeInput), "https://www.youtube.com/embed/");
+  assert.doesNotMatch(buildYouTubeEmbedMarkup(unsafeInput), /onload|alert/);
+});

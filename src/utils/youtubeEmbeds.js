@@ -1,4 +1,12 @@
 const YOUTUBE_EMBED_CLASS = "youtube-embed-container";
+const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
+
+function normalizeYouTubeId(input) {
+  if (typeof input !== "string") return "";
+
+  const id = input.trim();
+  return YOUTUBE_ID_PATTERN.test(id) ? id : "";
+}
 
 export function extractYouTubeId(input) {
   if (typeof input !== "string") return "";
@@ -9,21 +17,21 @@ export function extractYouTubeId(input) {
   try {
     if (trimmedInput.includes("youtube.com/watch")) {
       const url = new URL(trimmedInput);
-      return url.searchParams.get("v") || "";
+      return normalizeYouTubeId(url.searchParams.get("v"));
     }
 
     if (trimmedInput.includes("youtu.be/")) {
-      return trimmedInput.split("youtu.be/")[1]?.split("?")[0] || "";
+      return normalizeYouTubeId(trimmedInput.split("youtu.be/")[1]?.split(/[?#]/)[0]);
     }
 
     if (trimmedInput.includes("youtube.com/embed/")) {
-      return trimmedInput.split("youtube.com/embed/")[1]?.split("?")[0] || "";
+      return normalizeYouTubeId(trimmedInput.split("youtube.com/embed/")[1]?.split(/[?#]/)[0]);
     }
   } catch (_) {
-    return trimmedInput;
+    return "";
   }
 
-  return trimmedInput;
+  return normalizeYouTubeId(trimmedInput);
 }
 
 export function getYouTubeEmbedSrc(input) {
