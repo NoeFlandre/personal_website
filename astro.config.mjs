@@ -1,17 +1,17 @@
 // @ts-check
 import { readFile, writeFile } from "node:fs/promises";
-import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap, { ChangeFreqEnum } from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
-import remarkToc from "remark-toc";
+import AstroPWA from "@vite-pwa/astro";
+import { defineConfig } from "astro/config";
+import rehypeKatex from "rehype-katex";
 import remarkCollapse from "remark-collapse";
 import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
+import remarkToc from "remark-toc";
+import { SITE } from "./src/site-config.js";
 import { remarkLazyLoadImages } from "./src/utils/remarkLazyLoadImages.mjs";
 import { removeStylesheetLinksFromStaticRedirect } from "./src/utils/removeStylesheetLinksFromStaticRedirect.mjs";
-import { SITE } from "./src/site-config.js";
-import AstroPWA from "@vite-pwa/astro";
 
 /** @type {import("astro").AstroIntegration} */
 const stripStaticRedirectStylesheet = {
@@ -39,9 +39,9 @@ export default defineConfig({
     remarkPlugins: [
       remarkMath,
       remarkToc,
-      // @ts-ignore - TypeScript has issues with remark plugin tuple syntax
+      // @ts-expect-error - TypeScript has issues with remark plugin tuple syntax
       [remarkCollapse, { test: "Table of contents" }],
-      remarkLazyLoadImages
+      remarkLazyLoadImages,
     ],
     rehypePlugins: [rehypeKatex],
     shikiConfig: {
@@ -65,7 +65,7 @@ export default defineConfig({
       },
       serialize: (item) => {
         // Remove trailing slash from URL if present (except for root)
-        if (item.url.endsWith('/') && item.url !== SITE.website + '/') {
+        if (item.url.endsWith("/") && item.url !== SITE.website + "/") {
           item.url = item.url.slice(0, -1);
         }
 
@@ -76,34 +76,38 @@ export default defineConfig({
         item.priority = 0.5;
 
         // Homepage - highest priority, frequent updates
-        if (url === SITE.website || url === SITE.website + '/') {
+        if (url === SITE.website || url === SITE.website + "/") {
           item.priority = 1.0;
           item.changefreq = ChangeFreqEnum.DAILY;
           item.lastmod = new Date().toISOString();
         }
         // Main section pages
-        else if (url.endsWith('/posts') || url.endsWith('/about') || url.endsWith('/search')) {
+        else if (url.endsWith("/posts") || url.endsWith("/about") || url.endsWith("/search")) {
           item.priority = 0.9;
           item.changefreq = ChangeFreqEnum.WEEKLY;
         }
         // Recent blog posts (2024-2025)
-        else if (url.includes('/posts/2025') || url.includes('/posts/2024')) {
+        else if (url.includes("/posts/2025") || url.includes("/posts/2024")) {
           item.priority = 0.8;
           item.changefreq = ChangeFreqEnum.WEEKLY;
         }
         // Somewhat recent posts (2020-2023)
-        else if (url.includes('/posts/2023') || url.includes('/posts/2022') ||
-          url.includes('/posts/2021') || url.includes('/posts/2020')) {
+        else if (
+          url.includes("/posts/2023") ||
+          url.includes("/posts/2022") ||
+          url.includes("/posts/2021") ||
+          url.includes("/posts/2020")
+        ) {
           item.priority = 0.6;
           item.changefreq = ChangeFreqEnum.MONTHLY;
         }
         // Older posts (2010-2019)
-        else if (url.includes('/posts/201')) {
+        else if (url.includes("/posts/201")) {
           item.priority = 0.4;
           item.changefreq = ChangeFreqEnum.YEARLY;
         }
         // Tag pages - low priority
-        else if (url.includes('/tags/')) {
+        else if (url.includes("/tags/")) {
           item.priority = 0.1;
           item.changefreq = ChangeFreqEnum.YEARLY;
         }
@@ -117,7 +121,7 @@ export default defineConfig({
         // from the actual post data, which requires more complex integration
 
         return item;
-      }
+      },
     }),
     AstroPWA({
       registerType: "autoUpdate",
@@ -125,7 +129,8 @@ export default defineConfig({
       manifest: {
         name: "Noé Flandre",
         short_name: "NoeFlandre",
-        description: "AI Research Engineer specializing in LLMs and data curation. Building at the intersection of AI and real-world systems.",
+        description:
+          "AI Research Engineer specializing in LLMs and data curation. Building at the intersection of AI and real-world systems.",
         theme_color: "#006cac",
         background_color: "#fdfdfd",
         display: "standalone",
