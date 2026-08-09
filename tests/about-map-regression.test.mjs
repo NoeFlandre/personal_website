@@ -1,5 +1,5 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
 
 import {
   getMapRetryDelayMs,
@@ -18,7 +18,7 @@ test("sortPlacesForUi keeps work first, then study, then travel", () => {
 
   const sorted = sortPlacesForUi(input);
   assert.deepEqual(
-    sorted.map(item => item.id),
+    sorted.map((item) => item.id),
     ["w", "s", "t"]
   );
 });
@@ -28,12 +28,12 @@ test("sortPlacesForUi does not mutate original input array", () => {
     { id: "a", type: "travel" },
     { id: "b", type: "work" },
   ];
-  const originalOrder = input.map(item => item.id);
+  const originalOrder = input.map((item) => item.id);
 
   sortPlacesForUi(input);
 
   assert.deepEqual(
-    input.map(item => item.id),
+    input.map((item) => item.id),
     originalOrder
   );
 });
@@ -47,7 +47,7 @@ test("sortPlacesForUi pushes unknown types to the end", () => {
 
   const sorted = sortPlacesForUi(input);
   assert.deepEqual(
-    sorted.map(item => item.id),
+    sorted.map((item) => item.id),
     ["w", "s", "u"]
   );
 });
@@ -64,7 +64,7 @@ test("parsePlacesDataset returns parsed places array for valid JSON", () => {
 test("parsePlacesDataset returns [] for invalid payloads", () => {
   assert.deepEqual(parsePlacesDataset(""), []);
   assert.deepEqual(parsePlacesDataset("not-json"), []);
-  assert.deepEqual(parsePlacesDataset("{\"foo\":1}"), []);
+  assert.deepEqual(parsePlacesDataset('{"foo":1}'), []);
 });
 
 test("getPlaceTypeLabel returns consistent copy for known and unknown types", () => {

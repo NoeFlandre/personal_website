@@ -1,6 +1,6 @@
-import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import test from "node:test";
 
 function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
@@ -10,7 +10,10 @@ test("post details rerun behavior lives in a dedicated client module", () => {
   const layout = read("src/layouts/PostDetails.astro");
   const clientModule = read("src/features/blog/client/postDetailsRerun.js");
 
-  assert.match(clientModule, /import\s+\{\s*buildYouTubeEmbedMarkup\s*\}\s+from\s+"\.\.\/\.\.\/\.\.\/utils\/youtubeEmbeds\.js";/);
+  assert.match(
+    clientModule,
+    /import\s+\{\s*buildYouTubeEmbedMarkup\s*\}\s+from\s+"\.\.\/\.\.\/\.\.\/utils\/youtubeEmbeds\.js";/
+  );
   assert.match(
     layout,
     /import\s+postDetailsRerunUrl\s+from\s+"@\/features\/blog\/client\/postDetailsRerun\.js\?url";/

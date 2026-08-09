@@ -1,5 +1,5 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
 
 import {
   CAREER_TIMELINE_AWARDS,
@@ -45,8 +45,5 @@ test("the about publications section highlights the editor's pick", () => {
   );
 
   assert.ok(empathyPaper);
-  assert.match(
-    empathyPaper.description ?? "",
-    /Selected as the Editor's Pick/
-  );
+  assert.match(empathyPaper.description ?? "", /Selected as the Editor's Pick/);
 });

@@ -1,7 +1,7 @@
-import test from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import test from "node:test";
 import matter from "gray-matter";
 import { BLOG_TAGS } from "../src/features/blog/contentRules.ts";
 
