@@ -1,5 +1,5 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
 
 import { ABOUT_MAP_PLACES } from "../src/features/about/data/aboutMapPlaces.ts";
 

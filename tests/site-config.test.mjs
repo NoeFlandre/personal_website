@@ -1,5 +1,5 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
 
 import { SHARE_LINKS, SITE, SITE_DESCRIPTION, SITE_TITLE, SOCIALS } from "../src/site-config.js";
 

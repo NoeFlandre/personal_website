@@ -1,7 +1,10 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
 
-import { buildArchivesMarkdown, buildPostsMarkdown } from "../src/features/blog/utils/markdownIndexes.ts";
+import {
+  buildArchivesMarkdown,
+  buildPostsMarkdown,
+} from "../src/features/blog/utils/markdownIndexes.ts";
 
 function createPost({
   id,

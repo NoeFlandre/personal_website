@@ -1,5 +1,5 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
 
 import { countArchivePosts, MONTH_NAMES } from "../src/features/blog/utils/archivePresentation.ts";
 import { getArchiveGroups } from "../src/features/blog/utils/getArchiveGroups.ts";

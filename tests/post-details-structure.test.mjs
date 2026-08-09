@@ -1,6 +1,6 @@
-import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import test from "node:test";
 
 test("PostDetails consumes post layout metadata without an unused canonical alias", () => {
   const postDetails = readFileSync(
@@ -9,5 +9,8 @@ test("PostDetails consumes post layout metadata without an unused canonical alia
   );
 
   assert.doesNotMatch(postDetails, /canonicalURL:\s*computedCanonicalURL/);
-  assert.match(postDetails, /const\s+\{\s*postPath,\s*ogImage,\s*layoutProps\s*\}\s*=\s*buildPostLayoutMetadata\(/);
+  assert.match(
+    postDetails,
+    /const\s+\{\s*postPath,\s*ogImage,\s*layoutProps\s*\}\s*=\s*buildPostLayoutMetadata\(/
+  );
 });

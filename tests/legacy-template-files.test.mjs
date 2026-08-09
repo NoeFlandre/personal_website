@@ -1,6 +1,6 @@
-import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
+import test from "node:test";
 
 const legacyFiles = [
   "src/layouts/BaseLayout.astro",
@@ -18,7 +18,7 @@ test("legacy template files stay removed after the layout migration", () => {
     assert.equal(
       existsSync(new URL(`../${path}`, import.meta.url)),
       false,
-      `${path} should not be reintroduced without an active caller`,
+      `${path} should not be reintroduced without an active caller`
     );
   }
 });

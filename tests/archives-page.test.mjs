@@ -1,6 +1,6 @@
-import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import test from "node:test";
 import { removeStylesheetLinksFromStaticRedirect } from "../src/utils/removeStylesheetLinksFromStaticRedirect.mjs";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
@@ -23,8 +23,10 @@ test("disabled archives render a valid noindex redirect page", () => {
 });
 
 test("redirect cleanup removes only stylesheet links from static redirects", () => {
-  const redirectMarkup = '<html><head><link rel="stylesheet" href="/styles.css"></head><body data-pagefind-ignore></body></html>';
-  const regularMarkup = '<html><head><link rel="stylesheet" href="/styles.css"></head><body></body></html>';
+  const redirectMarkup =
+    '<html><head><link rel="stylesheet" href="/styles.css"></head><body data-pagefind-ignore></body></html>';
+  const regularMarkup =
+    '<html><head><link rel="stylesheet" href="/styles.css"></head><body></body></html>';
 
   assert.doesNotMatch(removeStylesheetLinksFromStaticRedirect(redirectMarkup), /rel="stylesheet"/);
   assert.match(removeStylesheetLinksFromStaticRedirect(regularMarkup), /rel="stylesheet"/);
