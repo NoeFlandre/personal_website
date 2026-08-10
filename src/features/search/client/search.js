@@ -80,7 +80,6 @@ export function initSearch() {
       if (signal.aborted || root.querySelector("form")) return;
 
       try {
-        // @ts-expect-error — Missing types for @pagefind/default-ui package.
         const { PagefindUI } = await loadPagefind();
         if (signal.aborted || root.querySelector("form")) return;
 
