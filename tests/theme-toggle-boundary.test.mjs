@@ -138,3 +138,7 @@ test("theme script keeps one manual preference path", () => {
   assert.match(themeScript, /function setPreference\(\)/);
   assert.doesNotMatch(themeScript, /isManualChange|setPreference\(true\)/);
 });
+
+test("theme timestamp parsing declares a decimal radix", () => {
+  assert.match(themeScript, /parseInt\(themeSetTimestamp, 10\)/);
+});
