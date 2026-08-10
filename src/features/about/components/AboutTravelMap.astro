@@ -90,6 +90,22 @@ const filters = [
   } from "../utils/aboutMap.js";
 
   (() => {
+    let lifecycleController = new AbortController();
+
+    const getLifecycleSignal = () => {
+      if (lifecycleController.signal.aborted) {
+        lifecycleController = new AbortController();
+      }
+      return lifecycleController.signal;
+    };
+
+    const scheduleTimeout = (callback, delay) => {
+      const signal = getLifecycleSignal();
+      const timeoutId = setTimeout(callback, delay);
+      signal.addEventListener("abort", () => clearTimeout(timeoutId), { once: true });
+      return timeoutId;
+    };
+
     const markerIcon = (placeType, selected = false) =>
       L.divIcon({
         className: "",
@@ -140,6 +156,8 @@ const filters = [
         return;
       }
 
+      const signal = getLifecycleSignal();
+
       if (mapElement.classList.contains("leaflet-container")) {
         mapElement.innerHTML = "";
         mapElement.classList.remove("leaflet-container");
@@ -165,24 +183,29 @@ const filters = [
       if (root.dataset.mapUiBindings !== "true") {
         cardsPrev?.addEventListener("click", () => {
           scrollCards(-1);
-        });
+        }, { signal });
 
         cardsNext?.addEventListener("click", () => {
           scrollCards(1);
-        });
+        }, { signal });
 
         cardsViewport?.addEventListener("scroll", () => {
           updateCardsNav();
-        });
+        }, { signal });
 
-        window.addEventListener("resize", () => {
-          updateCardsNav();
-        });
+        window.addEventListener("resize", updateCardsNav, { signal });
 
         root.dataset.mapUiBindings = "true";
       }
 
       let map = null;
+      const removeMap = () => {
+        if (!map) return;
+        map.remove();
+        map = null;
+      };
+
+      signal.addEventListener("abort", removeMap, { once: true });
 
       try {
         map = L.map(mapElement, {
@@ -336,7 +359,7 @@ const filters = [
               filterButton.dataset.active = filterButton === button ? "true" : "false";
             });
             updateVisibility();
-          });
+          }, { signal });
         });
 
         cardButtons.forEach(card => {
@@ -378,30 +401,29 @@ const filters = [
 
             map.once("moveend", onMoveEnd);
             map.flyTo(targetCenter, targetZoom, { duration: 0.72, easeLinearity: 0.25 });
-            fallbackTimer = setTimeout(() => {
+            fallbackTimer = scheduleTimeout(() => {
               map.off("moveend", onMoveEnd);
               revealPopup();
             }, 900);
-          });
+          }, { signal });
         });
 
         updateVisibility();
 
-        setTimeout(() => {
+        scheduleTimeout(() => {
           map.invalidateSize();
           updateCardsNav();
         }, 80);
 
-        setTimeout(() => {
+        scheduleTimeout(() => {
           map.invalidateSize();
         }, 400);
 
         root.dataset.mapInitState = "ready";
         root.dataset.mapRetryCount = "0";
       } catch (error) {
-        if (map) {
-          map.remove();
-        }
+        removeMap();
+        signal.removeEventListener("abort", removeMap);
         root.dataset.mapInitState = "idle";
         throw error;
       }
@@ -423,7 +445,7 @@ const filters = [
           if (!shouldRetryMapInit(retries)) return;
           const nextAttempt = retries + 1;
           root.dataset.mapRetryCount = String(nextAttempt);
-          setTimeout(() => {
+          scheduleTimeout(() => {
             try {
               init(root);
             } catch {
@@ -440,6 +462,9 @@ const filters = [
       setupWithRetry();
     }
 
+    document.addEventListener("astro:before-swap", () => {
+      lifecycleController.abort();
+    });
     document.addEventListener("astro:page-load", setupWithRetry);
     document.addEventListener("astro:after-swap", setup);
   })();
