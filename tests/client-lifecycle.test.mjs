@@ -50,6 +50,7 @@ class TrackedEventTarget extends EventTarget {
 class FakeElement extends TrackedEventTarget {
   constructor() {
     super();
+    this.attributes = new Map();
     this.children = [];
     this.dataset = {};
     this.style = {};
@@ -57,8 +58,18 @@ class FakeElement extends TrackedEventTarget {
   }
 
   appendChild(child) {
+    child.parentNode?.removeChild(child);
     child.parentNode = this;
     this.children.push(child);
+    return child;
+  }
+
+  insertBefore(child, reference) {
+    child.parentNode?.removeChild(child);
+    const index = this.children.indexOf(reference);
+    if (index < 0) return this.appendChild(child);
+    child.parentNode = this;
+    this.children.splice(index, 0, child);
     return child;
   }
 
@@ -71,6 +82,25 @@ class FakeElement extends TrackedEventTarget {
 
   remove() {
     this.parentNode?.removeChild(this);
+  }
+
+  replaceWith(replacement) {
+    const parent = this.parentNode;
+    if (!parent) return;
+    const index = parent.children.indexOf(this);
+    if (index < 0) return;
+    replacement.parentNode?.removeChild(replacement);
+    replacement.parentNode = parent;
+    parent.children[index] = replacement;
+    this.parentNode = null;
+  }
+
+  setAttribute(name, value) {
+    this.attributes.set(name, String(value));
+  }
+
+  removeAttribute(name) {
+    this.attributes.delete(name);
   }
 
   querySelector() {
@@ -129,6 +159,40 @@ function withGlobals(values, callback) {
       else globalThis[key] = value;
     }
   }
+}
+
+async function withAsyncGlobals(values, callback) {
+  const previous = new Map(
+    Object.keys(values).map((key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)])
+  );
+
+  for (const [key, value] of Object.entries(values)) {
+    Object.defineProperty(globalThis, key, {
+      configurable: true,
+      value,
+      writable: true,
+    });
+  }
+
+  try {
+    return await callback();
+  } finally {
+    for (const [key, descriptor] of previous) {
+      if (descriptor) Object.defineProperty(globalThis, key, descriptor);
+      else delete globalThis[key];
+    }
+  }
+}
+
+function createCopyArticle() {
+  const article = new FakeElement();
+  const codeBlock = new FakeElement();
+  const code = new FakeElement();
+  code.innerText = "const answer = 42;";
+  codeBlock.querySelector = (selector) => (selector === "code" ? code : null);
+  article.querySelectorAll = (selector) => (selector === "pre" ? [codeBlock] : []);
+  article.appendChild(codeBlock);
+  return { article, codeBlock };
 }
 
 test("createClientLifecycle activates one root and aborts it before the next", () => {
@@ -208,6 +272,71 @@ test("initPostDetails does not duplicate listeners and cleans up before a swap",
       assert.equal(document.listenerCount("scroll"), 1);
       assert.equal(document.listenerCount("astro:before-swap"), 1);
       assert.equal(document.body.children.length, 1);
+    }
+  );
+});
+
+test("copy feedback reset is canceled when the post lifecycle ends", async () => {
+  const document = new FakeDocument();
+  const { article, codeBlock } = createCopyArticle();
+  document.currentArticle = article;
+
+  await withAsyncGlobals(
+    {
+      document,
+      navigator: { clipboard: { writeText: async () => {} } },
+      NodeFilter: { SHOW_TEXT: 4 },
+      window: { scrollTo() {} },
+    },
+    async () => {
+      initPostDetails();
+      const copyButton = codeBlock.children.find((child) => child.className?.includes("copy-code"));
+      assert.ok(copyButton);
+
+      copyButton.dispatchEvent(new Event("click"));
+      await Promise.resolve();
+      await Promise.resolve();
+      assert.equal(copyButton.innerText, "Copied");
+
+      document.currentArticle = null;
+      initPostDetails();
+      await new Promise((resolve) => setTimeout(resolve, 750));
+
+      assert.equal(copyButton.innerText, "Copied");
+    }
+  );
+});
+
+test("copy completion does not update detached UI after the post lifecycle ends", async () => {
+  const document = new FakeDocument();
+  const { article, codeBlock } = createCopyArticle();
+  document.currentArticle = article;
+  let resolveClipboardWrite;
+  const clipboardWrite = new Promise((resolve) => {
+    resolveClipboardWrite = resolve;
+  });
+
+  await withAsyncGlobals(
+    {
+      document,
+      navigator: { clipboard: { writeText: () => clipboardWrite } },
+      NodeFilter: { SHOW_TEXT: 4 },
+      window: { scrollTo() {} },
+    },
+    async () => {
+      initPostDetails();
+      const copyButton = codeBlock.children.find((child) => child.className?.includes("copy-code"));
+      assert.ok(copyButton);
+
+      copyButton.dispatchEvent(new Event("click"));
+      await Promise.resolve();
+      document.currentArticle = null;
+      initPostDetails();
+      resolveClipboardWrite();
+      await Promise.resolve();
+      await Promise.resolve();
+
+      assert.notEqual(copyButton.innerText, "Copied");
     }
   );
 });
