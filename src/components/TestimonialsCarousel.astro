@@ -110,6 +110,8 @@ const testimonials = [
 
 <script is:inline>
   (() => {
+    const cleanups = [];
+
     const init = (root) => {
       if (!root || root.dataset.carouselInit === "true") return;
       root.dataset.carouselInit = "true";
@@ -168,8 +170,11 @@ const testimonials = [
         slides.forEach((slide) => {
           resizeObserver.observe(slide);
         });
+
+        cleanups.push(() => resizeObserver.disconnect());
       } else {
         window.addEventListener("resize", syncViewportHeight);
+        cleanups.push(() => window.removeEventListener("resize", syncViewportHeight));
       }
 
       update();
@@ -181,6 +186,12 @@ const testimonials = [
         .forEach((root) => init(root));
     };
 
+    const teardown = () => {
+      cleanups.forEach((cleanup) => cleanup());
+      cleanups.length = 0;
+      document.removeEventListener("astro:page-load", setup);
+    };
+
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", setup, { once: true });
     } else {
@@ -188,5 +199,6 @@ const testimonials = [
     }
 
     document.addEventListener("astro:page-load", setup);
+    document.addEventListener("astro:before-swap", teardown, { once: true });
   })();
 </script>
