@@ -16,3 +16,14 @@ test("PWA precaches lightweight assets and caches images at runtime", () => {
   assert.doesNotMatch(globPatterns, /png|jpe?g|gif|webp|svg/);
   assert.match(source, /urlPattern:\s*\/\\\.\(\?:png\|jpg\|jpeg\|svg\|gif\|webp\)/);
 });
+
+test("remark-collapse configuration uses a typed plugin without compiler suppressions", () => {
+  const config = readFileSync(new URL("../astro.config.mjs", import.meta.url), "utf8");
+  const declarations = readFileSync(new URL("../src/types.d.ts", import.meta.url), "utf8");
+
+  assert.doesNotMatch(config, /@ts-(?:expect-error|ignore|nocheck)/);
+  assert.match(
+    declarations,
+    /remarkCollapse:\s*import\("unified"\)\.Plugin<\[CollapseOptions\],\s*import\("mdast"\)\.Root>/
+  );
+});
