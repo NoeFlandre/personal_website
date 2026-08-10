@@ -79,9 +79,9 @@ const filters = [
 </section>
 
 <script>
-  // @ts-nocheck
   import L from "leaflet";
   import "leaflet/dist/leaflet.css";
+  import type { AboutMapPlace, PlaceType } from "../data/aboutMapPlaces.ts";
   import {
     getMapRetryDelayMs,
     getPlaceTypeLabel,
@@ -90,6 +90,8 @@ const filters = [
   } from "../utils/aboutMap.js";
 
   (() => {
+    type PlaceFilter = PlaceType | "all";
+
     let lifecycleController = new AbortController();
 
     const getLifecycleSignal = () => {
@@ -99,14 +101,14 @@ const filters = [
       return lifecycleController.signal;
     };
 
-    const scheduleTimeout = (callback, delay) => {
+    const scheduleTimeout = (callback: () => void, delay: number) => {
       const signal = getLifecycleSignal();
       const timeoutId = setTimeout(callback, delay);
       signal.addEventListener("abort", () => clearTimeout(timeoutId), { once: true });
       return timeoutId;
     };
 
-    const markerIcon = (placeType, selected = false) =>
+    const markerIcon = (placeType: PlaceType, selected = false) =>
       L.divIcon({
         className: "",
         html: `<span class="about-map-marker about-map-marker--${placeType}${selected ? " is-selected" : ""}"></span>`,
@@ -115,7 +117,7 @@ const filters = [
         popupAnchor: [0, -12],
       });
 
-    const popupMarkup = place =>
+    const popupMarkup = (place: AboutMapPlace) =>
       `<div class="about-map-popup">
         <img src="${place.image}" alt="Photo placeholder for ${place.title}" loading="lazy" />
         <div>
@@ -138,18 +140,18 @@ const filters = [
       return L.point(padding, padding);
     };
 
-    const init = root => {
+    const init = (root: HTMLElement) => {
       if (!root) return;
       if (root.dataset.mapInitState === "ready" || root.dataset.mapInitState === "loading") return;
       root.dataset.mapInitState = "loading";
 
-      const mapElement = root.querySelector("[data-map-canvas]");
-      const filterButtons = Array.from(root.querySelectorAll("[data-filter]"));
-      const cardButtons = Array.from(root.querySelectorAll("[data-place-id]"));
-      const cardsViewport = root.querySelector("[data-cards-viewport]");
-      const cardsPrev = root.querySelector("[data-cards-prev]");
-      const cardsNext = root.querySelector("[data-cards-next]");
-      const mapPlaces = parsePlacesDataset(root.dataset.places);
+      const mapElement = root.querySelector<HTMLElement>("[data-map-canvas]");
+      const filterButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-filter]"));
+      const cardButtons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-place-id]"));
+      const cardsViewport = root.querySelector<HTMLElement>("[data-cards-viewport]");
+      const cardsPrev = root.querySelector<HTMLButtonElement>("[data-cards-prev]");
+      const cardsNext = root.querySelector<HTMLButtonElement>("[data-cards-next]");
+      const mapPlaces = parsePlacesDataset(root.dataset.places) as AboutMapPlace[];
 
       if (!mapElement || filterButtons.length === 0 || cardButtons.length === 0 || mapPlaces.length === 0) {
         root.dataset.mapInitState = "idle";
@@ -172,7 +174,7 @@ const filters = [
         cardsNext.disabled = !canScroll || cardsViewport.scrollLeft >= maxScrollLeft - 2;
       };
 
-      const scrollCards = direction => {
+      const scrollCards = (direction: -1 | 1) => {
         if (!cardsViewport) return;
         cardsViewport.scrollBy({
           left: direction * cardsViewport.clientWidth,
@@ -198,20 +200,21 @@ const filters = [
         root.dataset.mapUiBindings = "true";
       }
 
-      let map = null;
+      let activeMap: L.Map | null = null;
       const removeMap = () => {
-        if (!map) return;
-        map.remove();
-        map = null;
+        if (!activeMap) return;
+        activeMap.remove();
+        activeMap = null;
       };
 
       signal.addEventListener("abort", removeMap, { once: true });
 
       try {
-        map = L.map(mapElement, {
+        const map = L.map(mapElement, {
           zoomControl: false,
           worldCopyJump: true,
         }).setView([23, 4], 2);
+        activeMap = map;
 
         L.control
           .zoom({
@@ -224,18 +227,18 @@ const filters = [
           attribution: "&copy; OpenStreetMap contributors",
         }).addTo(map);
 
-        const markersById = new Map();
-        let activeFilter = "all";
-        let activePlaceId = null;
+        const markersById = new Map<string, L.Marker>();
+        let activeFilter: PlaceFilter = "all";
+        let activePlaceId: string | null = null;
 
-        const applyPopupViewportOptions = popup => {
+        const applyPopupViewportOptions = (popup: L.Popup) => {
           if (!popup) return;
           popup.options.maxWidth = popupMaxWidth();
           popup.options.autoPanPaddingTopLeft = popupPanPadding();
           popup.options.autoPanPaddingBottomRight = popupPanPadding();
         };
 
-        const openPopupFromCardSelection = marker => {
+        const openPopupFromCardSelection = (marker: L.Marker) => {
           if (!map.hasLayer(marker)) return;
           const popup = marker.getPopup();
           if (!popup) {
@@ -252,7 +255,7 @@ const filters = [
           popup.options.keepInView = keepInView;
         };
 
-        const getCardSelectionCenter = (place, targetZoom) => {
+        const getCardSelectionCenter = (place: AboutMapPlace, targetZoom: number) => {
           const isMobile = typeof window !== "undefined" && window.innerWidth <= 520;
           const mapHeight = mapElement.clientHeight || 0;
           const verticalOffset = Math.round(
@@ -262,7 +265,7 @@ const filters = [
           return map.unproject(projected, targetZoom);
         };
 
-        const highlight = placeId => {
+        const highlight = (placeId: string) => {
           activePlaceId = placeId;
           mapPlaces.forEach(place => {
             const marker = markersById.get(place.id);
@@ -309,12 +312,12 @@ const filters = [
         });
 
         const updateVisibility = () => {
-          const visiblePositions = [];
+          const visiblePositions: L.LatLngExpression[] = [];
 
           mapPlaces.forEach(place => {
             const isVisible = activeFilter === "all" || place.type === activeFilter;
             const marker = markersById.get(place.id);
-            const card = root.querySelector(`[data-place-id="${place.id}"]`);
+            const card = root.querySelector<HTMLButtonElement>(`[data-place-id="${place.id}"]`);
 
             if (card) {
               card.dataset.hidden = isVisible ? "false" : "true";
@@ -352,7 +355,7 @@ const filters = [
 
         filterButtons.forEach(button => {
           button.addEventListener("click", () => {
-            const filter = button.dataset.filter;
+            const filter = button.dataset.filter as PlaceFilter | undefined;
             if (!filter) return;
             activeFilter = filter;
             filterButtons.forEach(filterButton => {
@@ -390,7 +393,7 @@ const filters = [
             map.stop();
             map.closePopup();
 
-            let fallbackTimer = null;
+            let fallbackTimer: ReturnType<typeof setTimeout> | null = null;
             const onMoveEnd = () => {
               if (fallbackTimer) {
                 clearTimeout(fallbackTimer);
@@ -430,13 +433,13 @@ const filters = [
     };
 
     const setup = () => {
-      document.querySelectorAll("[data-about-map-root]").forEach(root => {
+      document.querySelectorAll<HTMLElement>("[data-about-map-root]").forEach(root => {
         init(root);
       });
     };
 
     const setupWithRetry = () => {
-      document.querySelectorAll("[data-about-map-root]").forEach(root => {
+      document.querySelectorAll<HTMLElement>("[data-about-map-root]").forEach(root => {
         try {
           init(root);
         } catch (error) {

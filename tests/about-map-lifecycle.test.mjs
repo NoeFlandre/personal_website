@@ -7,6 +7,10 @@ const source = readFileSync(
   "utf8"
 );
 
+test("AboutTravelMap stays compiler checked without blanket suppressions", () => {
+  assert.doesNotMatch(source, /@ts-(?:expect-error|ignore|nocheck)/);
+});
+
 test("AboutTravelMap releases browser resources before Astro swaps pages", () => {
   assert.match(source, /let lifecycleController = new AbortController\(\)/);
   assert.match(source, /signal\.addEventListener\("abort", removeMap, \{ once: true \}\)/);
