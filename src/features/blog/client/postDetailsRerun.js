@@ -116,11 +116,13 @@ function attachCopyButtons(article, signal) {
     const text = code?.innerText;
 
     await navigator.clipboard.writeText(text ?? "");
+    if (signal.aborted) return;
     button.innerText = "Copied";
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       button.innerText = copyButtonLabel;
     }, 700);
+    signal.addEventListener("abort", () => clearTimeout(timeoutId), { once: true });
   }
 }
 
