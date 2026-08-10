@@ -21,10 +21,6 @@ if (themeSetTimestamp) {
   }
 }
 
-function getSystemTheme() {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
 function getPreferredTheme() {
   // If user manually set a theme, use it
   if (userHasManuallySetTheme && currentTheme) {
@@ -37,16 +33,9 @@ function getPreferredTheme() {
 
 let themeValue = getPreferredTheme();
 
-function setPreference(isManualChange = false) {
-  if (isManualChange) {
-    // User clicked the toggle button
-    localStorage.setItem("theme", themeValue);
-    localStorage.setItem("themeSetTimestamp", Date.now().toString());
-    userHasManuallySetTheme = true;
-  } else if (!userHasManuallySetTheme) {
-    // System changed and user hasn't manually set theme
-    // Don't save to localStorage, just update the display
-  }
+function setPreference() {
+  localStorage.setItem("theme", themeValue);
+  localStorage.setItem("themeSetTimestamp", Date.now().toString());
   reflectPreference();
 }
 
@@ -80,13 +69,13 @@ window.onload = () => {
       // Use View Transitions API if available
       if (!document.startViewTransition) {
         // Fallback for browsers that don't support View Transitions
-        setPreference(true); // true = manual change
+        setPreference();
         return;
       }
 
       // Use View Transitions for smooth theme switching
       document.startViewTransition(() => {
-        setPreference(true); // true = manual change
+        setPreference();
       });
     });
   }
