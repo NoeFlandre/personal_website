@@ -9,6 +9,7 @@ const legacyFiles = [
   "src/components/Sidebar.astro",
   "src/components/Breadcrumb.astro",
   "src/components/HeaderLink.astro",
+  "src/components/Link.astro",
   "src/components/NewsletterForm.astro",
   "src/components/SocialIcons.astro",
 ];
