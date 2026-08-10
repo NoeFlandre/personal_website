@@ -18,6 +18,8 @@ function runThemeScript({ initialStorage = {}, withViewTransitions = false } = {
   const storage = new Map(Object.entries(initialStorage));
   const rootAttributes = new Map();
   const buttonAttributes = new Map();
+  const loadHandlers = [];
+  let existingLoadHandlerCalls = 0;
   let clickHandler;
 
   const button = {
@@ -57,10 +59,18 @@ function runThemeScript({ initialStorage = {}, withViewTransitions = false } = {
       storage.set(key, value);
     },
   };
-  const window = {};
+  const window = {
+    addEventListener(eventName, handler) {
+      if (eventName === "load") loadHandlers.push(handler);
+    },
+    onload() {
+      existingLoadHandlerCalls += 1;
+    },
+  };
 
   runInNewContext(themeScript, { Date: FixedDate, document, localStorage, window });
   window.onload();
+  for (const loadHandler of loadHandlers) loadHandler();
 
   return {
     click() {
@@ -69,6 +79,7 @@ function runThemeScript({ initialStorage = {}, withViewTransitions = false } = {
     },
     getButtonLabel: () => buttonAttributes.get("aria-label"),
     getColorScheme: () => document.body.style.colorScheme,
+    getExistingLoadHandlerCalls: () => existingLoadHandlerCalls,
     getStoredValue: (key) => storage.get(key) ?? null,
     getTheme: () => rootAttributes.get("data-theme"),
   };
@@ -83,6 +94,12 @@ test("the active theme toggle stays owned by Header and its early script", () =>
   assert.match(header, /id="theme-btn"/);
   assert.match(layout, /<script\s+is:inline\s+src="\/toggle-theme\.js"><\/script>/);
   assert.match(themeScript, /document\.querySelector\("#theme-btn"\)/);
+});
+
+test("theme initialization preserves an existing window load handler", () => {
+  const theme = runThemeScript();
+
+  assert.equal(theme.getExistingLoadHandlerCalls(), 1);
 });
 
 test("theme script defaults to dark without saving an automatic preference", () => {
