@@ -39,7 +39,6 @@ export default defineConfig({
     remarkPlugins: [
       remarkMath,
       remarkToc,
-      // @ts-expect-error - TypeScript has issues with remark plugin tuple syntax
       [remarkCollapse, { test: "Table of contents" }],
       remarkLazyLoadImages,
     ],
