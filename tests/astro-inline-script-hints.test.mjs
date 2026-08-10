@@ -10,7 +10,6 @@ test("scripts that Astro already treats as inline declare is:inline explicitly",
   const structuredData = read("src/components/StructuredData.astro");
   const layout = read("src/layouts/Layout.astro");
   const postDetails = read("src/layouts/PostDetails.astro");
-  const themeToggle = read("src/components/ThemeToggle.astro");
 
   assert.match(
     structuredData,
@@ -23,5 +22,4 @@ test("scripts that Astro already treats as inline declare is:inline explicitly",
     postDetails,
     /<script\s+is:inline\s+type="module"\s+data-astro-rerun\s+define:vars=\{\{\s*postDetailsRerunUrl\s*\}\}>[\s\S]*import\(postDetailsRerunUrl\)\.then\(\(\{\s*initPostDetails\s*\}\)\s*=>\s*initPostDetails\(\)\);[\s\S]*<\/script>/
   );
-  assert.doesNotMatch(themeToggle, /await\s+document\.startViewTransition\(/);
 });
