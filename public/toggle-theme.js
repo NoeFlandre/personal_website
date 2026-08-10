@@ -8,7 +8,7 @@ let userHasManuallySetTheme = false;
 // Check if manual theme preference has expired (24 hours)
 if (themeSetTimestamp) {
   const now = Date.now();
-  const setTime = parseInt(themeSetTimestamp);
+  const setTime = parseInt(themeSetTimestamp, 10);
   const hoursSinceSet = (now - setTime) / (1000 * 60 * 60);
 
   if (hoursSinceSet < 24) {
