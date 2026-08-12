@@ -1,7 +1,7 @@
 ---
 title: "How to describe a place on Earth using text? Part 1: wikidata"
 description: "A blog post where I am introducing a simple first approach to describe a given place on Earth using wikidata"
-pubDatetime: 2026-08-12T11:00:00Z
+pubDatetime: 2026-08-12T09:38:00Z
 heroImage: /textual-descriptions-place-on-earth/hero.png
 tags: ["Post"]
 featured: false
