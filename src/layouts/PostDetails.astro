@@ -85,18 +85,18 @@ const wordCount = countWords(post.body ?? "");
   <main
     id="main-content"
     class:list={[
-      "mx-auto w-full max-w-3xl px-4 pb-12",
+      "mx-auto w-full max-w-3xl min-w-0 px-4 pb-12",
       { "mt-8": !SITE.showBackButton },
     ]}
     data-pagefind-body
   >
     <h1
       transition:name={slugifyStr(title)}
-      class="inline-block text-2xl font-bold text-accent sm:text-3xl"
+      class="inline-block max-w-full break-words text-2xl font-bold text-accent sm:text-3xl"
     >
       {title}
     </h1>
-    <div class="flex items-center justify-between gap-4 mt-2 mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 mt-2 mb-6">
       <div class="flex items-center gap-3">
         <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
         {
@@ -110,7 +110,7 @@ const wordCount = countWords(post.body ?? "");
       </div>
       <EditPost class="max-sm:hidden" {hideEditPost} {post} />
     </div>
-    <article id="article" class="mx-auto prose mt-6 max-w-3xl">
+    <article id="article" class="mx-auto min-w-0 prose mt-6 max-w-3xl">
       {layoutStyle === "split" ? (
         <>
           {heroImage && (
@@ -131,7 +131,7 @@ const wordCount = countWords(post.body ?? "");
               <img
                 src={heroImage}
                 alt=""
-                class="mb-8 max-h-[60vh] mx-auto w-auto rounded-md object-contain !border-0"
+                class="mb-8 max-h-[60vh] mx-auto h-auto w-full max-w-[640px] rounded-md object-contain !border-0"
                 loading="lazy"
               />
             )
