@@ -16,6 +16,9 @@
   .prose figure img {
     @apply !my-0;
   }
+  .prose > img[src="/textual-descriptions-place-on-earth/hero.png"] {
+    max-width: 640px;
+  }
   .prose figure figcaption {
     @apply mt-2;
   }
