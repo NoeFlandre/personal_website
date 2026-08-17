@@ -1,7 +1,7 @@
 ---
 title: "Breaking down the maths behind Masked Image Modeling"
 description: "Walking our way through masked image modeling"
-pubDatetime: 2026-08-16T21:00:00+02:00
+pubDatetime: 2026-08-17T00:00:00+02:00
 tags: ["Post"]
 heroImage: /assets/img/2026/masked-image-modeling/masked-image-modeling-hero.svg
 draft: false
