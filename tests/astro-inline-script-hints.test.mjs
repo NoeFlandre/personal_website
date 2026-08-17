@@ -9,7 +9,6 @@ function read(path) {
 test("scripts that Astro already treats as inline declare is:inline explicitly", () => {
   const structuredData = read("src/components/StructuredData.astro");
   const layout = read("src/layouts/Layout.astro");
-  const postDetails = read("src/layouts/PostDetails.astro");
 
   assert.match(
     structuredData,
@@ -18,8 +17,4 @@ test("scripts that Astro already treats as inline declare is:inline explicitly",
   assert.doesNotMatch(layout, /application\/ld\+json/);
   assert.doesNotMatch(layout, /ViewTransitions/);
   assert.match(layout, /ClientRouter/);
-  assert.match(
-    postDetails,
-    /<script\s+is:inline\s+type="module"\s+data-astro-rerun\s+define:vars=\{\{\s*postDetailsRerunUrl\s*\}\}>[\s\S]*import\(postDetailsRerunUrl\)\.then\(\(\{\s*initPostDetails\s*\}\)\s*=>\s*initPostDetails\(\)\);[\s\S]*<\/script>/
-  );
 });

@@ -11,7 +11,6 @@ import Header from "@/components/Header.astro";
 import ShareLinks from "@/components/ShareLinks.astro";
 import StructuredData from "@/components/StructuredData.astro";
 import Tag from "@/components/Tag.astro";
-import postDetailsRerunUrl from "@/features/blog/client/postDetailsRerun.js?url";
 import { getAdjacentEntries } from "@/features/blog/utils/getAdjacentEntries.js";
 import { getPath } from "@/features/blog/utils/getPath";
 import { buildPostLayoutMetadata } from "@/features/blog/utils/postLayoutMetadata";
@@ -207,8 +206,11 @@ const wordCount = countWords(post.body ?? "");
   <Footer />
 </Layout>
 
-<script is:inline type="module" data-astro-rerun define:vars={{ postDetailsRerunUrl }}>
-  import(postDetailsRerunUrl).then(({ initPostDetails }) => initPostDetails());
+<script>
+  import { initPostDetails } from "@/features/blog/client/postDetailsRerun.js";
+
+  document.addEventListener("astro:page-load", initPostDetails);
+  initPostDetails();
 </script>
 
 <style>
