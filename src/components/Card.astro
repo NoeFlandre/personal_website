@@ -4,6 +4,7 @@ import type { CollectionEntry } from "astro:content";
 import { getPostPath } from "@/features/blog/utils/postPath";
 import { getDisplayReadingTime } from "@/features/blog/utils/readingTimeText";
 import { getTagPath } from "@/features/blog/utils/tags";
+import { getImageThumbnailPath } from "@/utils/imageThumbnailPath.mjs";
 import { slugifyStr } from "@/utils/slugify";
 import Datetime from "./Datetime.astro";
 
@@ -50,15 +51,13 @@ const headerProps = {
           class="flex-shrink-0 hidden sm:block group"
         >
           <Image
-            src={heroImage}
+            src={getImageThumbnailPath(heroImage)}
             alt={title}
             width={140}
             height={79}
             class="rounded shadow-sm transition-all duration-200 group-hover:shadow-md group-hover:scale-105 object-cover"
-            format="webp"
-            quality={80}
             loading="lazy"
-            densities={[1, 2]}
+            decoding="async"
           />
         </a>
       )}

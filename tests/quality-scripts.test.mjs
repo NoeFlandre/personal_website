@@ -4,7 +4,7 @@ import test from "node:test";
 
 const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const biomeConfig = JSON.parse(readFileSync(new URL("../biome.json", import.meta.url), "utf8"));
-const qualityPaths = "astro.config.mjs public/toggle-theme.js src tests";
+const qualityPaths = "astro.config.mjs public/toggle-theme.js scripts src tests";
 
 test("quality scripts cover the root config, public browser script, source, and tests", () => {
   assert.equal(packageJson.scripts.check, `biome check ${qualityPaths}`);

@@ -42,3 +42,4 @@ personal_website/src/content/blog/draft.md
 personal_website/src/content/blog/osm-polygons-to-wikipedia-articles.md
 src/content/drafts
 .worktrees/
+public/generated/image-thumbnails/

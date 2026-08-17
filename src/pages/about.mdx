@@ -7,11 +7,12 @@ description: "AI Research Engineer at Inria focusing on LLM-based geoparsing."
 import CareerTimeline from '../features/about/components/CareerTimeline.astro';
 import TestimonialsCarousel from '../components/TestimonialsCarousel.astro';
 import AboutTravelMap from '../features/about/components/AboutTravelMap.astro';
+import { getImageThumbnailPath } from '../utils/imageThumbnailPath.mjs';
 
 <section id="about-intro" class="scroll-mt-24">
 <div class="flex flex-col gap-6 sm:gap-8 md:flex-row items-start">
   <div class="w-full md:w-auto md:flex-shrink-0 flex justify-center overflow-hidden rounded-lg">
-    <img src="/image.png" alt="Noé Flandre" class="w-full max-w-[281px] h-auto rounded-lg object-cover object-[60%_35%] sm:scale-110 shadow-lg" />
+    <img src={getImageThumbnailPath('/image.png')} alt="Noé Flandre" class="w-full max-w-[281px] h-auto rounded-lg object-cover object-[60%_35%] sm:scale-110 shadow-lg" loading="eager" decoding="async" />
   </div>
   <div class="flex-1 min-w-0 [&>p:first-child]:!mt-0">
     <p>I am an AI Research Engineer at Inria. I focus on LLM-based geoparsing to link unstructured text to geographic locations and footprints.</p>

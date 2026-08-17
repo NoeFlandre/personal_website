@@ -1,8 +1,13 @@
 ---
+import { getImageThumbnailPath } from "@/utils/imageThumbnailPath.mjs";
 import { ABOUT_MAP_PLACES } from "../data/aboutMapPlaces.ts";
 import { getPlaceTypeLabel, sortPlacesForUi } from "../utils/aboutMap.js";
 
 const placesForUi = sortPlacesForUi(ABOUT_MAP_PLACES);
+const thumbnailPlacesForUi = placesForUi.map((place) => ({
+  ...place,
+  image: getImageThumbnailPath(place.image),
+}));
 
 const filters = [
   { id: "all", label: "All", tone: "all" },
@@ -12,7 +17,7 @@ const filters = [
 ];
 ---
 
-<section class="not-prose about-map" data-about-map-root data-places={JSON.stringify(placesForUi)}>
+<section class="not-prose about-map" data-about-map-root data-places={JSON.stringify(thumbnailPlacesForUi)}>
   <header class="about-map__header">
     <h2 class="about-map__title">Where I worked, studied, and traveled</h2>
   </header>
@@ -47,7 +52,7 @@ const filters = [
 
     <div class="about-map__cards-viewport" data-cards-viewport>
       <div class="about-map__cards-track" data-place-cards>
-        {placesForUi.map(place => (
+        {thumbnailPlacesForUi.map(place => (
           <button
             type="button"
             class="about-map__card"
