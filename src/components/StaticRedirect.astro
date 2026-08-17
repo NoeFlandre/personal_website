@@ -19,7 +19,7 @@ const canonicalURL = new URL(to, Astro.site ?? Astro.url);
     <meta name="robots" content="noindex" />
     <link rel="canonical" href={canonicalURL} />
   </head>
-  <body data-pagefind-ignore>
+  <body data-static-redirect>
     <a href={to}>Redirecting from <code>{from}</code> to <code>{to}</code></a>
   </body>
 </html>

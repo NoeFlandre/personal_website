@@ -17,14 +17,14 @@ test("disabled archives render a valid noindex redirect page", () => {
   assert.match(archiveContent, /<Layout\s+title=/);
   assert.match(redirectPage, /<!doctype html>/i);
   assert.match(redirectPage, /<html\b/i);
-  assert.match(redirectPage, /data-pagefind-ignore/);
+  assert.match(redirectPage, /data-static-redirect/);
   assert.match(redirectPage, /http-equiv="refresh"/);
   assert.match(redirectPage, /name="robots"\s+content="noindex"/);
 });
 
 test("redirect cleanup removes only stylesheet links from static redirects", () => {
   const redirectMarkup =
-    '<html><head><link rel="stylesheet" href="/styles.css"></head><body data-pagefind-ignore></body></html>';
+    '<html><head><link rel="stylesheet" href="/styles.css"></head><body data-static-redirect></body></html>';
   const regularMarkup =
     '<html><head><link rel="stylesheet" href="/styles.css"></head><body></body></html>';
 

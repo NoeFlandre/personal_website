@@ -88,7 +88,6 @@ const wordCount = countWords(post.body ?? "");
       "mx-auto w-full max-w-3xl min-w-0 px-4 pb-12",
       { "mt-8": !SITE.showBackButton },
     ]}
-    data-pagefind-body
   >
     <h1
       transition:name={slugifyStr(title)}
@@ -168,8 +167,7 @@ const wordCount = countWords(post.body ?? "");
     <hr class="my-6 border-dashed" />
 
     <!-- Previous/Next Post Buttons -->
-    <div 
-      data-pagefind-ignore 
+    <div
       class="flex flex-col sm:flex-row justify-between gap-6"
       data-prev-url={prevPost ? prevPost.path : ""}
       data-next-url={nextPost ? nextPost.path : ""}

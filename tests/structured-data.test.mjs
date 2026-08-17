@@ -9,10 +9,7 @@ test("buildStructuredData uses the configured site URL for website data", () => 
 
   assert.equal(structuredData["@type"], "WebSite");
   assert.equal(structuredData.url, SITE.website);
-  assert.equal(
-    structuredData.potentialAction.target,
-    `${SITE.website}search?q={search_term_string}`
-  );
+  assert.equal("potentialAction" in structuredData, false);
   assert.doesNotMatch(JSON.stringify(structuredData), /github\.io/);
 });
 

@@ -101,11 +101,6 @@ export function buildStructuredData(
       name: SITE.author,
       url: SITE.profile,
     },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${toAbsoluteUrl("/search", SITE.website)}?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 

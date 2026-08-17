@@ -81,7 +81,7 @@ export default defineConfig({
           item.lastmod = new Date().toISOString();
         }
         // Main section pages
-        else if (url.endsWith("/posts") || url.endsWith("/about") || url.endsWith("/search")) {
+        else if (url.endsWith("/posts") || url.endsWith("/about")) {
           item.priority = 0.9;
           item.changefreq = ChangeFreqEnum.WEEKLY;
         }

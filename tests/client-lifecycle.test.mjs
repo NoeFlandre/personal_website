@@ -3,7 +3,6 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { initAboutOutline } from "../src/features/about/client/aboutOutline.js";
 import { initPostDetails } from "../src/features/blog/client/postDetailsRerun.js";
-import { initSearch } from "../src/features/search/client/search.js";
 import { createClientLifecycle } from "../src/utils/clientLifecycle.js";
 
 function read(path) {
@@ -228,9 +227,8 @@ test("createClientLifecycle activates one root and aborts it before the next", (
   assert.equal(setupCount, 2);
 });
 
-test("About and search layouts rerun their dedicated client modules", () => {
+test("About layout reruns its dedicated client module", () => {
   const aboutLayout = read("src/layouts/AboutLayout.astro");
-  const searchPage = read("src/pages/search.astro");
 
   assert.match(
     aboutLayout,
@@ -238,8 +236,6 @@ test("About and search layouts rerun their dedicated client modules", () => {
   );
   assert.match(aboutLayout, /data-astro-rerun[\s\S]*aboutOutlineUrl/);
   assert.match(aboutLayout, /data-about-outline-root/);
-  assert.match(searchPage, /searchUrl\s+from\s+"@\/features\/search\/client\/search\.js\?url"/);
-  assert.match(searchPage, /data-astro-rerun[\s\S]*searchUrl/);
 });
 
 test("initPostDetails does not duplicate listeners and cleans up before a swap", () => {
@@ -389,43 +385,4 @@ test("initAboutOutline initializes one root once and reconnects after a swap", (
     assert.equal(link.listenerCount("click"), 1);
     assert.equal(FakeIntersectionObserver.instances.length, 2);
   });
-});
-
-test("initSearch schedules one Pagefind initialization per root and cancels it on swap", () => {
-  const document = new FakeDocument();
-  const root = new FakeElement();
-  const idleCallbacks = [];
-  const cancelledIdleIds = [];
-  document.querySelector = (selector) => (selector === "#pagefind-search" ? root : null);
-
-  withGlobals(
-    {
-      document,
-      window: {
-        location: { search: "" },
-        requestIdleCallback(callback) {
-          idleCallbacks.push(callback);
-          return idleCallbacks.length;
-        },
-        cancelIdleCallback(id) {
-          cancelledIdleIds.push(id);
-        },
-      },
-    },
-    () => {
-      initSearch();
-      initSearch();
-
-      assert.equal(idleCallbacks.length, 1);
-      assert.equal(document.listenerCount("astro:before-swap"), 1);
-
-      document.dispatchEvent(new Event("astro:before-swap"));
-
-      assert.deepEqual(cancelledIdleIds, [1]);
-
-      initSearch();
-      assert.equal(idleCallbacks.length, 2);
-      assert.equal(document.listenerCount("astro:before-swap"), 1);
-    }
-  );
 });
