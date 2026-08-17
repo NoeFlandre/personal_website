@@ -3,13 +3,16 @@ import { getCollection } from "astro:content";
 import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+import PostFilterBar from "@/features/blog/components/PostFilterBar.astro";
 import { countArchivePosts, MONTH_NAMES } from "@/features/blog/utils/archivePresentation";
 import { getArchiveGroups } from "@/features/blog/utils/getArchiveGroups";
+import getUniqueTags from "@/features/blog/utils/getUniqueTags";
 import Layout from "@/layouts/Layout.astro";
 import { SITE } from "@/site-config.js";
 
 const posts = await getCollection("blog");
 const archiveGroups = getArchiveGroups(posts);
+const filterTags = getUniqueTags(posts);
 ---
 
 <Layout title={`Posts | ${SITE.title}`} description="Archive of all blog posts by Noe Flandre. AI research, datasets, and engineering insights.">
@@ -17,12 +20,7 @@ const archiveGroups = getArchiveGroups(posts);
   <main id="main-content" class="mx-auto w-full max-w-3xl px-4 pb-4">
     <h1 class="text-2xl font-semibold sm:text-3xl mt-8">All Posts</h1>
     <p class="mt-2 mb-6 italic">Browse all blog posts by year and month</p>
-    <div class="mb-8 flex flex-wrap items-center gap-2">
-      <span class="text-sm font-semibold text-foreground/70">Filter:</span>
-      <a href="/tags/publication" class="rounded-full border border-border px-3 py-1 text-sm hover:border-accent/60 hover:text-accent">Publication</a>
-      <a href="/tags/paper-review" class="rounded-full border border-border px-3 py-1 text-sm hover:border-accent/60 hover:text-accent">Paper Review</a>
-      <a href="/tags/post" class="rounded-full border border-border px-3 py-1 text-sm hover:border-accent/60 hover:text-accent">Post</a>
-    </div>
+    <PostFilterBar tags={filterTags} />
     {
       archiveGroups.map((yearGroup) => (
           <div class="mb-8">

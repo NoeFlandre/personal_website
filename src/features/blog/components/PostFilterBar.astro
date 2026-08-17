@@ -1,0 +1,28 @@
+---
+import { getPostFilterOptions } from "@/features/blog/utils/getPostFilterOptions";
+import type { TagInfo } from "@/features/blog/utils/tags";
+
+interface Props {
+  tags: TagInfo[];
+  activeTag?: string;
+}
+
+const { tags, activeTag } = Astro.props;
+const options = getPostFilterOptions(tags, activeTag);
+---
+
+<nav aria-label="Post filters" class="mb-6 flex flex-wrap items-center gap-2">
+  <span class="text-sm font-semibold text-foreground/70">Filter:</span>
+  {options.map((option) => (
+    <a
+      href={option.href}
+      aria-current={option.active ? "page" : undefined}
+      class:list={[
+        "rounded-full border px-3 py-1 text-sm transition-colors hover:border-accent/60 hover:text-accent",
+        option.active ? "border-accent bg-accent text-background" : "border-border",
+      ]}
+    >
+      {option.label}
+    </a>
+  ))}
+</nav>

@@ -24,7 +24,7 @@
 **Files:**
 - Create: `tests/post-filter.test.mjs`
 
-- [ ] **Step 1: Run the current baseline test suite**
+- [x] **Step 1: Run the current baseline test suite**
 
 Run:
 
@@ -34,7 +34,7 @@ npm test
 
 Expected: the existing suite passes with 99 tests before this feature’s tests are added.
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Create `tests/post-filter.test.mjs` with these assertions:
 
@@ -100,7 +100,7 @@ test("both pages use one accessible shared filter bar", () => {
 });
 ```
 
-- [ ] **Step 3: Run the new tests and confirm RED**
+- [x] **Step 3: Run the new tests and confirm RED**
 
 Run:
 
@@ -117,7 +117,7 @@ Expected: fail because the new utility and shared component do not exist yet. Th
 - Create: `src/features/blog/components/PostFilterBar.astro`
 - Test: `tests/post-filter.test.mjs`
 
-- [ ] **Step 1: Add the pure route mapper**
+- [x] **Step 1: Add the pure route mapper**
 
 Create `src/features/blog/utils/getPostFilterOptions.ts`:
 
@@ -152,7 +152,7 @@ export function getPostFilterOptions(
 }
 ```
 
-- [ ] **Step 2: Add the shared accessible filter bar**
+- [x] **Step 2: Add the shared accessible filter bar**
 
 Create `src/features/blog/components/PostFilterBar.astro`:
 
@@ -187,7 +187,7 @@ const options = getPostFilterOptions(tags, activeTag);
 </nav>
 ```
 
-- [ ] **Step 3: Run the focused tests and confirm GREEN**
+- [x] **Step 3: Run the focused tests and confirm GREEN**
 
 Run:
 
@@ -204,7 +204,7 @@ Expected: all three tests pass. The first two prove the route matrix; the third 
 - Modify: `src/pages/tags/[tag]/[...page].astro`
 - Test: `tests/post-filter.test.mjs`
 
-- [ ] **Step 1: Replace the posts-page hard-coded controls**
+- [x] **Step 1: Replace the posts-page hard-coded controls**
 
 In `src/pages/posts/index.astro`:
 
@@ -225,7 +225,7 @@ Replace the existing `Filter:` block and its three hard-coded links with:
 <PostFilterBar tags={filterTags} />
 ```
 
-- [ ] **Step 2: Replace the tag-page duplicated controls**
+- [x] **Step 2: Replace the tag-page duplicated controls**
 
 In `src/pages/tags/[tag]/[...page].astro`, import `PostFilterBar`, remove the direct `getTagPath` import, and rename the page-level `switchableTags` value to `filterTags`:
 
@@ -243,7 +243,7 @@ Replace the existing `Switch filter:` block with:
 
 Keep `getTagPath` available in `getStaticPaths` only through the shared utility; do not reintroduce page-local route construction.
 
-- [ ] **Step 3: Run the focused tests again**
+- [x] **Step 3: Run the focused tests again**
 
 Run:
 
@@ -261,7 +261,7 @@ Expected: all focused filter and blog-structure tests pass, with no same-route a
 - Verify: `src/pages/posts/index.astro`
 - Verify: `src/pages/tags/[tag]/[...page].astro`
 
-- [ ] **Step 1: Run the complete automated gate**
+- [x] **Step 1: Run the complete automated gate**
 
 Run:
 
@@ -275,7 +275,7 @@ npm run build:check
 
 Expected: 102 tests pass, Biome check and lint report no issues, Astro reports zero diagnostics, and the static build completes successfully without a new dependency.
 
-- [ ] **Step 2: Manually verify the route matrix in the built site**
+- [x] **Step 2: Manually verify the route matrix in the built site**
 
 Use the existing project preview/browser workflow against the built output and verify:
 

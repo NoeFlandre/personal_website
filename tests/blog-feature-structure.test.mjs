@@ -39,7 +39,7 @@ test("blog feature utilities are available from the feature-local structure", ()
   assert.equal(typeof postHasTag, "function");
 });
 
-test("blog tag presentation uses the shared tag path helper", () => {
+test("blog tag presentation uses the shared filter route helper", () => {
   const tagComponent = readFileSync(
     new URL("../src/components/Tag.astro", import.meta.url),
     "utf8"
@@ -48,7 +48,17 @@ test("blog tag presentation uses the shared tag path helper", () => {
     new URL("../src/pages/tags/[tag]/[...page].astro", import.meta.url),
     "utf8"
   );
+  const filterBar = readFileSync(
+    new URL("../src/features/blog/components/PostFilterBar.astro", import.meta.url),
+    "utf8"
+  );
+  const filterOptions = readFileSync(
+    new URL("../src/features/blog/utils/getPostFilterOptions.ts", import.meta.url),
+    "utf8"
+  );
 
   assert.match(tagComponent, /getTagPath/);
-  assert.match(tagPage, /getTagPath/);
+  assert.match(filterOptions, /getTagPath/);
+  assert.match(filterBar, /getPostFilterOptions/);
+  assert.match(tagPage, /PostFilterBar/);
 });

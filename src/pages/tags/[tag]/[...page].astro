@@ -5,9 +5,9 @@ import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
 import Pagination from "@/components/Pagination.astro";
+import PostFilterBar from "@/features/blog/components/PostFilterBar.astro";
 import getPostsByTag from "@/features/blog/utils/getPostsByTag";
 import getUniqueTags from "@/features/blog/utils/getUniqueTags";
-import { getTagPath } from "@/features/blog/utils/tags";
 import Layout from "@/layouts/Layout.astro";
 import Main from "@/layouts/Main.astro";
 import { SITE } from "@/site-config.js";
@@ -31,7 +31,7 @@ const params = Astro.params;
 const { tag } = params;
 const { page, tagName } = Astro.props;
 const posts = await getCollection("blog");
-const switchableTags = getUniqueTags(posts);
+const filterTags = getUniqueTags(posts);
 ---
 
 <Layout title={`Tag: ${tagName} | ${SITE.title}`}>
@@ -42,28 +42,7 @@ const switchableTags = getUniqueTags(posts);
     pageDesc={`All the articles with the tag "${tagName}".`}
   >
     <h1 slot="title" transition:name={tag}>{`Tag:${tag}`}</h1>
-    <div class="mb-6 flex flex-wrap items-center gap-2">
-      <span class="text-sm font-semibold text-foreground/70">Switch filter:</span>
-      <a
-        href="/posts"
-        class="rounded-full border px-3 py-1 text-sm transition-colors hover:border-accent/60 hover:text-accent border-border"
-      >
-        All Posts
-      </a>
-      {switchableTags.map(({ tag: nextTag, tagName: nextTagName }) => (
-        <a
-          href={getTagPath(nextTagName)}
-          class:list={[
-            "rounded-full border px-3 py-1 text-sm transition-colors hover:border-accent/60 hover:text-accent",
-            nextTag === tag
-              ? "border-accent bg-accent text-background"
-              : "border-border",
-          ]}
-        >
-          {nextTagName}
-        </a>
-      ))}
-    </div>
+    <PostFilterBar tags={filterTags} activeTag={tag} />
     <ul>
       {page.data.map((data) => <Card {...data} />)}
     </ul>
