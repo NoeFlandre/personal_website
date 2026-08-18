@@ -9,6 +9,21 @@
     overflow-wrap: anywhere;
     @apply break-words hover:!text-accent;
   }
+  .prose .katex-display {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (max-width: 640px) {
+    .prose .katex-display {
+      font-size: 0.9em;
+    }
+    .prose .katex-display:has(.mtable) {
+      font-size: 0.74em;
+    }
+  }
   .prose p:has(img) {
     @apply text-center text-sm opacity-80;
   }
