@@ -8,11 +8,9 @@ const workflow = readFileSync(
 );
 const runCommands = [...workflow.matchAll(/^\s*run:\s*(.+)$/gm)].map((match) => match[1].trim());
 
-test("Astro CI reuses the canonical checked build command", () => {
-  assert.deepEqual(
-    runCommands.filter((command) => command === "npm run build:check"),
-    ["npm run build:check"]
-  );
+test("Astro CI runs the checked build through the browser smoke command", () => {
+  assert.equal(runCommands.includes("npm run test:e2e"), true);
+  assert.equal(runCommands.includes("npm run build:check"), false);
   assert.equal(runCommands.includes("npm run astro -- check"), false);
   assert.equal(runCommands.includes("npm run build"), false);
 });

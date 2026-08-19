@@ -33,8 +33,11 @@ jobs:
       - name: Run quality gates
         run: npm run test:quality
 
-      - name: Check and build Astro site
-        run: npm run build:check
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser smoke tests
+        run: npm run test:e2e
 
       - name: Check build output
         run: ls -la dist/
