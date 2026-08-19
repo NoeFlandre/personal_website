@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { initAboutOutline } from "../src/features/about/client/aboutOutline.js";
 import { initPostDetails } from "../src/features/blog/client/postDetailsRerun.js";
+import { createPostDetailsSession } from "../src/features/blog/client/postDetailsSession.js";
 import { createClientLifecycle } from "../src/utils/clientLifecycle.js";
 
 function read(path) {
@@ -270,6 +271,29 @@ test("initPostDetails does not duplicate listeners and cleans up before a swap",
       assert.equal(document.body.children.length, 1);
     }
   );
+});
+
+test("post details session mounts and cleans up its browser enhancements", () => {
+  const document = new FakeDocument();
+  const article = new FakeElement();
+  const session = createPostDetailsSession({
+    documentRef: document,
+    navigatorRef: { clipboard: { writeText: async () => {} } },
+    nodeFilterRef: { SHOW_TEXT: 4 },
+    windowRef: { scrollTo() {} },
+    setTimeoutFn: () => 1,
+    clearTimeoutFn: () => {},
+  });
+  const controller = new AbortController();
+
+  assert.equal(session.mount(article, controller.signal), true);
+  assert.equal(document.listenerCount("scroll"), 1);
+  assert.equal(document.body.children.length, 1);
+
+  controller.abort();
+
+  assert.equal(document.listenerCount("scroll"), 0);
+  assert.equal(document.body.children.length, 0);
 });
 
 test("copy feedback reset is canceled when the post lifecycle ends", async () => {

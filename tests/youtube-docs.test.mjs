@@ -7,10 +7,12 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf
 test("YouTube documentation matches the active embed implementation", () => {
   const docs = read("docs/YOUTUBE.MD");
   const clientModule = read("src/features/blog/client/postDetailsRerun.js");
+  const sessionModule = read("src/features/blog/client/postDetailsSession.js");
+  const implementation = `${clientModule}\n${sessionModule}`;
 
   assert.match(docs, /postDetailsRerun\.js.*client module/i);
   assert.doesNotMatch(docs, /MDXTwitterTransform/);
-  assert.match(clientModule, /youtubeEmbedRegex/);
+  assert.match(implementation, /youtubeEmbedRegex/);
   assert.equal(
     existsSync(new URL("../src/components/MDXTwitterTransform.astro", import.meta.url)),
     false
