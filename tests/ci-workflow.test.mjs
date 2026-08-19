@@ -16,3 +16,7 @@ test("Astro CI reuses the canonical checked build command", () => {
   assert.equal(runCommands.includes("npm run astro -- check"), false);
   assert.equal(runCommands.includes("npm run build"), false);
 });
+
+test("Astro CI runs the complete quality gate", () => {
+  assert.equal(runCommands.includes("npm run test:quality"), true);
+});

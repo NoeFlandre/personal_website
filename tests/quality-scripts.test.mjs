@@ -34,6 +34,10 @@ test("quality scripts expose coverage, CRAP, and mutation checks", () => {
   assert.match(packageJson.scripts["test:crap"], /crap coverage\/c8\/coverage-final\.json/);
   assert.match(packageJson.scripts["test:crap"], /--json crap-report\/crap-report\.json/);
   assert.match(packageJson.scripts["test:crap"], /--html crap-report\/html/);
+  assert.match(
+    packageJson.scripts["test:crap"],
+    /check-crap-score\.mjs crap-report\/crap-report\.json 6/
+  );
   assert.equal(packageJson.scripts["test:mutation"], "stryker run");
   assert.match(packageJson.scripts["test:quality"], /npm run test/);
   assert.match(packageJson.scripts["test:quality"], /npm run test:crap/);
@@ -75,4 +79,9 @@ test("coverage configuration reports the utilities that have focused tests", () 
   assert.deepEqual(config.extension, [".js", ".ts"]);
   assert.deepEqual(config.reporter, ["text", "html", "json"]);
   assert.equal(config["reports-dir"], "coverage/c8");
+  assert.equal(config["check-coverage"], true);
+  assert.equal(config.branches, 97);
+  assert.equal(config.lines, 100);
+  assert.equal(config.statements, 100);
+  assert.equal(config.functions, 100);
 });

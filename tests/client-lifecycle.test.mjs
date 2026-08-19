@@ -300,6 +300,16 @@ test("copy feedback reset is canceled when the post lifecycle ends", async () =>
   const document = new FakeDocument();
   const { article, codeBlock } = createCopyArticle();
   document.currentArticle = article;
+  const pendingTimers = new Map();
+  let nextTimerId = 1;
+  const setTimeout = (callback) => {
+    const timerId = nextTimerId++;
+    pendingTimers.set(timerId, callback);
+    return timerId;
+  };
+  const clearTimeout = (timerId) => {
+    pendingTimers.delete(timerId);
+  };
 
   await withAsyncGlobals(
     {
@@ -307,6 +317,8 @@ test("copy feedback reset is canceled when the post lifecycle ends", async () =>
       navigator: { clipboard: { writeText: async () => {} } },
       NodeFilter: { SHOW_TEXT: 4 },
       window: { scrollTo() {} },
+      setTimeout,
+      clearTimeout,
     },
     async () => {
       initPostDetails();
@@ -320,8 +332,8 @@ test("copy feedback reset is canceled when the post lifecycle ends", async () =>
 
       document.currentArticle = null;
       initPostDetails();
-      await new Promise((resolve) => setTimeout(resolve, 750));
 
+      assert.equal(pendingTimers.size, 0);
       assert.equal(copyButton.innerText, "Copied");
     }
   );

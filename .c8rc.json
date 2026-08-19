@@ -9,5 +9,10 @@
   "exclude": ["src/features/blog/utils/readingTime.ts"],
   "extension": [".js", ".ts"],
   "reporter": ["text", "html", "json"],
-  "reports-dir": "coverage/c8"
+  "reports-dir": "coverage/c8",
+  "check-coverage": true,
+  "branches": 97,
+  "lines": 100,
+  "statements": 100,
+  "functions": 100
 }

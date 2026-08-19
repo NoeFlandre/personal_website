@@ -30,6 +30,9 @@ jobs:
       - name: Run Unit and Regression Tests
         run: npm test
 
+      - name: Run quality gates
+        run: npm run test:quality
+
       - name: Check and build Astro site
         run: npm run build:check
 
