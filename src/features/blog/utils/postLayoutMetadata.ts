@@ -23,6 +23,17 @@ type BuildPostLayoutMetadataInput = {
   dynamicOgImageEnabled: boolean;
 };
 
+function resolveOgImagePath(
+  initialOgImage: PostLike["data"]["ogImage"],
+  post: PostLike,
+  dynamicOgImageEnabled: boolean
+) {
+  if (typeof initialOgImage === "string") return initialOgImage;
+  if (initialOgImage?.src) return initialOgImage.src;
+  if (!dynamicOgImageEnabled) return undefined;
+  return `${getPath(post.id, post.filePath)}/og.png?v=noeflandre-com-3`;
+}
+
 export function buildPostLayoutMetadata({
   post,
   siteTitle,
@@ -40,22 +51,11 @@ export function buildPostLayoutMetadata({
     modDatetime,
   } = post.data;
 
-  let ogImageUrl: string | undefined;
-
-  if (typeof initOgImage === "string") {
-    ogImageUrl = initOgImage;
-  } else if (initOgImage?.src) {
-    ogImageUrl = initOgImage.src;
-  }
-
   const postPath = getPath(post.id, post.filePath, true);
-
-  if (!ogImageUrl && dynamicOgImageEnabled) {
-    ogImageUrl = `${getPath(post.id, post.filePath)}/og.png?v=noeflandre-com-3`;
-  }
-
-  const ogImage = ogImageUrl ? toAbsoluteUrl(ogImageUrl, siteBase ?? currentOrigin) : undefined;
-  const resolvedCanonicalURL = canonicalURL || toAbsoluteUrl(postPath, siteBase ?? currentOrigin);
+  const baseUrl = siteBase ?? currentOrigin;
+  const ogImagePath = resolveOgImagePath(initOgImage, post, dynamicOgImageEnabled);
+  const ogImage = ogImagePath ? toAbsoluteUrl(ogImagePath, baseUrl) : undefined;
+  const resolvedCanonicalURL = canonicalURL || toAbsoluteUrl(postPath, baseUrl);
 
   return {
     postPath,

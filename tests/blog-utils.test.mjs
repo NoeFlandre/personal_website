@@ -377,6 +377,25 @@ test("buildPostLayoutMetadata preserves explicit canonical and local asset OG im
   assert.equal(metadata.ogImage, "https://preview.local/assets/hero.png");
 });
 
+test("buildPostLayoutMetadata falls back for an OG image object without a source", () => {
+  const metadata = buildPostLayoutMetadata({
+    post: {
+      id: "deep-dive",
+      filePath: "src/content/blog/deep-dive.md",
+      data: {
+        title: "Deep Dive",
+        ogImage: {},
+      },
+    },
+    siteTitle: "Noe Flandre",
+    siteBase: "https://example.com",
+    currentOrigin: "https://preview.local",
+    dynamicOgImageEnabled: true,
+  });
+
+  assert.equal(metadata.ogImage, "https://example.com/posts/deep-dive/og.png?v=noeflandre-com-3");
+});
+
 test("buildPostLayoutMetadata supports string OG images and disables dynamic fallback", () => {
   const metadata = buildPostLayoutMetadata({
     post: {

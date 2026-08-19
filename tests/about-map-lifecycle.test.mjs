@@ -6,26 +6,39 @@ const source = readFileSync(
   new URL("../src/features/about/components/AboutTravelMap.astro", import.meta.url),
   "utf8"
 );
+const controllerSource = readFileSync(
+  new URL("../src/features/about/client/aboutMapController.js", import.meta.url),
+  "utf8"
+);
 
 test("AboutTravelMap stays compiler checked without blanket suppressions", () => {
   assert.doesNotMatch(source, /@ts-(?:expect-error|ignore|nocheck)/);
 });
 
+test("AboutTravelMap delegates client behavior to a deep controller module", () => {
+  assert.match(source, /import \{ startAboutMap \} from "\.\.\/client\/aboutMapController\.js"/);
+  assert.match(source, /startAboutMap\(L\)/);
+  assert.doesNotMatch(source, /let lifecycleController = new AbortController\(\)/);
+});
+
 test("AboutTravelMap releases browser resources before Astro swaps pages", () => {
-  assert.match(source, /let lifecycleController = new AbortController\(\)/);
-  assert.match(source, /signal\.addEventListener\("abort", removeMap, \{ once: true \}\)/);
-  assert.match(source, /window\.addEventListener\("resize", updateCardsNav, \{ signal \}\)/);
+  assert.match(controllerSource, /let lifecycleController = new AbortController\(\)/);
   assert.match(
-    source,
-    /document\.addEventListener\("astro:before-swap", \(\) => \{\s*lifecycleController\.abort\(\)/
+    controllerSource,
+    /signal\.addEventListener\("abort", removeMap, \{ once: true \}\)/
   );
   assert.match(
-    source,
-    /signal\.addEventListener\("abort", \(\) => clearTimeout\(timeoutId\), \{ once: true \}\)/
+    controllerSource,
+    /windowRef\?\.addEventListener\("resize", updateCardsNav, \{ signal \}\)/
+  );
+  assert.match(controllerSource, /documentRef\.addEventListener\("astro:before-swap", cleanup\)/);
+  assert.match(
+    controllerSource,
+    /signal\.addEventListener\("abort", \(\) => clearTimeoutFn\(timeoutId\), \{ once: true \}\)/
   );
   assert.equal(
-    source.match(/\bsetTimeout\(/g)?.length,
+    controllerSource.match(/\bsetTimeoutFn\(/g)?.length,
     1,
-    "only the abort-aware scheduler may call setTimeout"
+    "only the abort-aware scheduler may call the injected timer"
   );
 });
