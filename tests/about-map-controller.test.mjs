@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { createAboutMapController } from "../src/features/about/client/aboutMapController.js";
+import { createAboutMapSession } from "../src/features/about/client/aboutMapSession.js";
 
 class FakeElement extends EventTarget {
   constructor(dataset = {}) {
@@ -294,7 +295,7 @@ function createHarness() {
     clearTimeoutFn: timers.clearTimeoutFn,
     consoleRef: { error: () => undefined },
   });
-  return { controller, documentRef, leaflet, root, timers };
+  return { controller, documentRef, leaflet, root, timers, windowRef };
 }
 
 test("controller mounts the map and applies a selected place-type filter", () => {
@@ -341,6 +342,26 @@ test("controller removes the map and pending work on Astro page swaps", () => {
   assert.equal(timers.timers.size, 2);
 
   documentRef.dispatchEvent(new Event("astro:before-swap"));
+
+  assert.equal(leaflet.state.maps[0].removed, true);
+  assert.equal(timers.timers.size, 0);
+});
+
+test("map session mounts and cleans up its Leaflet runtime", () => {
+  const { leaflet, root, timers, windowRef } = createHarness();
+  const session = createAboutMapSession({
+    leaflet,
+    windowRef,
+    setTimeoutFn: timers.setTimeoutFn,
+    clearTimeoutFn: timers.clearTimeoutFn,
+  });
+  const lifecycleController = new AbortController();
+
+  assert.equal(session.mount(root, lifecycleController.signal), true);
+  assert.equal(leaflet.state.maps.length, 1);
+  assert.equal(timers.timers.size, 2);
+
+  lifecycleController.abort();
 
   assert.equal(leaflet.state.maps[0].removed, true);
   assert.equal(timers.timers.size, 0);
