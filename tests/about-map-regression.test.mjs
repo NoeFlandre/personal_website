@@ -65,6 +65,7 @@ test("parsePlacesDataset returns [] for invalid payloads", () => {
   assert.deepEqual(parsePlacesDataset(""), []);
   assert.deepEqual(parsePlacesDataset("not-json"), []);
   assert.deepEqual(parsePlacesDataset('{"foo":1}'), []);
+  assert.deepEqual(parsePlacesDataset("null"), []);
 });
 
 test("getPlaceTypeLabel returns consistent copy for known and unknown types", () => {
@@ -84,9 +85,11 @@ test("shouldRetryMapInit allows first three attempts only", () => {
 test("shouldRetryMapInit supports custom max retries", () => {
   assert.equal(shouldRetryMapInit(0, 1), true);
   assert.equal(shouldRetryMapInit(1, 1), false);
+  assert.equal(shouldRetryMapInit(0, 0), false);
 });
 
 test("getMapRetryDelayMs grows linearly with attempts", () => {
+  assert.equal(getMapRetryDelayMs(0), 0);
   assert.equal(getMapRetryDelayMs(1), 600);
   assert.equal(getMapRetryDelayMs(2), 1200);
   assert.equal(getMapRetryDelayMs(3), 1800);

@@ -28,8 +28,6 @@ export function sortPlacesForUi(places) {
 }
 
 export function parsePlacesDataset(rawValue) {
-  if (!rawValue) return [];
-
   try {
     const parsed = JSON.parse(rawValue);
     return Array.isArray(parsed) ? parsed : [];

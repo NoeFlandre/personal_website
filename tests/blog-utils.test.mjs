@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { getPath } from "../src/features/blog/utils/getPath.ts";
+import getPostsByGroupCondition from "../src/features/blog/utils/getPostsByGroupCondition.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
 import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
@@ -62,6 +63,11 @@ test("getPath builds canonical blog URLs from nested content paths", () => {
     getPath("deep-dive", "src/content/blog/Research Notes/deep-dive.md", false),
     "/research-notes/deep-dive"
   );
+  assert.equal(
+    getPath("2025-02-03-deep-dive", "src/content/blog/deep-dive.md"),
+    "/posts/deep-dive"
+  );
+  assert.equal(getPath("standalone"), "/posts/standalone");
 });
 
 test("getPostStaticPathParams reuses canonical slug generation without the posts base", () => {
@@ -221,6 +227,24 @@ test("getPostsByTag returns matching visible posts in sorted order", () => {
   );
 });
 
+test("getPostsByGroupCondition groups posts and passes each original index", () => {
+  const posts = [createPost({ id: "a" }), createPost({ id: "b" }), createPost({ id: "c" })];
+  const indexes = [];
+
+  const grouped = getPostsByGroupCondition(posts, (post, index) => {
+    indexes.push(index);
+    return post.id === "b" ? "middle" : "outer";
+  });
+
+  assert.deepEqual(indexes, [0, 1, 2]);
+  assert.deepEqual(
+    Object.fromEntries(
+      Object.entries(grouped).map(([key, values]) => [key, values.map((post) => post.id)])
+    ),
+    { outer: ["a", "c"], middle: ["b"] }
+  );
+});
+
 test("tag helpers normalize tag names consistently across blog utilities", () => {
   const post = createPost({
     id: "tagged",
@@ -247,6 +271,10 @@ test("getReadingTimeForPost keeps the existing fallback behavior for missing pos
   assert.equal(getReadingTimeForPost(undefined), "5 min read");
   assert.equal(getReadingTimeForPost({ body: "" }), "5 min read");
   assert.equal(getReadingTimeForPost({ body: "one two three four five" }), "1 min read");
+});
+
+test("getDisplayReadingTime falls back when an empty manual override is provided", () => {
+  assert.equal(getDisplayReadingTime({ readingTime: "" }, "one two three four five"), "1 min read");
 });
 
 test("shouldGenerateDynamicOgImage follows routability and custom-og rules", () => {
@@ -347,4 +375,49 @@ test("buildPostLayoutMetadata preserves explicit canonical and local asset OG im
 
   assert.equal(metadata.canonicalURL, "https://canonical.example/post");
   assert.equal(metadata.ogImage, "https://preview.local/assets/hero.png");
+});
+
+test("buildPostLayoutMetadata supports string OG images and disables dynamic fallback", () => {
+  const metadata = buildPostLayoutMetadata({
+    post: {
+      id: "deep-dive",
+      filePath: "src/content/blog/deep-dive.md",
+      data: {
+        title: "Deep Dive",
+        author: "Noe",
+        description: "Research notes",
+        pubDatetime: new Date("2025-01-01T00:00:00.000Z"),
+        modDatetime: null,
+        ogImage: "/assets/hero.png",
+      },
+    },
+    siteTitle: "Noe Flandre",
+    siteBase: "https://example.com",
+    currentOrigin: "https://preview.local",
+    dynamicOgImageEnabled: false,
+  });
+
+  assert.equal(metadata.ogImage, "https://example.com/assets/hero.png");
+  assert.equal(metadata.layoutProps.modDatetime, null);
+});
+
+test("buildPostLayoutMetadata leaves OG images empty when dynamic generation is disabled", () => {
+  const metadata = buildPostLayoutMetadata({
+    post: {
+      id: "deep-dive",
+      filePath: "src/content/blog/deep-dive.md",
+      data: {
+        title: "Deep Dive",
+        author: "Noe",
+        description: "Research notes",
+        pubDatetime: new Date("2025-01-01T00:00:00.000Z"),
+        modDatetime: undefined,
+      },
+    },
+    siteTitle: "Noe Flandre",
+    currentOrigin: "https://preview.local",
+    dynamicOgImageEnabled: false,
+  });
+
+  assert.equal(metadata.ogImage, undefined);
 });

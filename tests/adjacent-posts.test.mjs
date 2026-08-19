@@ -44,3 +44,10 @@ test("getAdjacentEntries returns null neighbors when the current path is missing
     nextEntry: null,
   });
 });
+
+test("getAdjacentEntries handles an empty entry list", () => {
+  assert.deepEqual(getAdjacentEntries([], "/posts/missing"), {
+    prevEntry: null,
+    nextEntry: null,
+  });
+});

@@ -43,3 +43,7 @@ personal_website/src/content/blog/osm-polygons-to-wikipedia-articles.md
 src/content/drafts
 .worktrees/
 public/generated/image-thumbnails/
+coverage/
+crap-report/
+reports/
+.stryker-tmp/
