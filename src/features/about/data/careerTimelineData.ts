@@ -11,6 +11,10 @@ export interface TimelineItem {
 
 const AIRBUS_GEO_EXPLORE_URL =
   "https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/";
+const NOE_AUTHOR_LINK =
+  '<a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Flandre,+N+Y" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Noe Y. Flandre</a>';
+const PHILIPPE_AUTHOR_LINK =
+  '<a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Giabbanelli,+P+J" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>';
 
 export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
   {
@@ -186,23 +190,21 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
     subtitle: "Hawaii International Conference on System Sciences",
-    description:
-      "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
   },
   {
     year: "18 August 2026",
     title:
       "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
     subtitle: "Hawaii International Conference on System Sciences",
-    description:
-      "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
   },
   {
     year: "2026",
     title:
       "Composing Verifiable Conceptual Models via Building Blocks: Towards Design-Time Verification of Agentic AI Workflows",
     subtitle: "WSC 2026",
-    description: "<strong>Flandre N. Y.</strong>, Nwala A. C., Giabbanelli P. J.",
+    description: `<strong>${NOE_AUTHOR_LINK}</strong>, Nwala A. C., ${PHILIPPE_AUTHOR_LINK}`,
     link: "https://arxiv.org/abs/2606.21565",
   },
   {
@@ -210,7 +212,7 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Distilling the Complexity of Agent-Based Simulations Into Textual Explanations via Large Language Models",
     subtitle: "Big Data and Cognitive Computing",
-    description: "Flandre N. Y., Giabbanelli P. J.",
+    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK}`,
     link: "https://doi.org/10.3390/bdcc10040121",
   },
   {
@@ -218,7 +220,7 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Promoting empathy in decision-making by turning agent-based models into stories using large-language models",
     subtitle: "Journal of Simulation",
-    description: "Daumas C., Giabbanelli P. J., **Flandre N.** · Selected as the Editor's Pick",
+    description: `Daumas C., ${PHILIPPE_AUTHOR_LINK}, <strong>${NOE_AUTHOR_LINK}</strong> · Selected as the Editor's Pick`,
     link: "https://www.researchgate.net/publication/395240074_Promoting_empathy_in_decision-making_by_turning_agent-based_models_into_stories_using_large-language_models",
   },
   {
@@ -226,7 +228,7 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Can large language models learn conceptual modeling by looking at slide decks and pass graduate examinations? an empirical study",
     subtitle: "ER 2024 (EmpER'24)",
-    description: "**Flandre N.**, Giabbanelli P. J.",
+    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK}`,
     link: "https://link.springer.com/chapter/10.1007/978-3-031-75599-6_15",
   },
 ];

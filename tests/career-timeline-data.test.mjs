@@ -10,6 +10,12 @@ import {
   CAREER_TIMELINE_PUBLICATIONS,
 } from "../src/features/about/data/careerTimelineData.ts";
 
+const NOE_AUTHOR_LINK =
+  '<a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Flandre,+N+Y" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Noe Y. Flandre</a>';
+const PHILIPPE_AUTHOR_LINK =
+  '<a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Giabbanelli,+P+J" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>';
+const NOE_AUTHOR = `<strong>${NOE_AUTHOR_LINK}</strong>`;
+
 test("career timeline data exports all expected sections", () => {
   assert.ok(CAREER_TIMELINE_EXPERIENCE.length > 0);
   assert.ok(CAREER_TIMELINE_EDUCATION.length > 0);
@@ -55,18 +61,41 @@ test("the publications section starts with the two HICSS-60 papers", () => {
       title:
         "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
       subtitle: "Hawaii International Conference on System Sciences",
-      description:
-        "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+      description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
     },
     {
       year: "18 August 2026",
       title:
         "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
       subtitle: "Hawaii International Conference on System Sciences",
-      description:
-        "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+      description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
     },
   ]);
+});
+
+test("all publications use linked full author names", () => {
+  const authorLinks = [
+    {
+      name: "Noe Y. Flandre",
+      href: "https://arxiv.org/search/cs?searchtype=author&amp;query=Flandre,+N+Y",
+    },
+    {
+      name: "Philippe J. Giabbanelli",
+      href: "https://arxiv.org/search/cs?searchtype=author&amp;query=Giabbanelli,+P+J",
+    },
+  ];
+
+  for (const publication of CAREER_TIMELINE_PUBLICATIONS) {
+    const description = publication.description ?? "";
+
+    for (const author of authorLinks) {
+      assert.ok(description.includes(`href="${author.href}"`));
+      assert.ok(description.includes(`>${author.name}</a>`));
+    }
+
+    assert.doesNotMatch(description, /Flandre N(?:\. Y\.)?/);
+    assert.doesNotMatch(description, /Giabbanelli P\. J\./);
+  }
 });
 
 test("career timeline preserves the published content contract", () => {
@@ -240,23 +269,21 @@ test("career timeline preserves the published content contract", () => {
         title:
           "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
         subtitle: "Hawaii International Conference on System Sciences",
-        description:
-          "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+        description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
       },
       {
         year: "18 August 2026",
         title:
           "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
         subtitle: "Hawaii International Conference on System Sciences",
-        description:
-          "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+        description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
       },
       {
         year: "2026",
         title:
           "Composing Verifiable Conceptual Models via Building Blocks: Towards Design-Time Verification of Agentic AI Workflows",
         subtitle: "WSC 2026",
-        description: "<strong>Flandre N. Y.</strong>, Nwala A. C., Giabbanelli P. J.",
+        description: `${NOE_AUTHOR}, Nwala A. C., ${PHILIPPE_AUTHOR_LINK}`,
         link: "https://arxiv.org/abs/2606.21565",
       },
       {
@@ -264,7 +291,7 @@ test("career timeline preserves the published content contract", () => {
         title:
           "Distilling the Complexity of Agent-Based Simulations Into Textual Explanations via Large Language Models",
         subtitle: "Big Data and Cognitive Computing",
-        description: "Flandre N. Y., Giabbanelli P. J.",
+        description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK}`,
         link: "https://doi.org/10.3390/bdcc10040121",
       },
       {
@@ -272,7 +299,7 @@ test("career timeline preserves the published content contract", () => {
         title:
           "Promoting empathy in decision-making by turning agent-based models into stories using large-language models",
         subtitle: "Journal of Simulation",
-        description: "Daumas C., Giabbanelli P. J., **Flandre N.** · Selected as the Editor's Pick",
+        description: `Daumas C., ${PHILIPPE_AUTHOR_LINK}, ${NOE_AUTHOR} · Selected as the Editor's Pick`,
         link: "https://www.researchgate.net/publication/395240074_Promoting_empathy_in_decision-making_by_turning_agent-based_models_into_stories_using_large-language_models",
       },
       {
@@ -280,7 +307,7 @@ test("career timeline preserves the published content contract", () => {
         title:
           "Can large language models learn conceptual modeling by looking at slide decks and pass graduate examinations? an empirical study",
         subtitle: "ER 2024 (EmpER'24)",
-        description: "**Flandre N.**, Giabbanelli P. J.",
+        description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK}`,
         link: "https://link.springer.com/chapter/10.1007/978-3-031-75599-6_15",
       },
     ],
