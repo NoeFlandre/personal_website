@@ -14,7 +14,7 @@ function createProgressBar(documentRef, signal) {
   progressContainer.appendChild(progressBar);
   documentRef.body.appendChild(progressContainer);
 
-  signal.addEventListener("abort", () => progressContainer.remove(), { once: true });
+  signal.addEventListener("abort", () => progressContainer.remove());
 }
 
 function updateScrollProgress(documentRef, signal) {
@@ -54,15 +54,11 @@ function addHeadingLinks(article, signal, documentRef) {
     links.push(link);
   }
 
-  signal.addEventListener(
-    "abort",
-    () => {
-      links.forEach((link) => {
-        link.remove();
-      });
-    },
-    { once: true }
-  );
+  signal.addEventListener("abort", () => {
+    links.forEach((link) => {
+      link.remove();
+    });
+  });
 }
 
 function attachCopyButtons(
@@ -103,17 +99,13 @@ function attachCopyButtons(
     );
   }
 
-  signal.addEventListener(
-    "abort",
-    () => {
-      wrappers.forEach(({ codeBlock, copyButton, wrapper }) => {
-        if (wrapper.parentNode) wrapper.replaceWith(codeBlock);
-        copyButton.remove();
-        codeBlock.removeAttribute("tabindex");
-      });
-    },
-    { once: true }
-  );
+  signal.addEventListener("abort", () => {
+    wrappers.forEach(({ codeBlock, copyButton, wrapper }) => {
+      if (wrapper.parentNode) wrapper.replaceWith(codeBlock);
+      copyButton.remove();
+      codeBlock.removeAttribute("tabindex");
+    });
+  });
 
   async function copyCode(block, button) {
     const code = block.querySelector("code");
@@ -126,7 +118,7 @@ function attachCopyButtons(
     const timeoutId = setTimeoutFn(() => {
       button.innerText = copyButtonLabel;
     }, 700);
-    signal.addEventListener("abort", () => clearTimeoutFn(timeoutId), { once: true });
+    signal.addEventListener("abort", () => clearTimeoutFn(timeoutId));
   }
 }
 
@@ -148,6 +140,16 @@ function addLazyLoading(article) {
   });
 }
 
+function getKeyboardNavigationUrl(event, previousUrl, nextUrl) {
+  if (event.target.matches('input, textarea, [contenteditable="true"]')) return null;
+  return { j: nextUrl, k: previousUrl }[event.key] ?? null;
+}
+
+function navigateWithKeyboard(windowRef, event, previousUrl, nextUrl) {
+  const destination = getKeyboardNavigationUrl(event, previousUrl, nextUrl);
+  if (destination) windowRef.location.href = destination;
+}
+
 function setupKeyboardNavigation(documentRef, windowRef, signal) {
   const navContainer = documentRef.querySelector("[data-prev-url]");
   if (!navContainer) return;
@@ -157,15 +159,7 @@ function setupKeyboardNavigation(documentRef, windowRef, signal) {
 
   documentRef.addEventListener(
     "keydown",
-    (event) => {
-      if (event.target.matches('input, textarea, [contenteditable="true"]')) return;
-
-      if (event.key === "j" && nextUrl) {
-        windowRef.location.href = nextUrl;
-      } else if (event.key === "k" && prevUrl) {
-        windowRef.location.href = prevUrl;
-      }
-    },
+    (event) => navigateWithKeyboard(windowRef, event, prevUrl, nextUrl),
     { signal }
   );
 }
@@ -175,25 +169,20 @@ function processEmbeds(article, documentRef, nodeFilterRef) {
 
   const pNodes = article.querySelectorAll("p");
   pNodes.forEach((p) => {
-    const text = (p.textContent || "").trim();
+    const text = p.textContent;
     const ytMatch = text.match(/\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/);
 
-    if (ytMatch?.[1]) {
-      const container = documentRef.createElement("div");
-      container.innerHTML = buildYouTubeEmbedMarkup(ytMatch[1]);
-      const embed = container.firstElementChild;
-      if (embed) {
-        p.replaceWith(embed);
-      }
-    }
+    if (!ytMatch) return;
+
+    const container = documentRef.createElement("div");
+    container.innerHTML = buildYouTubeEmbedMarkup(ytMatch[1]);
+    p.replaceWith(container.firstElementChild);
   });
 
-  const walker = documentRef.createTreeWalker(article, nodeFilterRef?.SHOW_TEXT, null, false);
+  const walker = documentRef.createTreeWalker(article, nodeFilterRef?.SHOW_TEXT, null);
   const textNodes = [];
-  let node = walker.nextNode();
-  while (node) {
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     textNodes.push(node);
-    node = walker.nextNode();
   }
 
   textNodes.forEach((textNode) => {
@@ -210,9 +199,9 @@ function processEmbeds(article, documentRef, nodeFilterRef) {
       tempDiv.innerHTML = content;
 
       const parent = textNode.parentNode;
-      while (tempDiv.firstChild) {
-        parent.insertBefore(tempDiv.firstChild, textNode);
-      }
+      Array.from(tempDiv.childNodes).forEach((child) => {
+        parent.insertBefore(child, textNode);
+      });
       parent.removeChild(textNode);
     }
   });

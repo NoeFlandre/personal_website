@@ -25,12 +25,7 @@ export function initPostDetails() {
   const windowRef = globalThis.window;
   ensureTransitionHooks(documentRef, windowRef);
 
-  const session = createPostDetailsSession({
-    documentRef,
-    navigatorRef: globalThis.navigator,
-    nodeFilterRef: globalThis.NodeFilter,
-    windowRef,
-  });
+  const session = createPostDetailsSession();
 
   lifecycle.activate(article, (signal) => {
     session.mount(article, signal);

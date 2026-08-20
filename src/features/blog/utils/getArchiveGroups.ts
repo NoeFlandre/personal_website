@@ -21,27 +21,26 @@ export function getArchiveGroups(posts: CollectionEntry<"blog">[]): ArchiveYearG
     const year = pubDate.getFullYear();
     const month = pubDate.getMonth() + 1;
 
-    if (!yearMap.has(year)) {
-      yearMap.set(year, new Map());
+    let monthMap = yearMap.get(year);
+    if (!monthMap) {
+      monthMap = new Map();
+      yearMap.set(year, monthMap);
     }
 
-    const monthMap = yearMap.get(year);
-    if (!monthMap?.has(month)) {
-      monthMap?.set(month, []);
+    let groupedPosts = monthMap.get(month);
+    if (!groupedPosts) {
+      groupedPosts = [];
+      monthMap.set(month, groupedPosts);
     }
 
-    monthMap?.get(month)?.push(post);
+    groupedPosts.push(post);
   }
 
-  return Array.from(yearMap.entries())
-    .sort(([yearA], [yearB]) => yearB - yearA)
-    .map(([year, monthMap]) => ({
-      year,
-      months: Array.from(monthMap.entries())
-        .sort(([monthA], [monthB]) => monthB - monthA)
-        .map(([month, groupedPosts]) => ({
-          month,
-          posts: groupedPosts,
-        })),
-    }));
+  return Array.from(yearMap.entries()).map(([year, monthMap]) => ({
+    year,
+    months: Array.from(monthMap.entries()).map(([month, groupedPosts]) => ({
+      month,
+      posts: groupedPosts,
+    })),
+  }));
 }

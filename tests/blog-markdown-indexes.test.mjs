@@ -38,6 +38,16 @@ test("buildPostsMarkdown uses canonical post paths and excludes hidden posts", (
       pubDatetime: new Date("2025-02-01T00:00:00.000Z"),
     }),
     createPost({
+      id: "same-year",
+      title: "Same Year",
+      pubDatetime: new Date("2025-01-15T00:00:00.000Z"),
+    }),
+    createPost({
+      id: "older-year",
+      title: "Older Year",
+      pubDatetime: new Date("2024-12-01T00:00:00.000Z"),
+    }),
+    createPost({
       id: "secret",
       title: "Secret",
       pubDatetime: new Date("2025-03-01T00:00:00.000Z"),
@@ -45,9 +55,10 @@ test("buildPostsMarkdown uses canonical post paths and excludes hidden posts", (
     }),
   ]);
 
-  assert.match(markdown, /\[Deep Dive\]\(\/posts\/research-notes\/deep-dive\)/);
-  assert.doesNotMatch(markdown, /Secret/);
-  assert.doesNotMatch(markdown, /\/posts\/deep-dive\.md/);
+  assert.equal(
+    markdown,
+    "# All Posts\n\n## 2025\n\n- Feb 1: [Deep Dive](/posts/research-notes/deep-dive)\n- Jan 15: [Same Year](/posts/same-year)\n\n## 2024\n\n- Dec 1: [Older Year](/posts/older-year)\n\n---\n\n[Back to Home](/index.md)"
+  );
 });
 
 test("buildArchivesMarkdown counts only visible posts by year", () => {
@@ -58,7 +69,8 @@ test("buildArchivesMarkdown counts only visible posts by year", () => {
     createPost({ id: "older", pubDatetime: new Date("2024-01-01T00:00:00.000Z") }),
   ]);
 
-  assert.match(markdown, /Total posts: 3/);
-  assert.match(markdown, /- \[2025\]\(\/posts\.md#2025\) \(2 posts\)/);
-  assert.match(markdown, /- \[2024\]\(\/posts\.md#2024\) \(1 post\)/);
+  assert.equal(
+    markdown,
+    "# Archives\n\nTotal posts: 3\n\n## Posts by Year\n\n- [2025](/posts.md#2025) (2 posts)\n- [2024](/posts.md#2024) (1 post)\n\n---\n\n[Back to Home](/index.md) | [All Posts](/posts.md)"
+  );
 });

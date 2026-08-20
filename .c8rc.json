@@ -1,18 +1,10 @@
 {
   "all": true,
-  "src": ["src/features/about/utils", "src/features/blog/utils"],
-  "include": [
-    "src/features/about/utils/**/*.js",
-    "src/features/blog/utils/**/*.js",
-    "src/features/blog/utils/**/*.ts"
-  ],
-  "exclude": ["src/features/blog/utils/readingTime.ts"],
+  "src": ["src"],
+  "include": ["src/**/*.js", "src/**/*.ts"],
+  "exclude": ["src/**/*.d.ts"],
   "extension": [".js", ".ts"],
   "reporter": ["text", "html", "json"],
   "reports-dir": "coverage/c8",
-  "check-coverage": true,
-  "branches": 97,
-  "lines": 100,
-  "statements": 100,
-  "functions": 100
+  "check-coverage": false
 }

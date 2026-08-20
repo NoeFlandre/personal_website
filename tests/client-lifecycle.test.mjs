@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { initAboutOutline } from "../src/features/about/client/aboutOutline.js";
+import {
+  getFirstVisibleSection,
+  getOutlineSectionId,
+  initAboutOutline,
+} from "../src/features/about/client/aboutOutline.js";
 import { initPostDetails } from "../src/features/blog/client/postDetailsRerun.js";
 import { createPostDetailsSession } from "../src/features/blog/client/postDetailsSession.js";
 import { createClientLifecycle } from "../src/utils/clientLifecycle.js";
@@ -99,8 +103,24 @@ class FakeElement extends TrackedEventTarget {
     this.attributes.set(name, String(value));
   }
 
+  getAttribute(name) {
+    return this.attributes.get(name) ?? null;
+  }
+
+  hasAttribute(name) {
+    return this.attributes.has(name);
+  }
+
   removeAttribute(name) {
     this.attributes.delete(name);
+  }
+
+  contains(target) {
+    return target === this || this.children.includes(target);
+  }
+
+  scrollIntoView(options) {
+    this.scrollIntoViewOptions = options;
   }
 
   querySelector() {
@@ -239,16 +259,32 @@ test("About layout reruns its dedicated client module", () => {
   assert.match(aboutLayout, /data-about-outline-root/);
 });
 
+test("initPostDetails ignores a missing document or article", () => {
+  const document = new FakeDocument();
+
+  withGlobals({ document: undefined, window: { scrollTo() {} } }, () => {
+    assert.doesNotThrow(() => initPostDetails());
+  });
+
+  withGlobals({ document, window: { scrollTo() {} } }, () => {
+    initPostDetails();
+    assert.equal(document.listenerCount("astro:before-swap"), 0);
+    assert.equal(document.listenerCount("astro:after-swap"), 0);
+    assert.equal(document.body.children.length, 0);
+  });
+});
+
 test("initPostDetails does not duplicate listeners and cleans up before a swap", () => {
   const document = new FakeDocument();
   const article = new FakeElement();
   document.currentArticle = article;
+  const scrollCalls = [];
 
   withGlobals(
     {
       document,
       NodeFilter: { SHOW_TEXT: 4 },
-      window: { scrollTo() {} },
+      window: { scrollTo: (options) => scrollCalls.push(options) },
     },
     () => {
       initPostDetails();
@@ -258,6 +294,9 @@ test("initPostDetails does not duplicate listeners and cleans up before a swap",
       assert.equal(document.listenerCount("astro:before-swap"), 1);
       assert.equal(document.listenerCount("astro:after-swap"), 1);
       assert.equal(document.body.children.length, 1);
+
+      document.dispatchEvent(new Event("astro:after-swap"));
+      assert.deepEqual(scrollCalls, [{ left: 0, top: 0, behavior: "instant" }]);
 
       document.dispatchEvent(new Event("astro:before-swap"));
 
@@ -392,12 +431,17 @@ test("initAboutOutline initializes one root once and reconnects after a swap", (
   class FakeIntersectionObserver {
     static instances = [];
 
-    constructor() {
+    constructor(callback, ...options) {
+      this.callback = callback;
       this.disconnectCount = 0;
+      this.options = options[0];
+      this.observed = [];
       FakeIntersectionObserver.instances.push(this);
     }
 
-    observe() {}
+    observe(section) {
+      this.observed.push(section);
+    }
 
     disconnect() {
       this.disconnectCount += 1;
@@ -411,6 +455,12 @@ test("initAboutOutline initializes one root once and reconnects after a swap", (
     assert.equal(document.listenerCount("astro:before-swap"), 1);
     assert.equal(link.listenerCount("click"), 1);
     assert.equal(FakeIntersectionObserver.instances.length, 1);
+    assert.deepEqual(FakeIntersectionObserver.instances[0].options, {
+      rootMargin: "-35% 0px -55% 0px",
+      threshold: [0, 1],
+    });
+    assert.deepEqual(FakeIntersectionObserver.instances[0].observed, [section]);
+    assert.equal(document.listenerCount("click"), 0);
 
     document.dispatchEvent(new Event("astro:before-swap"));
 
@@ -421,4 +471,232 @@ test("initAboutOutline initializes one root once and reconnects after a swap", (
     assert.equal(link.listenerCount("click"), 1);
     assert.equal(FakeIntersectionObserver.instances.length, 2);
   });
+});
+
+test("outline helpers reject non-fragment links and choose the nearest visible section", () => {
+  assert.equal(getOutlineSectionId(null), null);
+  assert.equal(getOutlineSectionId(""), null);
+  assert.equal(getOutlineSectionId("section"), null);
+  assert.equal(getOutlineSectionId("#overview"), "overview");
+
+  const first = { id: "first" };
+  const second = { id: "second" };
+  const hiddenBeforeBoth = { id: "hidden-before-both" };
+  assert.equal(
+    getFirstVisibleSection([
+      { isIntersecting: false, target: hiddenBeforeBoth, boundingClientRect: { top: -10 } },
+      { isIntersecting: true, target: second, boundingClientRect: { top: 20 } },
+      { isIntersecting: true, target: first, boundingClientRect: { top: 10 } },
+    ]),
+    first
+  );
+  assert.equal(getFirstVisibleSection([]), null);
+});
+
+test("initAboutOutline skips roots without links or matching sections", () => {
+  const document = new FakeDocument();
+  const root = new FakeElement();
+  root.querySelectorAll = (selector) => {
+    if (selector === "[data-outline-link]") return [];
+    if (selector === "[data-about-outline-mobile]") return [];
+    return [];
+  };
+  document.querySelector = (selector) => (selector === "[data-about-outline-root]" ? root : null);
+
+  class FakeIntersectionObserver {
+    static instances = [];
+
+    constructor() {
+      FakeIntersectionObserver.instances.push(this);
+    }
+  }
+
+  withGlobals({ document, IntersectionObserver: FakeIntersectionObserver }, () => {
+    initAboutOutline();
+    assert.equal(FakeIntersectionObserver.instances.length, 0);
+    assert.equal(document.listenerCount("click"), 0);
+
+    document.querySelector = () => null;
+    initAboutOutline();
+
+    const missingRoot = new FakeElement();
+    const missingLink = new FakeElement();
+    missingLink.getAttribute = (name) => (name === "href" ? "#missing" : null);
+    missingRoot.querySelectorAll = (selector) => {
+      if (selector === "[data-outline-link]") return [missingLink];
+      if (selector === "[data-about-outline-mobile]") return [];
+      return [];
+    };
+    document.querySelector = (selector) =>
+      selector === "[data-about-outline-root]" ? missingRoot : null;
+
+    assert.doesNotThrow(() => initAboutOutline());
+    assert.equal(FakeIntersectionObserver.instances.length, 0);
+
+    document.querySelector = () => null;
+    initAboutOutline();
+  });
+});
+
+test("createClientLifecycle cleans up a failed setup before rethrowing", () => {
+  const lifecycle = createClientLifecycle();
+  const root = {};
+  let cleanupCalls = 0;
+
+  assert.throws(
+    () =>
+      lifecycle.activate(root, () => {
+        throw new Error("setup failed");
+      }),
+    /setup failed/
+  );
+
+  lifecycle.activate({}, () => {
+    cleanupCalls += 1;
+  });
+  lifecycle.cleanup();
+  assert.equal(cleanupCalls, 1);
+});
+
+test("initAboutOutline activates visible sections and closes the mobile outline", () => {
+  const document = new FakeDocument();
+  const root = new FakeElement();
+  const link = new FakeElement();
+  const otherLink = new FakeElement();
+  const invalidLink = new FakeElement();
+  const missingLink = new FakeElement();
+  const mobileOutline = new FakeElement();
+  const section = new FakeElement();
+  const otherSection = new FakeElement();
+  const outside = new FakeElement();
+  link.getAttribute = (name) => (name === "href" ? "#section" : null);
+  let closestSelector = null;
+  link.closest = (selector) => {
+    closestSelector = selector;
+    return selector === "[data-about-outline-mobile]" ? mobileOutline : null;
+  };
+  otherLink.getAttribute = (name) => (name === "href" ? "#other-section" : null);
+  otherLink.closest = () => null;
+  invalidLink.getAttribute = (name) => (name === "href" ? "section" : null);
+  invalidLink.closest = () => null;
+  missingLink.getAttribute = (name) => (name === "href" ? "#missing" : null);
+  missingLink.closest = () => null;
+  section.id = "section";
+  otherSection.id = "other-section";
+  mobileOutline.setAttribute("open", "");
+  mobileOutline.contains = (target) => target === mobileOutline;
+  let removeAttributeCalls = 0;
+  const removeAttribute = mobileOutline.removeAttribute.bind(mobileOutline);
+  mobileOutline.removeAttribute = (name) => {
+    removeAttributeCalls += 1;
+    removeAttribute(name);
+  };
+  root.querySelectorAll = (selector) => {
+    if (selector === "[data-outline-link]") return [link, otherLink, invalidLink, missingLink];
+    if (selector === "[data-about-outline-mobile]") return [mobileOutline];
+    return [];
+  };
+  document.querySelector = (selector) => (selector === "[data-about-outline-root]" ? root : null);
+  const lookups = [];
+  document.getElementById = (id) => {
+    lookups.push(id);
+    return (
+      new Map([
+        ["section", section],
+        ["other-section", otherSection],
+      ]).get(id) ?? null
+    );
+  };
+
+  class FakeIntersectionObserver {
+    static instances = [];
+
+    constructor(callback, ...options) {
+      this.callback = callback;
+      this.options = options[0];
+      this.observed = [];
+      FakeIntersectionObserver.instances.push(this);
+    }
+
+    observe(sectionToObserve) {
+      this.observed.push(sectionToObserve);
+    }
+
+    disconnect() {}
+  }
+
+  withGlobals(
+    { document, IntersectionObserver: FakeIntersectionObserver, Node: FakeElement },
+    () => {
+      assert.doesNotThrow(() => initAboutOutline());
+
+      assert.deepEqual(FakeIntersectionObserver.instances[0].options, {
+        rootMargin: "-35% 0px -55% 0px",
+        threshold: [0, 1],
+      });
+      assert.deepEqual(FakeIntersectionObserver.instances[0].observed, [section, otherSection]);
+      assert.equal(lookups.includes(null), false);
+      assert.equal(link.dataset.active, "true");
+      assert.equal(otherLink.dataset.active, "false");
+      assert.equal(document.listenerCount("click"), 1);
+
+      FakeIntersectionObserver.instances[0].callback([
+        { isIntersecting: true, target: section, boundingClientRect: { top: 20 } },
+      ]);
+      assert.equal(link.dataset.active, "true");
+
+      FakeIntersectionObserver.instances[0].callback([
+        { isIntersecting: true, target: otherSection, boundingClientRect: { top: 10 } },
+      ]);
+      assert.equal(otherLink.dataset.active, "true");
+      assert.doesNotThrow(() => FakeIntersectionObserver.instances[0].callback([]));
+      assert.equal(otherLink.dataset.active, "true");
+
+      link.dispatchEvent(new Event("click", { cancelable: true }));
+      assert.deepEqual(link.scrollIntoViewOptions, undefined);
+      assert.deepEqual(section.scrollIntoViewOptions, {
+        behavior: "smooth",
+        block: "start",
+      });
+      assert.equal(closestSelector, "[data-about-outline-mobile]");
+      assert.equal(mobileOutline.hasAttribute("open"), false);
+
+      const invalidEvent = new Event("click", { cancelable: true });
+      const invalidListener = [...invalidLink.listenerEntries.get("click")][0].listener;
+      assert.doesNotThrow(() => invalidListener(invalidEvent));
+      assert.equal(invalidEvent.defaultPrevented, false);
+      assert.equal(lookups.includes(null), false);
+
+      const missingEvent = new Event("click", { cancelable: true });
+      const missingListener = [...missingLink.listenerEntries.get("click")][0].listener;
+      assert.doesNotThrow(() => missingListener(missingEvent));
+      assert.equal(missingEvent.defaultPrevented, false);
+
+      otherLink.dispatchEvent(new Event("click", { cancelable: true }));
+      assert.deepEqual(otherSection.scrollIntoViewOptions, {
+        behavior: "smooth",
+        block: "start",
+      });
+
+      const callsBeforeClosedClick = removeAttributeCalls;
+      const outsideClick = [...(document.listenerEntries.get("click") ?? [])][0]?.listener;
+      outsideClick?.({ target: outside });
+      assert.equal(removeAttributeCalls, callsBeforeClosedClick);
+
+      mobileOutline.setAttribute("open", "");
+      outsideClick?.({ target: outside });
+      assert.equal(mobileOutline.hasAttribute("open"), false);
+
+      mobileOutline.setAttribute("open", "");
+      outsideClick?.({ target: mobileOutline });
+      assert.equal(mobileOutline.hasAttribute("open"), true);
+
+      outsideClick?.({ target: {} });
+      assert.equal(mobileOutline.hasAttribute("open"), true);
+
+      document.querySelector = () => null;
+      initAboutOutline();
+      assert.equal(document.listenerCount("click"), 0);
+    }
+  );
 });

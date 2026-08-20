@@ -1,3 +1,5 @@
+const LEGACY_BLOG_INDEX_PATHS = new Set(["/blog"]);
+
 export const onRequest = async (context, next) => {
   const url = new URL(context.request.url);
 
@@ -7,7 +9,7 @@ export const onRequest = async (context, next) => {
   }
 
   // Redirect /blog to /posts
-  if (url.pathname === "/blog" || url.pathname === "/blog/") {
+  if (LEGACY_BLOG_INDEX_PATHS.has(url.pathname)) {
     return context.redirect("/posts/", 301);
   }
 

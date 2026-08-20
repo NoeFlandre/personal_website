@@ -1,20 +1,12 @@
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
-  "mutate": [
-    "src/**/*.js",
-    "src/**/*.ts",
-    "!src/content.config.ts",
-    "!src/pages/**/*.ts",
-    "!src/features/blog/og/**/*.js",
-    "!src/features/blog/og/**/*.ts",
-    "!src/utils/loadGoogleFont.ts"
-  ],
+  "mutate": ["src/content.config.ts"],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test tests/mutation-suite.test.mjs"
+    "command": "node --test tests/mutation-content-suite.test.mjs"
   },
   "coverageAnalysis": "off",
-  "concurrency": 4,
+  "concurrency": 2,
   "timeoutFactor": 5,
   "reporters": ["clear-text", "progress"],
   "thresholds": {

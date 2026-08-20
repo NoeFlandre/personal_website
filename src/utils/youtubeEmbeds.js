@@ -1,37 +1,45 @@
 const YOUTUBE_EMBED_CLASS = "youtube-embed-container";
 const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
 
-function normalizeYouTubeId(input) {
+export function normalizeYouTubeId(input) {
   if (typeof input !== "string") return "";
 
   const id = input.trim();
   return YOUTUBE_ID_PATTERN.test(id) ? id : "";
 }
 
+function extractWatchId(input) {
+  if (!input.includes("youtube.com/watch")) return null;
+
+  if (!URL.canParse(input)) return "";
+
+  const url = new URL(input);
+  return normalizeYouTubeId(url.searchParams.get("v"));
+}
+
+function extractPathId(input, marker) {
+  if (!input.includes(marker)) return null;
+  const path = input.split(marker)[1];
+  return normalizeYouTubeId(path.split(/[?#]/)[0]);
+}
+
+function extractKnownYouTubeId(input) {
+  return (
+    [
+      extractWatchId(input),
+      extractPathId(input, "youtu.be/"),
+      extractPathId(input, "youtube.com/embed/"),
+    ].find((id) => id !== null) ?? null
+  );
+}
+
 export function extractYouTubeId(input) {
   if (typeof input !== "string") return "";
 
-  const trimmedInput = input.trim();
-  if (!trimmedInput) return "";
+  const knownId = extractKnownYouTubeId(input);
+  if (knownId !== null) return knownId;
 
-  try {
-    if (trimmedInput.includes("youtube.com/watch")) {
-      const url = new URL(trimmedInput);
-      return normalizeYouTubeId(url.searchParams.get("v"));
-    }
-
-    if (trimmedInput.includes("youtu.be/")) {
-      return normalizeYouTubeId(trimmedInput.split("youtu.be/")[1]?.split(/[?#]/)[0]);
-    }
-
-    if (trimmedInput.includes("youtube.com/embed/")) {
-      return normalizeYouTubeId(trimmedInput.split("youtube.com/embed/")[1]?.split(/[?#]/)[0]);
-    }
-  } catch (_) {
-    return "";
-  }
-
-  return normalizeYouTubeId(trimmedInput);
+  return normalizeYouTubeId(input);
 }
 
 export function getYouTubeEmbedSrc(input) {

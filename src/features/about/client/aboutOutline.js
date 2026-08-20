@@ -3,6 +3,18 @@ import { createClientLifecycle } from "../../../utils/clientLifecycle.js";
 const lifecycle = createClientLifecycle();
 let transitionHooksBound = false;
 
+export function getOutlineSectionId(href) {
+  if (!href || !href.startsWith("#")) return null;
+  return href.slice(1);
+}
+
+export function getFirstVisibleSection(entries) {
+  const visible = entries
+    .filter((entry) => entry.isIntersecting)
+    .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+  return visible[0]?.target ?? null;
+}
+
 function ensureTransitionHooks() {
   if (transitionHooksBound) return;
 
@@ -26,16 +38,16 @@ export function initAboutOutline() {
     const sectionMap = new Map();
 
     links.forEach((link) => {
-      const href = link.getAttribute("href");
-      if (!href || !href.startsWith("#")) return;
-      const section = document.getElementById(href.slice(1));
+      const sectionId = getOutlineSectionId(link.getAttribute("href"));
+      if (sectionId === null) return;
+      const section = document.getElementById(sectionId);
       if (!section) return;
       sectionMap.set(section.id, section);
     });
 
     const sections = Array.from(sectionMap.values());
 
-    if (links.length === 0 || sections.length === 0) return;
+    if (sections.length === 0) return;
 
     const setActive = (id) => {
       links.forEach((link) => {
@@ -46,12 +58,9 @@ export function initAboutOutline() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-
-        if (visible.length > 0) {
-          setActive(visible[0].target.id);
+        const visibleSection = getFirstVisibleSection(entries);
+        if (visibleSection) {
+          setActive(visibleSection.id);
         }
       },
       {
@@ -60,7 +69,7 @@ export function initAboutOutline() {
       }
     );
 
-    signal.addEventListener("abort", () => observer.disconnect(), { once: true });
+    signal.addEventListener("abort", () => observer.disconnect());
 
     sections.forEach((section) => {
       observer.observe(section);
@@ -71,9 +80,9 @@ export function initAboutOutline() {
       link.addEventListener(
         "click",
         (event) => {
-          const href = link.getAttribute("href");
-          if (!href || !href.startsWith("#")) return;
-          const section = document.getElementById(href.slice(1));
+          const sectionId = getOutlineSectionId(link.getAttribute("href"));
+          if (sectionId === null) return;
+          const section = document.getElementById(sectionId);
           if (!section) return;
           event.preventDefault();
           section.scrollIntoView({ behavior: "smooth", block: "start" });

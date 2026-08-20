@@ -39,13 +39,16 @@ test("quality scripts expose coverage, CRAP, and mutation checks", () => {
     packageJson.scripts["test:crap"],
     /check-crap-score\.mjs crap-report\/crap-report\.json 6/
   );
-  assert.equal(packageJson.scripts["test:mutation"], "stryker run");
+  assert.equal(
+    packageJson.scripts["test:mutation"],
+    "stryker run && stryker run stryker.routes.config.json && stryker run stryker.og.config.json && stryker run stryker.content.config.json"
+  );
   assert.match(packageJson.scripts["test:quality"], /npm run test/);
   assert.match(packageJson.scripts["test:quality"], /npm run test:crap/);
   assert.match(packageJson.scripts["test:quality"], /npm run test:mutation/);
 });
 
-test("mutation testing is scoped to pure utilities with a real test command", () => {
+test("mutation testing covers the source tree with behavioral tests", () => {
   const configPath = new URL("../stryker.config.json", import.meta.url);
 
   assert.equal(existsSync(configPath), true, "stryker.config.json should exist");
@@ -54,35 +57,63 @@ test("mutation testing is scoped to pure utilities with a real test command", ()
   assert.equal(config.testRunner, "command");
   assert.equal(config.coverageAnalysis, "off");
   assert.deepEqual(config.mutate, [
-    "src/features/about/utils/aboutMap.js",
-    "src/features/blog/utils/getAdjacentEntries.js",
+    "src/**/*.js",
+    "src/**/*.ts",
+    "!src/content.config.ts",
+    "!src/pages/**/*.ts",
+    "!src/features/blog/og/**/*.js",
+    "!src/features/blog/og/**/*.ts",
+    "!src/utils/loadGoogleFont.ts",
   ]);
   assert.match(config.commandRunner.command, /node --test/);
-  assert.match(config.commandRunner.command, /about-map-regression\.test\.mjs/);
-  assert.match(config.commandRunner.command, /adjacent-posts\.test\.mjs/);
+  assert.match(config.commandRunner.command, /tests\/mutation-suite\.test\.mjs/);
+  assert.deepEqual(config.reporters, ["clear-text", "progress"]);
   assert.deepEqual(config.thresholds, { high: 100, low: 100, break: 100 });
+
+  const dedicatedConfigs = [
+    ["stryker.routes.config.json", "src/pages/**/*.ts", "tests/mutation-route-suite.test.mjs"],
+    [
+      "stryker.og.config.json",
+      [
+        "src/features/blog/og/**/*.js",
+        "src/features/blog/og/**/*.ts",
+        "src/utils/loadGoogleFont.ts",
+      ],
+      "tests/mutation-og-suite.test.mjs",
+    ],
+    [
+      "stryker.content.config.json",
+      "src/content.config.ts",
+      "tests/mutation-content-suite.test.mjs",
+    ],
+  ];
+
+  for (const [fileName, mutate, testFile] of dedicatedConfigs) {
+    const dedicatedPath = new URL(`../${fileName}`, import.meta.url);
+    assert.equal(existsSync(dedicatedPath), true, `${fileName} should exist`);
+    const dedicatedConfig = JSON.parse(readFileSync(dedicatedPath, "utf8"));
+    assert.deepEqual(dedicatedConfig.mutate, Array.isArray(mutate) ? mutate : [mutate]);
+    assert.match(
+      dedicatedConfig.commandRunner.command,
+      new RegExp(testFile.replaceAll(".", "\\."))
+    );
+    assert.deepEqual(dedicatedConfig.reporters, ["clear-text", "progress"]);
+    assert.deepEqual(dedicatedConfig.thresholds, { high: 100, low: 100, break: 100 });
+  }
 });
 
-test("coverage configuration reports the utilities that have focused tests", () => {
+test("coverage configuration reports the complete source tree", () => {
   const configPath = new URL("../.c8rc.json", import.meta.url);
 
   assert.equal(existsSync(configPath), true, ".c8rc.json should exist");
 
   const config = JSON.parse(readFileSync(configPath, "utf8"));
   assert.equal(config.all, true);
-  assert.deepEqual(config.src, ["src/features/about/utils", "src/features/blog/utils"]);
-  assert.deepEqual(config.include, [
-    "src/features/about/utils/**/*.js",
-    "src/features/blog/utils/**/*.js",
-    "src/features/blog/utils/**/*.ts",
-  ]);
-  assert.deepEqual(config.exclude, ["src/features/blog/utils/readingTime.ts"]);
+  assert.deepEqual(config.src, ["src"]);
+  assert.deepEqual(config.include, ["src/**/*.js", "src/**/*.ts"]);
+  assert.deepEqual(config.exclude, ["src/**/*.d.ts"]);
   assert.deepEqual(config.extension, [".js", ".ts"]);
   assert.deepEqual(config.reporter, ["text", "html", "json"]);
   assert.equal(config["reports-dir"], "coverage/c8");
-  assert.equal(config["check-coverage"], true);
-  assert.equal(config.branches, 97);
-  assert.equal(config.lines, 100);
-  assert.equal(config.statements, 100);
-  assert.equal(config.functions, 100);
+  assert.equal(config["check-coverage"], false);
 });

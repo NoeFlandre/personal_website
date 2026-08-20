@@ -21,7 +21,7 @@
     "test": "node --test tests/**/*.test.mjs",
     "test:coverage": "c8 node --test tests/**/*.test.mjs",
     "test:crap": "npm run test:coverage && crap coverage/c8/coverage-final.json --json crap-report/crap-report.json --html crap-report/html && node scripts/check-crap-score.mjs crap-report/crap-report.json 6",
-    "test:mutation": "stryker run",
+    "test:mutation": "stryker run && stryker run stryker.routes.config.json && stryker run stryker.og.config.json && stryker run stryker.content.config.json",
     "test:e2e": "npm run build:check && playwright test",
     "test:quality": "npm run test && npm run test:crap && npm run test:mutation",
     "prepare": "husky"

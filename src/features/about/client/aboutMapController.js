@@ -26,7 +26,7 @@ export function createAboutMapController({
   const scheduleTimeout = (callback, delay) => {
     const signal = getLifecycleSignal();
     const timeoutId = setTimeoutFn(callback, delay);
-    signal.addEventListener("abort", () => clearTimeoutFn(timeoutId), { once: true });
+    signal.addEventListener("abort", () => clearTimeoutFn(timeoutId));
     return timeoutId;
   };
 
@@ -64,12 +64,13 @@ export function createAboutMapController({
         init(root);
       } catch (error) {
         consoleRef?.error?.("Failed to initialize About map demo", error);
-        const retries = Number(root.dataset.mapRetryCount ?? "0");
+        const retries = Number(root.dataset.mapRetryCount ?? 0);
         if (!shouldRetryMapInit(retries)) return;
         const nextAttempt = retries + 1;
         root.dataset.mapRetryCount = String(nextAttempt);
         scheduleTimeout(() => {
           try {
+            delete root.dataset.mapInitState;
             init(root);
           } catch {
             // Follow-up retries are handled by subsequent setup calls or next retry cycle.

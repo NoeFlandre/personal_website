@@ -48,6 +48,8 @@ class FakeTextNode {
 }
 
 class FakeElement extends TrackedEventTarget {
+  static replaceWithCalls = 0;
+
   constructor(tagName = "div") {
     super();
     this.dataset = {};
@@ -95,6 +97,10 @@ class FakeElement extends TrackedEventTarget {
 
   get firstChild() {
     return this.children[0] ?? null;
+  }
+
+  get childNodes() {
+    return this.children;
   }
 
   get firstElementChild() {
@@ -163,6 +169,7 @@ class FakeElement extends TrackedEventTarget {
   }
 
   replaceWith(replacement) {
+    FakeElement.replaceWithCalls += 1;
     const parent = this.parentNode;
     if (!parent) return;
     const index = parent.children.indexOf(this);
@@ -236,13 +243,19 @@ class FakeDocument extends TrackedEventTarget {
     this.body = new FakeElement("body");
     this.body.scrollTop = 0;
     this.documentElement = { clientHeight, scrollHeight, scrollTop: 0 };
+    this.createdElements = [];
+    this.treeWalkerArgs = null;
   }
 
   createElement(tagName) {
-    return new FakeElement(tagName);
+    const element = new FakeElement(tagName);
+    this.createdElements.push(element);
+    return element;
   }
 
-  createTreeWalker(root) {
+  createTreeWalker(...args) {
+    this.treeWalkerArgs = args;
+    const [root] = args;
     const nodes = [];
     const visit = (node) => {
       for (const child of node.children ?? []) {
@@ -359,6 +372,7 @@ test("scroll progress is initialized and clamped at both bounds", () => {
   assert.equal(progressBar.style.width, "0%");
 
   harness.documentRef.documentElement.scrollHeight = 100;
+  harness.documentRef.body.scrollTop = 10;
   harness.documentRef.emit("scroll");
   assert.equal(progressBar.style.width, "0%");
 
@@ -374,9 +388,16 @@ test("heading links are added with accessible labels and removed on abort", () =
 
   const link = heading.querySelector(".heading-link");
   assert.ok(link);
+  assert.equal(heading.className, "group");
   assert.equal(link.getAttribute("href"), "#overview");
+  assert.equal(link.tagName, "A");
+  assert.equal(
+    link.className,
+    "heading-link ml-2 opacity-0 group-hover:opacity-100 focus:opacity-100"
+  );
   assert.equal(link.firstElementChild.ariaHidden, "true");
   assert.equal(link.firstElementChild.innerText, "#");
+  assert.equal(link.firstElementChild.tagName, "SPAN");
 
   controller.abort();
   assert.equal(heading.querySelector(".heading-link"), null);
@@ -397,6 +418,54 @@ test("existing copy buttons are not duplicated", () => {
   controller.abort();
 });
 
+test("progress bars keep their semantic structure and are not duplicated", () => {
+  const existingHarness = createHarness();
+  const existingContainer = new FakeElement("div");
+  existingContainer.className = "progress-container";
+  existingContainer.dataset.postProgress = "true";
+  existingHarness.documentRef.body.appendChild(existingContainer);
+  const existingController = mount(existingHarness);
+  assert.equal(
+    existingHarness.documentRef.body.querySelectorAll(".progress-container[data-post-progress]")
+      .length,
+    1
+  );
+  existingController.abort();
+
+  const harness = createHarness();
+  const controller = mount(harness);
+  const container = harness.documentRef.body.querySelector(
+    ".progress-container[data-post-progress]"
+  );
+  const progressBar = harness.documentRef.getElementById("myBar");
+
+  assert.ok(container);
+  assert.equal(container.tagName, "DIV");
+  assert.equal(container.className, "progress-container fixed top-0 z-10 h-1 w-full bg-background");
+  assert.equal(container.dataset.postProgress, "true");
+  assert.equal(progressBar.tagName, "DIV");
+  assert.equal(progressBar.className, "progress-bar h-1 w-0 bg-accent");
+  controller.abort();
+});
+
+test("heading generation skips headings without ids and existing heading links", () => {
+  const harness = createHarness();
+  const withoutId = new FakeElement("h2");
+  const withExistingLink = new FakeElement("h3");
+  withExistingLink.id = "existing";
+  const existingLink = new FakeElement("a");
+  existingLink.className = "heading-link";
+  withExistingLink.appendChild(existingLink);
+  harness.article.appendChild(withoutId);
+  harness.article.appendChild(withExistingLink);
+
+  const controller = mount(harness);
+
+  assert.equal(withoutId.querySelector(".heading-link"), null);
+  assert.equal(withExistingLink.querySelectorAll(".heading-link").length, 1);
+  controller.abort();
+});
+
 test("copy buttons write code, show feedback, and restore their label", async () => {
   const harness = createHarness();
   const codeBlock = new FakeElement("pre");
@@ -406,6 +475,16 @@ test("copy buttons write code, show feedback, and restore their label", async ()
   harness.article.appendChild(codeBlock);
   const controller = mount(harness);
   const copyButton = codeBlock.querySelector(".copy-code");
+  const wrapper = codeBlock.parentNode;
+
+  assert.equal(wrapper.tagName, "DIV");
+  assert.equal(wrapper.style.position, "relative");
+  assert.equal(copyButton.tagName, "BUTTON");
+  assert.equal(
+    copyButton.className,
+    "copy-code absolute right-3 -top-3 rounded bg-muted px-2 py-1 text-xs leading-4 text-foreground font-medium"
+  );
+  assert.equal(codeBlock.getAttribute("tabindex"), "0");
 
   copyButton.dispatchEvent(new Event("click"));
   await Promise.resolve();
@@ -439,6 +518,25 @@ test("aborting a copy session clears feedback timers and restores the code block
   assert.equal(codeBlock.parentNode, harness.article);
   assert.equal(codeBlock.querySelector(".copy-code"), null);
   assert.equal(codeBlock.getAttribute("tabindex"), null);
+
+  copyButton.dispatchEvent(new Event("click"));
+  await Promise.resolve();
+  assert.deepEqual(harness.clipboardWrites, ["print('hello')"]);
+});
+
+test("copying a block without a code child writes an empty string", async () => {
+  const harness = createHarness();
+  const codeBlock = new FakeElement("pre");
+  harness.article.appendChild(codeBlock);
+  const controller = mount(harness);
+  const copyButton = codeBlock.querySelector(".copy-code");
+
+  copyButton.dispatchEvent(new Event("click"));
+  await Promise.resolve();
+  await Promise.resolve();
+
+  assert.deepEqual(harness.clipboardWrites, [""]);
+  controller.abort();
 });
 
 test("back-to-top resets both document scroll positions", () => {
@@ -456,6 +554,22 @@ test("back-to-top resets both document scroll positions", () => {
   assert.equal(harness.documentRef.documentElement.scrollTop, 0);
 
   controller.abort();
+  harness.documentRef.body.scrollTop = 8;
+  harness.documentRef.documentElement.scrollTop = 8;
+  backToTop.dispatchEvent(new Event("click"));
+  assert.equal(harness.documentRef.body.scrollTop, 8);
+  assert.equal(harness.documentRef.documentElement.scrollTop, 8);
+});
+
+test("copy cleanup handles a detached code block without replacing it", () => {
+  const harness = createHarness();
+  const codeBlock = new FakeElement("pre");
+  harness.article.querySelectorAll = (selector) => (selector === "pre" ? [codeBlock] : []);
+  FakeElement.replaceWithCalls = 0;
+
+  const controller = mount(harness);
+  assert.doesNotThrow(() => controller.abort());
+  assert.equal(FakeElement.replaceWithCalls, 0);
 });
 
 test("only images without an existing loading attribute become lazy", () => {
@@ -491,6 +605,9 @@ test("keyboard navigation follows j and k while ignoring editable targets", () =
   harness.documentRef.emit("keydown", { key: "k", target: harness.article });
   assert.equal(harness.windowRef.location.href, "/previous");
 
+  harness.documentRef.emit("keydown", { key: "x", target: harness.article });
+  assert.equal(harness.windowRef.location.href, "/previous");
+
   controller.abort();
   assert.equal(harness.documentRef.listenerCount("keydown"), 0);
 });
@@ -498,26 +615,64 @@ test("keyboard navigation follows j and k while ignoring editable targets", () =
 test("paragraph YouTube tags become responsive embed elements", () => {
   const harness = createHarness();
   const paragraph = new FakeElement("p");
+  const urlParagraph = new FakeElement("p");
+  const plainParagraph = new FakeElement("p");
   paragraph.textContent = "Watch this: {% youtube dQw4w9WgXcQ %}";
+  urlParagraph.textContent = "Watch this: {% youtube https://youtu.be/dQw4w9WgXcQ?t=42 %}";
+  plainParagraph.textContent = "No video here";
   harness.article.appendChild(paragraph);
+  harness.article.appendChild(urlParagraph);
+  harness.article.appendChild(plainParagraph);
   const controller = mount(harness);
 
-  assert.equal(harness.article.querySelectorAll("p").length, 0);
-  assert.equal(harness.article.querySelectorAll(".youtube-embed-container").length, 1);
+  assert.equal(harness.article.querySelectorAll("p").length, 1);
+  assert.equal(harness.article.querySelectorAll(".youtube-embed-container").length, 2);
+  assert.equal(
+    harness.documentRef.createdElements.some((element) =>
+      element.innerHTML.includes("youtube.com/embed/dQw4w9WgXcQ")
+    ),
+    true
+  );
+  assert.equal(harness.documentRef.createdElements.at(-1).tagName, "DIV");
 
   controller.abort();
 });
 
 test("YouTube tags inside text nodes are replaced without leaving the source text", () => {
   const harness = createHarness();
+  const plainTextNode = new FakeTextNode("No video here");
   const textNode = new FakeTextNode("Before {% youtube dQw4w9WgXcQ %} after");
+  const urlTextNode = new FakeTextNode(
+    "Before {% youtube https://youtu.be/dQw4w9WgXcQ?t=42 %} after"
+  );
+  harness.article.appendChild(plainTextNode);
   harness.article.appendChild(textNode);
+  harness.article.appendChild(urlTextNode);
   const controller = mount(harness);
 
   assert.equal(harness.article.children.includes(textNode), false);
-  assert.equal(harness.article.querySelectorAll(".youtube-embed-container").length, 1);
+  assert.equal(harness.article.children.includes(plainTextNode), true);
+  assert.equal(harness.article.querySelectorAll(".youtube-embed-container").length, 2);
+  assert.equal(harness.documentRef.treeWalkerArgs[0], harness.article);
+  assert.equal(harness.documentRef.treeWalkerArgs[1], 4);
+  assert.equal(harness.documentRef.treeWalkerArgs[2], null);
+  assert.equal(harness.documentRef.createdElements.at(-1).tagName, "DIV");
 
   controller.abort();
+});
+
+test("embed processing tolerates a missing NodeFilter dependency", () => {
+  const harness = createHarness();
+  const session = createPostDetailsSession({
+    clearTimeoutFn: (id) => harness.clearedTimers.push(id),
+    documentRef: harness.documentRef,
+    navigatorRef: { clipboard: { writeText: async () => undefined } },
+    nodeFilterRef: null,
+    setTimeoutFn: () => 1,
+    windowRef: harness.windowRef,
+  });
+
+  assert.doesNotThrow(() => session.mount(harness.article, new AbortController().signal));
 });
 
 test("mount keeps cleanup available when embed processing throws", () => {

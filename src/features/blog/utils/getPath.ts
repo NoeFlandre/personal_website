@@ -16,7 +16,8 @@ function getPathSegments(filePath: string | undefined) {
 }
 
 function getPostSlug(id: string) {
-  return normalizePostSlug(id.split("/").slice(-1)[0] ?? "");
+  const segments = id.split("/");
+  return normalizePostSlug(segments[segments.length - 1]);
 }
 
 /**

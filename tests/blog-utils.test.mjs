@@ -67,6 +67,12 @@ test("getPath builds canonical blog URLs from nested content paths", () => {
     getPath("2025-02-03-deep-dive", "src/content/blog/deep-dive.md"),
     "/posts/deep-dive"
   );
+  assert.equal(
+    getPath("archive-2025-02-03-deep-dive", "src/content/blog/deep-dive.md"),
+    "/posts/archive-2025-02-03-deep-dive"
+  );
+  assert.equal(getPath("folder/deep-dive", "src/content/blog/deep-dive.md"), "/posts/deep-dive");
+  assert.equal(getPath("folder/", undefined, false), "/");
   assert.equal(getPath("standalone"), "/posts/standalone");
 });
 
@@ -111,6 +117,26 @@ test("isPostVisible handles drafts, unlisted posts, future posts, and dev mode",
       { now: Date.now(), isDev: true }
     ),
     true
+  );
+});
+
+test("isPostVisible applies the scheduled-post margin at its boundary", () => {
+  const now = Date.parse("2025-01-02T00:00:00.000Z");
+  const post = {
+    pubDatetime: new Date(now - 900_000).toISOString(),
+    draft: false,
+    unlisted: false,
+    tags: ["Post"],
+  };
+
+  assert.equal(isPostVisible(post, { now }), true);
+  assert.equal(
+    isPostVisible({ ...post, pubDatetime: new Date(now + 900_000 + 1).toISOString() }, { now }),
+    false
+  );
+  assert.equal(
+    isPostVisible({ ...post, pubDatetime: new Date(now + 900_000).toISOString() }, { now }),
+    false
   );
 });
 
@@ -214,6 +240,11 @@ test("getPostsByTag returns matching visible posts in sorted order", () => {
       tags: ["Paper Review"],
     }),
     createPost({
+      id: "unrelated",
+      pubDatetime: "2025-02-15T00:00:00.000Z",
+      tags: ["Other"],
+    }),
+    createPost({
       id: "hidden",
       pubDatetime: "2025-04-01T00:00:00.000Z",
       tags: ["Paper Review"],
@@ -275,6 +306,7 @@ test("getReadingTimeForPost keeps the existing fallback behavior for missing pos
 
 test("getDisplayReadingTime falls back when an empty manual override is provided", () => {
   assert.equal(getDisplayReadingTime({ readingTime: "" }, "one two three four five"), "1 min read");
+  assert.equal(getDisplayReadingTime(undefined, "one two three four five"), "1 min read");
 });
 
 test("shouldGenerateDynamicOgImage follows routability and custom-og rules", () => {

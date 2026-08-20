@@ -33,7 +33,7 @@ test("About map initialization keeps its major responsibilities in internal help
 
 test("AboutTravelMap releases browser resources before Astro swaps pages", () => {
   assert.match(controllerSource, /let lifecycleController = new AbortController\(\)/);
-  assert.match(sessionSource, /signal\.addEventListener\("abort", removeMap, \{ once: true \}\)/);
+  assert.match(sessionSource, /signal\.addEventListener\("abort", removeMap\)/);
   assert.match(
     sessionSource,
     /windowRef\?\.addEventListener\("resize", updateCardsNav, \{ signal \}\)/
@@ -41,7 +41,7 @@ test("AboutTravelMap releases browser resources before Astro swaps pages", () =>
   assert.match(controllerSource, /documentRef\.addEventListener\("astro:before-swap", cleanup\)/);
   assert.match(
     sessionSource,
-    /signal\.addEventListener\("abort", \(\) => clearTimeoutFn\(timeoutId\), \{ once: true \}\)/
+    /signal\.addEventListener\("abort", \(\) => clearTimeoutFn\(timeoutId\)\)/
   );
   assert.equal(
     controllerSource.match(/\bsetTimeoutFn\(/g)?.length,
