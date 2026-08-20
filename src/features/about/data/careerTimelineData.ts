@@ -182,6 +182,22 @@ export const CAREER_TIMELINE_HUMANITARIAN_IMPACT: TimelineItem[] = [
 
 export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
   {
+    year: "18 August 2026",
+    title:
+      "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
+    subtitle: "Hawaii International Conference on System Sciences",
+    description:
+      "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+  },
+  {
+    year: "18 August 2026",
+    title:
+      "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
+    subtitle: "Hawaii International Conference on System Sciences",
+    description:
+      "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+  },
+  {
     year: "2026",
     title:
       "Composing Verifiable Conceptual Models via Building Blocks: Towards Design-Time Verification of Agentic AI Workflows",

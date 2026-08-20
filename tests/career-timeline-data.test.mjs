@@ -48,6 +48,27 @@ test("the about publications section highlights the editor's pick", () => {
   assert.match(empathyPaper.description ?? "", /Selected as the Editor's Pick/);
 });
 
+test("the publications section starts with the two HICSS-60 papers", () => {
+  assert.deepEqual(CAREER_TIMELINE_PUBLICATIONS.slice(0, 2), [
+    {
+      year: "18 August 2026",
+      title:
+        "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
+      subtitle: "Hawaii International Conference on System Sciences",
+      description:
+        "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+    },
+    {
+      year: "18 August 2026",
+      title:
+        "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
+      subtitle: "Hawaii International Conference on System Sciences",
+      description:
+        "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+    },
+  ]);
+});
+
 test("career timeline preserves the published content contract", () => {
   const expected = {
     experience: [
@@ -214,6 +235,22 @@ test("career timeline preserves the published content contract", () => {
       },
     ],
     publications: [
+      {
+        year: "18 August 2026",
+        title:
+          "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
+        subtitle: "Hawaii International Conference on System Sciences",
+        description:
+          "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+      },
+      {
+        year: "18 August 2026",
+        title:
+          "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
+        subtitle: "Hawaii International Conference on System Sciences",
+        description:
+          "**Flandre N.**, Giabbanelli P. J. · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).",
+      },
       {
         year: "2026",
         title:
