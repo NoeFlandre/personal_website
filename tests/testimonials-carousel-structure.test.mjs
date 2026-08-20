@@ -8,6 +8,24 @@ const source = readFileSync(
   "utf8"
 );
 
+test("Johann Desloires is the second linked recommendation", () => {
+  const names = [...source.matchAll(/name: "([^"]+)"/g)].map((match) => match[1]);
+
+  assert.equal(names[1], "Johann Desloires");
+  assert.match(source, /link: "https:\/\/www\.linkedin\.com\/in\/johann-desloires\/"/);
+  assert.match(source, /title: "Geospatial Data Scientist \| EO & ML \| End-to-End Applications"/);
+  assert.match(source, /relationship: "Worked with Noé on the same team"/);
+  assert.match(source, /date: "August 19, 2026"/);
+  assert.match(
+    source,
+    /quote:\s*"I had the pleasure of meeting Noé during his internship at Airbus Defence and Space/
+  );
+  assert.match(
+    source,
+    /I wish Noé all the best for the next steps of his career and would be happy to recommend him\./
+  );
+});
+
 const scriptMatch = source.match(/<script is:inline>([\s\S]*?)<\/script>/);
 assert.ok(scriptMatch, "expected TestimonialsCarousel to include an inline script");
 const carouselScript = scriptMatch[1];
