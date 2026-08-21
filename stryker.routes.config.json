@@ -3,7 +3,7 @@
   "mutate": ["src/pages/**/*.ts"],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test tests/mutation-route-suite.test.mjs"
+    "command": "node --test --test-concurrency=1 tests/mutation-route-suite.test.mjs"
   },
   "coverageAnalysis": "off",
   "concurrency": 4,

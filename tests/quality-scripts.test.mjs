@@ -65,8 +65,9 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     "!src/features/blog/og/**/*.ts",
     "!src/utils/loadGoogleFont.ts",
   ]);
-  assert.match(config.commandRunner.command, /node --test/);
+  assert.match(config.commandRunner.command, /node --test --test-concurrency=1/);
   assert.match(config.commandRunner.command, /tests\/mutation-suite\.test\.mjs/);
+  assert.equal(config.concurrency, 4);
   assert.deepEqual(config.reporters, ["clear-text", "progress"]);
   assert.deepEqual(config.thresholds, { high: 100, low: 100, break: 100 });
 
@@ -93,10 +94,12 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     assert.equal(existsSync(dedicatedPath), true, `${fileName} should exist`);
     const dedicatedConfig = JSON.parse(readFileSync(dedicatedPath, "utf8"));
     assert.deepEqual(dedicatedConfig.mutate, Array.isArray(mutate) ? mutate : [mutate]);
+    assert.match(dedicatedConfig.commandRunner.command, /node --test --test-concurrency=1/);
     assert.match(
       dedicatedConfig.commandRunner.command,
       new RegExp(testFile.replaceAll(".", "\\."))
     );
+    assert.equal(dedicatedConfig.concurrency, 4);
     assert.deepEqual(dedicatedConfig.reporters, ["clear-text", "progress"]);
     assert.deepEqual(dedicatedConfig.thresholds, { high: 100, low: 100, break: 100 });
   }

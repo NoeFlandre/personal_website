@@ -6,6 +6,7 @@ async function loadReadingTime() {
   const server = await createServer({
     appType: "custom",
     root: process.cwd(),
+    optimizeDeps: { noDiscovery: true },
     server: { middlewareMode: true, hmr: false, ws: false },
     plugins: [
       {

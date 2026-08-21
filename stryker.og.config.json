@@ -7,7 +7,7 @@
   ],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test tests/mutation-og-suite.test.mjs"
+    "command": "node --test --test-concurrency=1 tests/mutation-og-suite.test.mjs"
   },
   "coverageAnalysis": "off",
   "concurrency": 4,

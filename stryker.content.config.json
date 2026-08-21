@@ -3,10 +3,10 @@
   "mutate": ["src/content.config.ts"],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test tests/mutation-content-suite.test.mjs"
+    "command": "node --test --test-concurrency=1 tests/mutation-content-suite.test.mjs"
   },
   "coverageAnalysis": "off",
-  "concurrency": 2,
+  "concurrency": 4,
   "timeoutFactor": 5,
   "reporters": ["clear-text", "progress"],
   "thresholds": {
