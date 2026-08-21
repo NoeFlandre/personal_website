@@ -57,14 +57,14 @@ test("the about publications section highlights the editor's pick", () => {
 test("the publications section starts with the two HICSS-60 papers", () => {
   assert.deepEqual(CAREER_TIMELINE_PUBLICATIONS.slice(0, 2), [
     {
-      year: "18 August 2026",
+      year: "2026",
       title:
         "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
       subtitle: "Hawaii International Conference on System Sciences",
       description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
     },
     {
-      year: "18 August 2026",
+      year: "2026",
       title:
         "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
       subtitle: "Hawaii International Conference on System Sciences",
@@ -95,6 +95,12 @@ test("all publications use linked full author names", () => {
 
     assert.doesNotMatch(description, /Flandre N(?:\. Y\.)?/);
     assert.doesNotMatch(description, /Giabbanelli P\. J\./);
+  }
+});
+
+test("all publication dates use year-only values", () => {
+  for (const publication of CAREER_TIMELINE_PUBLICATIONS) {
+    assert.match(publication.year, /^\d{4}$/);
   }
 });
 
@@ -265,14 +271,14 @@ test("career timeline preserves the published content contract", () => {
     ],
     publications: [
       {
-        year: "18 August 2026",
+        year: "2026",
         title:
           "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
         subtitle: "Hawaii International Conference on System Sciences",
         description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
       },
       {
-        year: "18 August 2026",
+        year: "2026",
         title:
           "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
         subtitle: "Hawaii International Conference on System Sciences",
