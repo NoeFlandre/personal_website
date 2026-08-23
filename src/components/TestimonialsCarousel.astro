@@ -91,8 +91,8 @@ const testimonials = [
                   </a>
                 </p>
                 <p class="text-sm opacity-80 dark:opacity-100">{item.title}</p>
-                <p class="text-xs uppercase tracking-wide opacity-70 dark:opacity-100">{item.relationship}</p>
-                <p class="text-xs opacity-60 dark:opacity-100">{item.date}</p>
+                <p class="text-xs uppercase tracking-wide text-foreground/80 dark:text-white">{item.relationship}</p>
+                <p class="text-xs text-foreground/80 dark:text-white">{item.date}</p>
               </header>
               <blockquote class="text-base leading-relaxed">
                 &ldquo;{item.quote}&rdquo;
@@ -107,11 +107,17 @@ const testimonials = [
       {testimonials.map((_, index) => (
         <button
           type="button"
-          class="h-2.5 w-2.5 rounded-full bg-border/70 transition-colors data-[active=true]:bg-accent dark:bg-white/30 data-[active=true]:dark:bg-white"
+          class="group inline-flex size-6 items-center justify-center rounded-full transition-colors data-[active=true]:bg-accent/20"
           aria-label={`Go to recommendation ${index + 1}`}
+          aria-pressed={index === 0 ? "true" : "false"}
           data-dot
           data-active={index === 0 ? "true" : "false"}
-        />
+        >
+          <span
+            aria-hidden="true"
+            class="size-2.5 rounded-full bg-border/70 transition-colors group-data-[active=true]:bg-accent dark:bg-white/30 group-data-[active=true]:dark:bg-white"
+          ></span>
+        </button>
       ))}
     </div>
   </div>
@@ -146,10 +152,18 @@ const testimonials = [
       const update = () => {
         track.style.transform = `translateX(-${index * 100}%)`;
         slides.forEach((slide, i) => {
-          slide.setAttribute("aria-hidden", i === index ? "false" : "true");
+          const isActive = i === index;
+          slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+          if (isActive) {
+            slide.removeAttribute("inert");
+          } else {
+            slide.setAttribute("inert", "");
+          }
         });
         dots.forEach((dot, i) => {
-          dot.setAttribute("data-active", i === index ? "true" : "false");
+          const isActive = i === index;
+          dot.setAttribute("data-active", isActive ? "true" : "false");
+          dot.setAttribute("aria-pressed", isActive ? "true" : "false");
         });
         window.requestAnimationFrame(syncViewportHeight);
       };

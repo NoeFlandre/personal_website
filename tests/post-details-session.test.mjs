@@ -383,6 +383,7 @@ test("heading links are added with accessible labels and removed on abort", () =
   const harness = createHarness();
   const heading = new FakeElement("h2");
   heading.id = "overview";
+  heading.textContent = "  Overview  ";
   harness.article.appendChild(heading);
   const controller = mount(harness);
 
@@ -390,6 +391,7 @@ test("heading links are added with accessible labels and removed on abort", () =
   assert.ok(link);
   assert.equal(heading.className, "group");
   assert.equal(link.getAttribute("href"), "#overview");
+  assert.equal(link.getAttribute("aria-label"), "Link to Overview section");
   assert.equal(link.tagName, "A");
   assert.equal(
     link.className,
@@ -401,6 +403,24 @@ test("heading links are added with accessible labels and removed on abort", () =
 
   controller.abort();
   assert.equal(heading.querySelector(".heading-link"), null);
+});
+
+test("heading link labels fall back to the heading id when text is unavailable", () => {
+  const harness = createHarness();
+  const heading = new FakeElement("h2");
+  heading.id = "fallback";
+  Object.defineProperty(heading, "textContent", {
+    configurable: true,
+    get: () => null,
+  });
+  harness.article.appendChild(heading);
+
+  const controller = mount(harness);
+  assert.equal(
+    heading.querySelector(".heading-link").getAttribute("aria-label"),
+    "Link to fallback section"
+  );
+  controller.abort();
 });
 
 test("existing copy buttons are not duplicated", () => {

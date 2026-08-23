@@ -45,6 +45,8 @@ function addHeadingLinks(article, signal, documentRef) {
     const link = documentRef.createElement("a");
     link.className = "heading-link ml-2 opacity-0 group-hover:opacity-100 focus:opacity-100";
     link.href = `#${heading.id}`;
+    const headingLabel = heading.textContent?.trim() || heading.id;
+    link.setAttribute("aria-label", `Link to ${headingLabel} section`);
 
     const span = documentRef.createElement("span");
     span.ariaHidden = "true";

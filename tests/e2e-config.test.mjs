@@ -11,6 +11,7 @@ const workflow = readFileSync(
 test("browser smoke tests have a production-preview command", () => {
   assert.equal(packageJson.scripts["test:e2e"], "npm run build:check && playwright test");
   assert.equal(packageJson.devDependencies["@playwright/test"] !== undefined, true);
+  assert.equal(packageJson.devDependencies["@axe-core/playwright"] !== undefined, true);
 
   const configPath = new URL("../playwright.config.mjs", import.meta.url);
   assert.equal(existsSync(configPath), true, "playwright.config.mjs should exist");
@@ -19,6 +20,9 @@ test("browser smoke tests have a production-preview command", () => {
   assert.match(config, /npm run preview/);
   assert.match(config, /127\.0\.0\.1:4321/);
   assert.match(config, /retain-on-failure/);
+  for (const project of ["desktop-dark", "desktop-light", "mobile-dark", "mobile-light"]) {
+    assert.match(config, new RegExp(`name: ["']${project}["']`));
+  }
 });
 
 test("Astro CI installs Chromium and runs the browser smoke suite", () => {

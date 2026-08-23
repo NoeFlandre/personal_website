@@ -100,8 +100,8 @@ const wordCount = countWords(post.body ?? "");
         {
           readingTime && (
             <>
-              <span class="text-foreground/30">•</span>
-              <span class="text-sm text-foreground/60">{readingTime}</span>
+              <span class="text-foreground/50">•</span>
+              <span class="text-sm text-foreground/80">{readingTime}</span>
             </>
           )
         }
@@ -180,8 +180,8 @@ const wordCount = countWords(post.body ?? "");
           >
             <IconChevronLeft class="inline-block flex-shrink-0 mt-0.5" />
             <div class="min-w-0">
-              <span class="block text-sm text-foreground/70">Previous Post</span>
-              <div class="text-accent/85">{prevPost.title}</div>
+              <span class="block text-sm text-foreground/80">Previous Post</span>
+              <div class="text-accent">{prevPost.title}</div>
             </div>
           </a>
         )
@@ -194,8 +194,8 @@ const wordCount = countWords(post.body ?? "");
             id="next-post-link"
           >
             <div class="min-w-0">
-              <span class="block text-sm text-foreground/70">Next Post</span>
-              <div class="text-accent/85">{nextPost.title}</div>
+              <span class="block text-sm text-foreground/80">Next Post</span>
+              <div class="text-accent">{nextPost.title}</div>
             </div>
             <IconChevronRight class="inline-block flex-shrink-0 mt-0.5" />
           </a>

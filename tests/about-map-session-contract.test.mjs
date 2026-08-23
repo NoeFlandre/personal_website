@@ -12,6 +12,7 @@ import {
   getCardSelectionCenter,
   getCardSelectionOffset,
   getMapMountElements,
+  getMarkerOffsets,
   getPopupMaxWidth,
   getPopupPanPadding,
   hasCardsNavigationElements,
@@ -419,6 +420,42 @@ test("map mount element discovery parses every required root child", () => {
   });
 });
 
+test("nearby map places receive deterministic visual offsets", () => {
+  const offsets = getMarkerOffsets([
+    { id: "first", lat: 44, lng: 4 },
+    { id: "second", lat: 44.1, lng: 4.1 },
+    { id: "remote", lat: 0, lng: 0 },
+  ]);
+
+  assert.deepEqual(offsets.get("first"), [-18, 0]);
+  assert.deepEqual(offsets.get("second"), [18, 0]);
+  assert.equal(offsets.has("remote"), false);
+});
+
+test("marker grouping uses transitive proximity and includes the exact boundary", () => {
+  const chainedOffsets = getMarkerOffsets(
+    [
+      { id: "first", lat: 0, lng: 0 },
+      { id: "second", lat: 0, lng: 1 },
+      { id: "third", lat: 0, lng: 2 },
+    ],
+    1.1
+  );
+  assert.deepEqual(chainedOffsets.get("first"), [-36, 0]);
+  assert.deepEqual(chainedOffsets.get("second"), [0, 0]);
+  assert.deepEqual(chainedOffsets.get("third"), [36, 0]);
+
+  const boundaryOffsets = getMarkerOffsets(
+    [
+      { id: "boundary-first", lat: 0, lng: 0 },
+      { id: "boundary-second", lat: 0, lng: 1 },
+    ],
+    1
+  );
+  assert.deepEqual(boundaryOffsets.get("boundary-first"), [-18, 0]);
+  assert.deepEqual(boundaryOffsets.get("boundary-second"), [18, 0]);
+});
+
 test("Leaflet initialization preserves map, controls, tile, and view options", () => {
   const calls = [];
   const map = {
@@ -486,13 +523,17 @@ test("popup and marker presentation preserve responsive and place-specific detai
   assert.deepEqual(icon, {
     className: "",
     html: '<span class="about-map-marker about-map-marker--travel is-selected"></span>',
-    iconSize: [18, 18],
-    iconAnchor: [9, 9],
-    popupAnchor: [0, -12],
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -15],
   });
   assert.equal(
     createMarkerIcon({ divIcon: (options) => options }, "work").html,
     '<span class="about-map-marker about-map-marker--work"></span>'
+  );
+  assert.deepEqual(
+    createMarkerIcon({ divIcon: (options) => options }, "work", false, [18, -4]).iconAnchor,
+    [-6, 16]
   );
 
   const work = createPopupMarkup({
@@ -592,18 +633,30 @@ test("highlighting marks only the selected card and scrolls visible cards", () =
   ]);
   const unrelatedCard = {
     dataset: { placeId: "other", hidden: "false" },
+    attributes: [],
+    setAttribute(name, value) {
+      this.attributes.push([name, value]);
+    },
     scrollIntoView() {
       throw new Error("unrelated cards must not scroll");
     },
   };
   const visibleCard = {
     dataset: { placeId: "one", hidden: "false" },
+    attributes: [],
+    setAttribute(name, value) {
+      this.attributes.push([name, value]);
+    },
     scrollIntoView(options) {
       this.scrollOptions = options;
     },
   };
   const hiddenCard = {
     dataset: { placeId: "two", hidden: "true" },
+    attributes: [],
+    setAttribute(name, value) {
+      this.attributes.push([name, value]);
+    },
     scrollIntoView() {
       throw new Error("hidden cards must not scroll");
     },
@@ -631,6 +684,9 @@ test("highlighting marks only the selected card and scrolls visible cards", () =
   assert.equal(visibleCard.dataset.active, "true");
   assert.equal(unrelatedCard.dataset.active, "false");
   assert.equal(hiddenCard.dataset.active, "false");
+  assert.deepEqual(visibleCard.attributes, [["aria-pressed", "true"]]);
+  assert.deepEqual(unrelatedCard.attributes, [["aria-pressed", "false"]]);
+  assert.deepEqual(hiddenCard.attributes, [["aria-pressed", "false"]]);
   assert.deepEqual(visibleCard.scrollOptions, {
     behavior: "smooth",
     block: "nearest",
@@ -698,8 +754,8 @@ test("visibility updates cards, layers, bounds, and selected-state invalidation"
     },
   };
   const places = [
-    { id: "work", type: "work", lat: 48, lng: 2 },
-    { id: "travel", type: "travel", lat: 28, lng: 77 },
+    { id: "work", type: "work", title: "Work", lat: 48, lng: 2 },
+    { id: "travel", type: "travel", title: "Travel", lat: 28, lng: 77 },
     { id: "unmarked", type: "study", lat: 1, lng: 2 },
   ];
 
@@ -784,13 +840,17 @@ test("visibility updates cards, layers, bounds, and selected-state invalidation"
 test("map runtime wires markers, filters, card selection, popups, and delayed resize work", () => {
   const controller = new AbortController();
   const places = [
-    { id: "work", type: "work", lat: 48, lng: 2 },
-    { id: "travel", type: "travel", lat: 28, lng: 77 },
+    { id: "work", type: "work", title: "Work", lat: 48, lng: 2 },
+    { id: "travel", type: "travel", title: "Travel", lat: 28, lng: 77 },
   ];
   const cards = places.map((place) => {
     const card = Object.assign(new EventTarget(), {
       dataset: { placeId: place.id, hidden: "false" },
+      attributes: [],
       scrollCalls: [],
+      setAttribute(name, value) {
+        this.attributes.push([name, value]);
+      },
       scrollIntoView(options) {
         this.scrollCalls.push(options);
       },
@@ -798,7 +858,13 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
     return card;
   });
   const filters = ["", "all", "work"].map((filter) =>
-    Object.assign(new EventTarget(), { dataset: { filter } })
+    Object.assign(new EventTarget(), {
+      attributes: [],
+      dataset: { filter },
+      setAttribute(name, value) {
+        this.attributes.push([name, value]);
+      },
+    })
   );
   const viewport = Object.assign(new EventTarget(), { scrollLeft: 22 });
   const root = {
@@ -934,6 +1000,7 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
   assert.deepEqual(markers[0].coordinates, [48, 2]);
   assert.deepEqual(markers[0].markerOptions, {
     icon: { type: "work", selected: false },
+    keyboard: false,
     riseOnHover: true,
   });
   assert.equal(markers[0].popup.markup, "popup:work");
@@ -1001,10 +1068,14 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
   filters[2].dispatchEvent(new Event("click"));
   assert.equal(filters[0].dataset.active, "false");
   assert.equal(filters[2].dataset.active, "true");
+  assert.deepEqual(filters[0].attributes.at(-1), ["aria-pressed", "false"]);
+  assert.deepEqual(filters[2].attributes.at(-1), ["aria-pressed", "true"]);
   assert.equal(runtimeMap.layers.has(markers[0]), true);
   assert.equal(runtimeMap.layers.has(markers[1]), false);
   assert.equal(cards[0].dataset.active, "false");
   assert.equal(cards[1].dataset.active, "false");
+  assert.deepEqual(cards[0].attributes.at(-1), ["aria-pressed", "false"]);
+  assert.deepEqual(cards[1].attributes.at(-1), ["aria-pressed", "false"]);
 
   cards[0].dataset.placeId = "missing";
   cards[0].dispatchEvent(new Event("click"));

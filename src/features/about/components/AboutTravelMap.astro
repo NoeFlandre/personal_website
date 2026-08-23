@@ -22,7 +22,7 @@ const filters = [
     <h2 class="about-map__title">Where I worked, studied, and traveled</h2>
   </header>
 
-  <div class="about-map__filters" role="tablist" aria-label="Filter locations">
+  <div class="about-map__filters" role="group" aria-label="Filter locations">
     {filters.map(filter => (
       <button
         type="button"
@@ -30,6 +30,7 @@ const filters = [
         data-filter={filter.id}
         data-tone={filter.tone}
         data-active={filter.id === "all" ? "true" : "false"}
+        aria-pressed={filter.id === "all" ? "true" : "false"}
       >
         {filter.label}
       </button>
@@ -58,6 +59,7 @@ const filters = [
             class="about-map__card"
             data-place-id={place.id}
             data-place-type={place.type}
+            aria-pressed="false"
           >
             <img src={place.image} alt={`Photo placeholder for ${place.title}`} loading="lazy" />
             <div class="about-map__card-text">
@@ -152,7 +154,7 @@ const filters = [
 
   .about-map__filter[data-active="true"] {
     transform: translateY(-1px);
-    color: #ffffff;
+    color: #000000;
     border-color: transparent;
     box-shadow: 0 9px 18px color-mix(in srgb, var(--accent) 35%, transparent);
   }
@@ -171,6 +173,10 @@ const filters = [
 
   .about-map__filter[data-tone="travel"][data-active="true"] {
     background: #cc7a21;
+  }
+
+  html[data-theme="light"] .about-map__filter[data-tone="all"][data-active="true"] {
+    color: #ffffff;
   }
 
   .about-map__canvas-shell {
@@ -252,6 +258,7 @@ const filters = [
     border-radius: 0.8rem;
     overflow: hidden;
     text-align: left;
+    color: var(--foreground);
     transition: all 160ms ease;
   }
 
@@ -298,9 +305,10 @@ const filters = [
   }
 
   .about-map-marker {
-    display: inline-block;
+    display: block;
     width: 18px;
     height: 18px;
+    margin: 3px;
     border-radius: 999px;
     border: 2px solid white;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 7px 13px rgba(0, 0, 0, 0.18);

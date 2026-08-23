@@ -39,6 +39,9 @@ function createElement(offsetHeight = 0) {
     setAttribute(name, value) {
       this.attributes.set(name, value);
     },
+    removeAttribute(name) {
+      this.attributes.delete(name);
+    },
   });
 }
 
@@ -131,6 +134,15 @@ test("TestimonialsCarousel disconnects its resize observer before a page swap", 
   document.dispatchEvent(new Event("astro:before-swap"));
 
   assert.equal(resizeObserver.disconnectCount, 1);
+});
+
+test("TestimonialsCarousel removes hidden slides from the tab order and exposes the active dot", () => {
+  const { slides } = runCarousel({ withResizeObserver: true });
+
+  assert.equal(slides[0].attributes.get("aria-hidden"), "false");
+  assert.equal(slides[0].attributes.get("inert"), undefined);
+  assert.equal(slides[1].attributes.get("aria-hidden"), "true");
+  assert.equal(slides[1].attributes.get("inert"), "");
 });
 
 test("TestimonialsCarousel removes its fallback resize listener before a page swap", () => {

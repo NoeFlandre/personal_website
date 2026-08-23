@@ -137,6 +137,32 @@ export function getMapMountElements(root) {
   };
 }
 
+export function getMarkerOffsets(mapPlaces, proximity = 2.5) {
+  const groups = [];
+
+  mapPlaces.forEach((place) => {
+    const group = groups.find((candidate) =>
+      candidate.some(
+        (member) => Math.hypot(member.lat - place.lat, member.lng - place.lng) <= proximity
+      )
+    );
+
+    if (group) {
+      group.push(place);
+    } else {
+      groups.push([place]);
+    }
+  });
+
+  return new Map(
+    groups
+      .filter((group) => group.length > 1)
+      .flatMap((group) =>
+        group.map((place, index) => [place.id, [(index - (group.length - 1) / 2) * 36, 0]])
+      )
+  );
+}
+
 export function canMountMap({ mapElement, filterButtons, cardButtons, mapPlaces }) {
   return (
     Boolean(mapElement) &&
@@ -206,14 +232,17 @@ export function highlightMapSelection({
   markersById,
   cardButtons,
   markerIcon,
+  markerOffsets = new Map(),
 }) {
   mapPlaces.forEach((place) => {
     const marker = markersById.get(place.id);
     if (!marker) return;
-    marker.setIcon(markerIcon(place.type, place.id === placeId));
+    marker.setIcon(markerIcon(place.type, place.id === placeId, markerOffsets.get(place.id)));
   });
   cardButtons.forEach((card) => {
-    card.dataset.active = card.dataset.placeId === placeId ? "true" : "false";
+    const isSelected = card.dataset.placeId === placeId;
+    card.dataset.active = isSelected ? "true" : "false";
+    card.setAttribute?.("aria-pressed", isSelected ? "true" : "false");
   });
 
   const activeCard = cardButtons.find((card) => card.dataset.placeId === placeId);
@@ -302,6 +331,7 @@ export function createMapRuntime({
   const markersById = new Map();
   let activeFilter = "all";
   let activePlaceId = null;
+  const markerOffsets = getMarkerOffsets(mapPlaces);
 
   const highlight = (placeId) => {
     activePlaceId = highlightMapSelection({
@@ -310,13 +340,15 @@ export function createMapRuntime({
       markersById,
       cardButtons,
       markerIcon,
+      markerOffsets,
     });
   };
 
   mapPlaces.forEach((place) => {
     const marker = leaflet
       .marker([place.lat, place.lng], {
-        icon: markerIcon(place.type),
+        icon: markerIcon(place.type, false, markerOffsets.get(place.id)),
+        keyboard: false,
         riseOnHover: true,
       })
       .bindPopup(popupMarkup(place), {
@@ -355,6 +387,7 @@ export function createMapRuntime({
       activePlaceId = null;
       cardButtons.forEach((card) => {
         card.dataset.active = "false";
+        card.setAttribute?.("aria-pressed", "false");
       });
     }
   };
@@ -367,7 +400,9 @@ export function createMapRuntime({
         if (!filter) return;
         activeFilter = filter;
         filterButtons.forEach((filterButton) => {
-          filterButton.dataset.active = filterButton === button ? "true" : "false";
+          const isSelected = filterButton === button;
+          filterButton.dataset.active = isSelected ? "true" : "false";
+          filterButton.setAttribute?.("aria-pressed", isSelected ? "true" : "false");
         });
         updateVisibility();
       },
@@ -438,13 +473,13 @@ export function getPopupPanPadding(leaflet, windowRef) {
   return leaflet.point(padding, padding);
 }
 
-export function createMarkerIcon(leaflet, placeType, selected = false) {
+export function createMarkerIcon(leaflet, placeType, selected = false, offset = [0, 0]) {
   return leaflet.divIcon({
     className: "",
     html: `<span class="about-map-marker about-map-marker--${placeType}${selected ? " is-selected" : ""}"></span>`,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9],
-    popupAnchor: [0, -12],
+    iconSize: [24, 24],
+    iconAnchor: [12 - offset[0], 12 - offset[1]],
+    popupAnchor: [0, -15],
   });
 }
 
@@ -474,8 +509,8 @@ export function createAboutMapSession({
 
   const popupMaxWidth = () => getPopupMaxWidth(windowRef);
   const popupPanPadding = () => getPopupPanPadding(leaflet, windowRef);
-  const markerIcon = (placeType, selected = false) =>
-    createMarkerIcon(leaflet, placeType, selected);
+  const markerIcon = (placeType, selected, offset) =>
+    createMarkerIcon(leaflet, placeType, selected, offset);
   const popupMarkup = (place) => createPopupMarkup(place);
 
   const mount = (root, signal) => {
