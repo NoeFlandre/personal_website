@@ -14,6 +14,10 @@ const sessionSource = readFileSync(
   new URL("../src/features/about/client/aboutMapSession.js", import.meta.url),
   "utf8"
 );
+const interactionCoordinatorSource = readFileSync(
+  new URL("../src/features/about/client/aboutMapInteractionCoordinator.js", import.meta.url),
+  "utf8"
+);
 
 test("AboutTravelMap stays compiler checked without blanket suppressions", () => {
   assert.doesNotMatch(source, /@ts-(?:expect-error|ignore|nocheck)/);
@@ -27,7 +31,9 @@ test("AboutTravelMap delegates client behavior to a deep controller module", () 
 
 test("About map initialization keeps its major responsibilities in internal helpers", () => {
   assert.match(sessionSource, /function bindCardsNavigation\(/);
-  assert.match(sessionSource, /function createMapRuntime\(/);
+  assert.match(sessionSource, /from "\.\/aboutMapInteractionCoordinator\.js"/);
+  assert.match(interactionCoordinatorSource, /function createMapInteractionCoordinator\(/);
+  assert.match(interactionCoordinatorSource, /function createMapRuntime\(/);
   assert.match(controllerSource, /createAboutMapSession\(/);
 });
 

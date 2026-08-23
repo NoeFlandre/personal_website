@@ -878,6 +878,7 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
     fitBoundsCalls: [],
     invalidated: 0,
     flyToCalls: [],
+    projectOffsets: [],
     moveEvents: new Map(),
     addLayer(marker) {
       this.layers.add(marker);
@@ -899,7 +900,12 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
       return { distanceTo: () => 0 };
     },
     project() {
-      return { subtract: () => "center" };
+      return {
+        subtract: (offset) => {
+          this.projectOffsets.push(offset);
+          return "center";
+        },
+      };
     },
     unproject(value) {
       return value;
@@ -983,7 +989,7 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
     cardButtons: cards,
     cardsViewport: viewport,
     signal: controller.signal,
-    windowRef: { innerWidth: 1024 },
+    windowRef: { innerWidth: 520 },
     clearTimeoutFn: () => undefined,
     scheduleTimeout: (callback, delay) => {
       delayed.push({ callback, delay });
@@ -1046,6 +1052,7 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
 
   cards[0].dispatchEvent(new Event("click"));
   assert.equal(markers[0].openPopupCount, 1);
+  assert.deepEqual(runtimeMap.projectOffsets.at(-1), [0, 72]);
   assert.deepEqual(markers[0].openPopupSnapshots[0], { autoPan: false, keepInView: false });
   assert.equal(markers[0].popup.options.autoPan, true);
   assert.equal(markers[0].popup.options.keepInView, true);
