@@ -8,7 +8,9 @@ import {
 } from "../src/features/about/client/aboutOutline.js";
 import { initPostDetails } from "../src/features/blog/client/postDetailsRerun.js";
 import { createPostDetailsSession } from "../src/features/blog/client/postDetailsSession.js";
-import { createClientLifecycle } from "../src/utils/clientLifecycle.js";
+import * as clientLifecycleUtils from "../src/utils/clientLifecycle.js";
+
+const { createClientLifecycle } = clientLifecycleUtils;
 
 function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
@@ -214,6 +216,51 @@ function createCopyArticle() {
   article.appendChild(codeBlock);
   return { article, codeBlock };
 }
+
+test("Astro transition hooks register each callback once", () => {
+  const documentRef = new TrackedEventTarget();
+  const calls = [];
+  const hooks = clientLifecycleUtils.createAstroTransitionHooks();
+
+  assert.equal(
+    hooks.ensure(documentRef, {
+      onBeforeSwap: () => calls.push("before"),
+      onAfterSwap: () => calls.push("after"),
+    }),
+    true
+  );
+  assert.equal(
+    hooks.ensure(documentRef, {
+      onBeforeSwap: () => calls.push("duplicate-before"),
+      onAfterSwap: () => calls.push("duplicate-after"),
+    }),
+    false
+  );
+
+  documentRef.dispatchEvent(new Event("astro:before-swap"));
+  documentRef.dispatchEvent(new Event("astro:after-swap"));
+
+  assert.deepEqual(calls, ["before", "after"]);
+});
+
+test("Astro transition hooks allow omitting the after-swap callback", () => {
+  const documentRef = new TrackedEventTarget();
+  const calls = [];
+  const hooks = clientLifecycleUtils.createAstroTransitionHooks();
+
+  assert.equal(
+    hooks.ensure(documentRef, {
+      onBeforeSwap: () => calls.push("before"),
+    }),
+    true
+  );
+  assert.equal(documentRef.listenerCount("astro:after-swap"), 0);
+
+  documentRef.dispatchEvent(new Event("astro:before-swap"));
+  documentRef.dispatchEvent(new Event("astro:after-swap"));
+
+  assert.deepEqual(calls, ["before"]);
+});
 
 test("createClientLifecycle activates one root and aborts it before the next", () => {
   const lifecycle = createClientLifecycle();

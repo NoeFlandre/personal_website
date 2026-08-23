@@ -712,6 +712,15 @@ test("highlighting marks only the selected card and scrolls visible cards", () =
       markerIcon: () => undefined,
     })
   );
+  assert.doesNotThrow(() =>
+    highlightMapSelection({
+      placeId: "unknown",
+      mapPlaces: [],
+      markersById: new Map(),
+      cardButtons: [{ dataset: { placeId: "without-aria", hidden: "true" } }],
+      markerIcon: () => undefined,
+    })
+  );
 });
 
 test("visibility updates cards, layers, bounds, and selected-state invalidation", () => {
@@ -859,6 +868,7 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
     mapElement,
     root,
   } = fixture;
+  filters[1].setAttribute = undefined;
   viewport.scrollLeft = 22;
   const markers = fixture.markers;
   const delayed = [];

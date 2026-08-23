@@ -1,3 +1,20 @@
+export function createAstroTransitionHooks() {
+  let hooksBound = false;
+
+  return {
+    ensure(documentRef, { onBeforeSwap, onAfterSwap } = {}) {
+      if (hooksBound) return false;
+
+      documentRef.addEventListener("astro:before-swap", onBeforeSwap);
+      if (onAfterSwap) {
+        documentRef.addEventListener("astro:after-swap", onAfterSwap);
+      }
+      hooksBound = true;
+      return true;
+    },
+  };
+}
+
 export function createClientLifecycle() {
   let activeRoot = null;
   let activeCleanup = null;

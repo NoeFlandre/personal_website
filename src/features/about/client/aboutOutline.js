@@ -1,7 +1,10 @@
-import { createClientLifecycle } from "../../../utils/clientLifecycle.js";
+import {
+  createAstroTransitionHooks,
+  createClientLifecycle,
+} from "../../../utils/clientLifecycle.js";
 
 const lifecycle = createClientLifecycle();
-let transitionHooksBound = false;
+const transitionHooks = createAstroTransitionHooks();
 
 export function getOutlineSectionId(href) {
   if (!href || !href.startsWith("#")) return null;
@@ -16,10 +19,9 @@ export function getFirstVisibleSection(entries) {
 }
 
 function ensureTransitionHooks() {
-  if (transitionHooksBound) return;
-
-  document.addEventListener("astro:before-swap", () => lifecycle.cleanup());
-  transitionHooksBound = true;
+  transitionHooks.ensure(document, {
+    onBeforeSwap: () => lifecycle.cleanup(),
+  });
 }
 
 export function initAboutOutline() {

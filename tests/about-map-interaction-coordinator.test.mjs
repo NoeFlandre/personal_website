@@ -53,7 +53,8 @@ test("interaction coordinator owns marker setup and filter visibility", () => {
     [80, 400]
   );
 
-  fixture.filterButtons[1].dispatchEvent(new Event("click"));
+  fixture.filterButtons[1].setAttribute = undefined;
+  assert.doesNotThrow(() => fixture.filterButtons[1].dispatchEvent(new Event("click")));
 
   assert.equal(fixture.map.layers.size, 1);
   assert.equal(fixture.cardButtons[0].dataset.hidden, "false");

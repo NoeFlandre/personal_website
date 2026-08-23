@@ -1,18 +1,11 @@
-import { createClientLifecycle } from "../../../utils/clientLifecycle.js";
+import {
+  createAstroTransitionHooks,
+  createClientLifecycle,
+} from "../../../utils/clientLifecycle.js";
 import { createPostDetailsSession } from "./postDetailsSession.js";
 
 const lifecycle = createClientLifecycle();
-let transitionHooksBound = false;
-
-function ensureTransitionHooks(documentRef, windowRef) {
-  if (transitionHooksBound) return;
-
-  documentRef.addEventListener("astro:before-swap", () => lifecycle.cleanup());
-  documentRef.addEventListener("astro:after-swap", () =>
-    windowRef.scrollTo({ left: 0, top: 0, behavior: "instant" })
-  );
-  transitionHooksBound = true;
-}
+const transitionHooks = createAstroTransitionHooks();
 
 export function initPostDetails() {
   const documentRef = globalThis.document;
@@ -23,7 +16,10 @@ export function initPostDetails() {
   }
 
   const windowRef = globalThis.window;
-  ensureTransitionHooks(documentRef, windowRef);
+  transitionHooks.ensure(documentRef, {
+    onBeforeSwap: () => lifecycle.cleanup(),
+    onAfterSwap: () => windowRef.scrollTo({ left: 0, top: 0, behavior: "instant" }),
+  });
 
   const session = createPostDetailsSession();
 
