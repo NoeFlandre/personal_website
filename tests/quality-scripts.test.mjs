@@ -31,21 +31,36 @@ test("lint-staged includes mjs files", () => {
 test("quality scripts expose coverage, CRAP, and mutation checks", () => {
   assert.match(packageJson.scripts["test:coverage"], /^c8 /);
   assert.match(packageJson.scripts["test:coverage"], /node --test tests\/\*\*\/\*\.test\.mjs/);
-  assert.match(packageJson.scripts["test:crap"], /npm run test:coverage/);
-  assert.match(packageJson.scripts["test:crap"], /crap coverage\/c8\/coverage-final\.json/);
-  assert.match(packageJson.scripts["test:crap"], /--json crap-report\/crap-report\.json/);
-  assert.match(packageJson.scripts["test:crap"], /--html crap-report\/html/);
-  assert.match(
+  assert.equal(
     packageJson.scripts["test:crap"],
+    "npm run test:coverage && npm run test:crap:report"
+  );
+  assert.match(packageJson.scripts["test:crap:report"], /crap coverage\/c8\/coverage-final\.json/);
+  assert.match(packageJson.scripts["test:crap:report"], /--json crap-report\/crap-report\.json/);
+  assert.match(packageJson.scripts["test:crap:report"], /--html crap-report\/html/);
+  assert.match(
+    packageJson.scripts["test:crap:report"],
     /check-crap-score\.mjs crap-report\/crap-report\.json 6/
+  );
+  assert.equal(packageJson.scripts["test:mutation:source"], "stryker run");
+  assert.equal(
+    packageJson.scripts["test:mutation:routes"],
+    "stryker run stryker.routes.config.json"
+  );
+  assert.equal(packageJson.scripts["test:mutation:og"], "stryker run stryker.og.config.json");
+  assert.equal(
+    packageJson.scripts["test:mutation:content"],
+    "stryker run stryker.content.config.json"
   );
   assert.equal(
     packageJson.scripts["test:mutation"],
-    "stryker run && stryker run stryker.routes.config.json && stryker run stryker.og.config.json && stryker run stryker.content.config.json"
+    "npm run test:mutation:source && npm run test:mutation:routes && npm run test:mutation:og && npm run test:mutation:content"
   );
-  assert.match(packageJson.scripts["test:quality"], /npm run test/);
-  assert.match(packageJson.scripts["test:quality"], /npm run test:crap/);
-  assert.match(packageJson.scripts["test:quality"], /npm run test:mutation/);
+  assert.equal(
+    packageJson.scripts["test:quality"],
+    "npm run test:coverage && npm run test:crap:report && npm run test:mutation"
+  );
+  assert.doesNotMatch(packageJson.scripts["test:quality"], /npm run test &&/);
 });
 
 test("mutation testing covers the source tree with behavioral tests", () => {
@@ -56,6 +71,19 @@ test("mutation testing covers the source tree with behavioral tests", () => {
   const config = JSON.parse(readFileSync(configPath, "utf8"));
   assert.equal(config.testRunner, "command");
   assert.equal(config.coverageAnalysis, "off");
+  const mutationIgnorePatterns = [
+    ".astro/**",
+    ".stryker-tmp/**",
+    "coverage/**",
+    "crap-report/**",
+    "dist/**",
+    "output/**",
+    "public/assets/**",
+    "public/generated/**",
+    "public/textual-descriptions-place-on-earth/**",
+    "reports/**",
+  ];
+  assert.deepEqual(config.ignorePatterns, mutationIgnorePatterns);
   assert.deepEqual(config.mutate, [
     "src/**/*.js",
     "src/**/*.ts",
@@ -93,6 +121,7 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     const dedicatedPath = new URL(`../${fileName}`, import.meta.url);
     assert.equal(existsSync(dedicatedPath), true, `${fileName} should exist`);
     const dedicatedConfig = JSON.parse(readFileSync(dedicatedPath, "utf8"));
+    assert.deepEqual(dedicatedConfig.ignorePatterns, mutationIgnorePatterns);
     assert.deepEqual(dedicatedConfig.mutate, Array.isArray(mutate) ? mutate : [mutate]);
     assert.match(dedicatedConfig.commandRunner.command, /node --test --test-concurrency=1/);
     assert.match(

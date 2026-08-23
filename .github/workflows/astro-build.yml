@@ -10,7 +10,57 @@ env:
   NODE_VERSION: "20"
   ASTRO_TELEMETRY_DISABLED: "1"
 
+concurrency:
+  group: astro-quality-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run quality gates
+        run: npm run test:coverage && npm run test:crap:report
+
+  mutation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        suite:
+          - source
+          - routes
+          - og
+          - content
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run mutation suite
+        run: npm run test:mutation:${{ matrix.suite }}
+
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -27,17 +77,52 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Unit and Regression Tests
-        run: npm test
+      - name: Build and check Astro output
+        run: npm run build:check
 
-      - name: Run quality gates
-        run: npm run test:quality
+      - name: Upload Astro output
+        uses: actions/upload-artifact@v4
+        with:
+          name: astro-dist
+          path: dist
+          if-no-files-found: error
+
+  e2e:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download Astro output
+        uses: actions/download-artifact@v4
+        with:
+          name: astro-dist
+          path: dist
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
       - name: Run browser smoke tests
-        run: npm run test:e2e
+        run: npm run test:e2e:browser
 
       - name: Check build output
         run: ls -la dist/

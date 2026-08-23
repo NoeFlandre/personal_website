@@ -2,6 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 const desktopViewport = { width: 1280, height: 900 };
 const mobileViewport = { width: 390, height: 844 };
+const accessibilityTestMatch = "**/accessibility.spec.mjs";
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -12,9 +13,21 @@ export default defineConfig({
   reporter: "list",
   projects: [
     { name: "desktop-dark", use: { viewport: desktopViewport, colorScheme: "dark" } },
-    { name: "desktop-light", use: { viewport: desktopViewport, colorScheme: "light" } },
-    { name: "mobile-dark", use: { viewport: mobileViewport, colorScheme: "dark" } },
-    { name: "mobile-light", use: { viewport: mobileViewport, colorScheme: "light" } },
+    {
+      name: "desktop-light",
+      testMatch: accessibilityTestMatch,
+      use: { viewport: desktopViewport, colorScheme: "light" },
+    },
+    {
+      name: "mobile-dark",
+      testMatch: accessibilityTestMatch,
+      use: { viewport: mobileViewport, colorScheme: "dark" },
+    },
+    {
+      name: "mobile-light",
+      testMatch: accessibilityTestMatch,
+      use: { viewport: mobileViewport, colorScheme: "light" },
+    },
   ],
   use: {
     baseURL: "http://127.0.0.1:4321",

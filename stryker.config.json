@@ -14,6 +14,18 @@
     "command": "node --test --test-concurrency=1 tests/mutation-suite.test.mjs"
   },
   "coverageAnalysis": "off",
+  "ignorePatterns": [
+    ".astro/**",
+    ".stryker-tmp/**",
+    "coverage/**",
+    "crap-report/**",
+    "dist/**",
+    "output/**",
+    "public/assets/**",
+    "public/generated/**",
+    "public/textual-descriptions-place-on-earth/**",
+    "reports/**"
+  ],
   "concurrency": 4,
   "timeoutFactor": 5,
   "reporters": ["clear-text", "progress"],
