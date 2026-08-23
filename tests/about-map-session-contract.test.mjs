@@ -26,6 +26,7 @@ import {
   updateCardsNavState,
   updateMapVisibility,
 } from "../src/features/about/client/aboutMapSession.js";
+import { createAboutMapFixture } from "./helpers/about-map-fixtures.mjs";
 
 function createRoot() {
   return { dataset: {} };
@@ -843,146 +844,30 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
     { id: "work", type: "work", title: "Work", lat: 48, lng: 2 },
     { id: "travel", type: "travel", title: "Travel", lat: 28, lng: 77 },
   ];
-  const cards = places.map((place) => {
-    const card = Object.assign(new EventTarget(), {
-      dataset: { placeId: place.id, hidden: "false" },
-      attributes: [],
-      scrollCalls: [],
-      setAttribute(name, value) {
-        this.attributes.push([name, value]);
-      },
-      scrollIntoView(options) {
-        this.scrollCalls.push(options);
-      },
-    });
-    return card;
+  const fixture = createAboutMapFixture({
+    places,
+    filterValues: ["", "all", "work"],
+    innerWidth: 520,
+    createMap: true,
   });
-  const filters = ["", "all", "work"].map((filter) =>
-    Object.assign(new EventTarget(), {
-      attributes: [],
-      dataset: { filter },
-      setAttribute(name, value) {
-        this.attributes.push([name, value]);
-      },
-    })
-  );
-  const viewport = Object.assign(new EventTarget(), { scrollLeft: 22 });
-  const root = {
-    querySelector(selector) {
-      const id = selector.match(/data-place-id="([^"]+)"/)?.[1];
-      return cards.find((card) => card.dataset.placeId === id) ?? null;
-    },
-  };
-  const runtimeMap = {
-    layers: new Set(),
-    fitBoundsCalls: [],
-    invalidated: 0,
-    flyToCalls: [],
-    projectOffsets: [],
-    moveEvents: new Map(),
-    addLayer(marker) {
-      this.layers.add(marker);
-      return this;
-    },
-    removeLayer(marker) {
-      this.layers.delete(marker);
-    },
-    hasLayer(marker) {
-      return this.layers.has(marker);
-    },
-    fitBounds(bounds, options) {
-      this.fitBoundsCalls.push({ bounds, options });
-    },
-    getZoom() {
-      return 4;
-    },
-    getCenter() {
-      return { distanceTo: () => 0 };
-    },
-    project() {
-      return {
-        subtract: (offset) => {
-          this.projectOffsets.push(offset);
-          return "center";
-        },
-      };
-    },
-    unproject(value) {
-      return value;
-    },
-    stop() {},
-    closePopup() {},
-    once(name, callback) {
-      this.moveEvents.set(name, callback);
-    },
-    off(name, callback) {
-      if (this.moveEvents.get(name) === callback) this.moveEvents.delete(name);
-    },
-    flyTo(center, zoom, options) {
-      this.flyToCalls.push({ center, zoom, options });
-    },
-    invalidateSize() {
-      this.invalidated += 1;
-    },
-  };
-  const markers = [];
-  const leaflet = {
-    marker(coordinates, markerOptions) {
-      const marker = Object.assign(new EventTarget(), {
-        coordinates,
-        markerOptions,
-        icon: markerOptions.icon,
-        popup: {
-          options: {
-            autoPan: true,
-            keepInView: true,
-          },
-        },
-        openPopupCount: 0,
-        openPopupSnapshots: [],
-        eventHandlers: new Map(),
-        on(name, callback) {
-          this.eventHandlers.set(name, callback);
-          return this;
-        },
-        bindPopup(markup, options) {
-          this.popup.markup = markup;
-          this.popup.options = { ...this.popup.options, ...options };
-          return this;
-        },
-        addTo(map) {
-          map.addLayer(this);
-          return this;
-        },
-        setIcon(icon) {
-          this.icon = icon;
-          return this;
-        },
-        getPopup() {
-          return this.popup;
-        },
-        openPopup() {
-          this.openPopupCount += 1;
-          this.openPopupSnapshots.push({
-            autoPan: this.popup.options.autoPan,
-            keepInView: this.popup.options.keepInView,
-          });
-        },
-      });
-      markers.push(marker);
-      return marker;
-    },
-    latLngBounds(positions) {
-      return { positions };
-    },
-  };
+  const {
+    cardButtons: cards,
+    cardsViewport: viewport,
+    filterButtons: filters,
+    leaflet,
+    map: runtimeMap,
+    mapElement,
+    root,
+  } = fixture;
+  viewport.scrollLeft = 22;
+  const markers = fixture.markers;
   const delayed = [];
   let updateCount = 0;
 
   createMapRuntime({
     leaflet,
     map: runtimeMap,
-    mapElement: { clientHeight: 300 },
+    mapElement,
     root,
     mapPlaces: places,
     filterButtons: filters,
