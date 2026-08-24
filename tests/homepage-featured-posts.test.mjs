@@ -28,6 +28,12 @@ test("homepage uses the current professional tagline", () => {
   assert.doesNotMatch(markdownHomepage, /Daily meal : curating datasets/);
 });
 
+test("homepage describes selected work across the three focus areas", () => {
+  const homepage = read("src/pages/index.astro");
+
+  assert.match(homepage, /Selected work across research, industry and humanitarian volunteering\./);
+});
+
 test("homepage featured blog posts use the requested order", () => {
   const homepage = read("src/pages/index.astro");
   const wikidataPosition = homepage.indexOf(
