@@ -28,6 +28,22 @@ test("homepage uses the current professional tagline", () => {
   assert.doesNotMatch(markdownHomepage, /Daily meal : curating datasets/);
 });
 
+test("homepage featured blog posts use the requested order", () => {
+  const homepage = read("src/pages/index.astro");
+  const wikidataPosition = homepage.indexOf(
+    '"How to describe a place on Earth using text? Part 1: wikidata"'
+  );
+  const evergreenPosition = homepage.indexOf('"I am joining the EVERGREEN research team"');
+  const maskedImageModelingPosition = homepage.indexOf(
+    '"Breaking down the maths behind Masked Image Modeling"'
+  );
+
+  assert.ok(wikidataPosition >= 0);
+  assert.ok(wikidataPosition < evergreenPosition);
+  assert.ok(evergreenPosition < maskedImageModelingPosition);
+  assert.doesNotMatch(homepage, /"From playing Monopoly to AI Research"/);
+});
+
 test("homepage featured work starts with GeoReSeT and keeps Airbus before Tsiky", () => {
   const homepage = read("src/pages/index.astro");
   const geoResetPosition = homepage.indexOf('title: "GeoReSeT"');
