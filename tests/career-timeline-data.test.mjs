@@ -11,9 +11,11 @@ import {
 } from "../src/features/about/data/careerTimelineData.ts";
 
 const NOE_AUTHOR_LINK =
-  '<a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Flandre,+N+Y" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Noe Y. Flandre</a>';
+  '<a href="https://scholar.google.com/citations?user=NOvshPMAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Noe Y. Flandre</a>';
 const PHILIPPE_AUTHOR_LINK =
-  '<a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Giabbanelli,+P+J" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>';
+  '<a href="https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>';
+const ALEXANDER_AUTHOR_LINK =
+  '<a href="https://scholar.google.com/citations?user=LqrUey4AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Alexander Nwala</a>';
 const NOE_AUTHOR = `<strong>${NOE_AUTHOR_LINK}</strong>`;
 
 test("career timeline data exports all expected sections", () => {
@@ -77,11 +79,11 @@ test("all publications use linked full author names", () => {
   const authorLinks = [
     {
       name: "Noe Y. Flandre",
-      href: "https://arxiv.org/search/cs?searchtype=author&amp;query=Flandre,+N+Y",
+      href: "https://scholar.google.com/citations?user=NOvshPMAAAAJ&amp;hl=en",
     },
     {
       name: "Philippe J. Giabbanelli",
-      href: "https://arxiv.org/search/cs?searchtype=author&amp;query=Giabbanelli,+P+J",
+      href: "https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en",
     },
   ];
 
@@ -96,6 +98,19 @@ test("all publications use linked full author names", () => {
     assert.doesNotMatch(description, /Flandre N(?:\. Y\.)?/);
     assert.doesNotMatch(description, /Giabbanelli P\. J\./);
   }
+});
+
+test("the WSC publication links Alexander Nwala to his Google Scholar profile", () => {
+  const publication = CAREER_TIMELINE_PUBLICATIONS.find((item) =>
+    item.title.startsWith("Composing Verifiable Conceptual Models")
+  );
+
+  assert.ok(publication);
+  assert.equal(
+    publication.description,
+    `${NOE_AUTHOR}, ${ALEXANDER_AUTHOR_LINK}, ${PHILIPPE_AUTHOR_LINK}`
+  );
+  assert.doesNotMatch(publication.description ?? "", /Nwala A\. C\./);
 });
 
 test("all publication dates use year-only values", () => {
@@ -143,7 +158,7 @@ test("career timeline preserves the published content contract", () => {
         subtitle: "VMASC",
         location: "Suffolk, VA, USA",
         description: "Applied LLMs to simulation and decision-making",
-        body: 'Advised by <a href="https://giabbanelli.com/author/philippe-j.-giabbanelli/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, leverages advanced prompt engineering with GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.',
+        body: 'Advised by <a href="https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, leverages advanced prompt engineering with GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.',
       },
       {
         year: "May 2024 — Jul 2024",
@@ -151,7 +166,7 @@ test("career timeline preserves the published content contract", () => {
         subtitle: "Miami University",
         location: "Oxford, OH, USA",
         description: "LLMs for conceptual modeling and multimodal evaluation",
-        body: 'I investigated how LLMs can be integrated with simulation and conceptual modeling. <a href="https://giabbanelli.com/author/philippe-j.-giabbanelli/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe Giabbanelli</a> was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, applying a Design of Experiments methodology to merge complex causal maps using LLMs, and utilizing advanced prompt engineering and style transfer to translate agent-based models into empathetic stories.',
+        body: 'I investigated how LLMs can be integrated with simulation and conceptual modeling. <a href="https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe Giabbanelli</a> was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, applying a Design of Experiments methodology to merge complex causal maps using LLMs, and utilizing advanced prompt engineering and style transfer to translate agent-based models into empathetic stories.',
       },
       {
         year: "Jan 2024 — May 2024",
@@ -159,7 +174,7 @@ test("career timeline preserves the published content contract", () => {
         subtitle: "EuroMov",
         location: "Alès, Occitanie, France",
         description: "Generative AI applied to artistic movement analysis",
-        body: 'Supervised by <a href="https://www.linkedin.com/in/gerard-dray/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Gérard Dray</a>, my research stood at the intersection of AI and art by generating digital artwork from human movement data. I processed raw sensor spreadsheets from an artist\'s movements and used a remote GPU container to run StableDiffusion with ControlNet and specialized models. I developed an iterative workflow that combined image generation with MATLAB scripts for depth-based image composition, accepting uncertainty to create novel visual compositions and study the expressive potential of diffusion models.',
+        body: 'Supervised by <a href="https://scholar.google.com/citations?user=RMhmwNQAAAAJ&amp;hl=fr" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Gérard Dray</a>, my research stood at the intersection of AI and art by generating digital artwork from human movement data. I processed raw sensor spreadsheets from an artist\'s movements and used a remote GPU container to run StableDiffusion with ControlNet and specialized models. I developed an iterative workflow that combined image generation with MATLAB scripts for depth-based image composition, accepting uncertainty to create novel visual compositions and study the expressive potential of diffusion models.',
       },
       {
         year: "Nov 2023 — Dec 2023",
@@ -289,7 +304,7 @@ test("career timeline preserves the published content contract", () => {
         title:
           "Composing Verifiable Conceptual Models via Building Blocks: Towards Design-Time Verification of Agentic AI Workflows",
         subtitle: "WSC 2026",
-        description: `${NOE_AUTHOR}, Nwala A. C., ${PHILIPPE_AUTHOR_LINK}`,
+        description: `${NOE_AUTHOR}, ${ALEXANDER_AUTHOR_LINK}, ${PHILIPPE_AUTHOR_LINK}`,
         link: "https://arxiv.org/abs/2606.21565",
       },
       {

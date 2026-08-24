@@ -11,10 +11,13 @@ export interface TimelineItem {
 
 const AIRBUS_GEO_EXPLORE_URL =
   "https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/";
-const NOE_AUTHOR_LINK =
-  '<a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Flandre,+N+Y" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Noe Y. Flandre</a>';
-const PHILIPPE_AUTHOR_LINK =
-  '<a href="https://arxiv.org/search/cs?searchtype=author&amp;query=Giabbanelli,+P+J" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>';
+const NOE_SCHOLAR_URL = "https://scholar.google.com/citations?user=NOvshPMAAAAJ&amp;hl=en";
+const NOE_AUTHOR_LINK = `<a href="${NOE_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Noe Y. Flandre</a>`;
+const PHILIPPE_SCHOLAR_URL = "https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en";
+const PHILIPPE_AUTHOR_LINK = `<a href="${PHILIPPE_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>`;
+const ALEXANDER_SCHOLAR_URL = "https://scholar.google.com/citations?user=LqrUey4AAAAJ&amp;hl=en";
+const ALEXANDER_AUTHOR_LINK = `<a href="${ALEXANDER_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Alexander Nwala</a>`;
+const GERARD_SCHOLAR_URL = "https://scholar.google.com/citations?user=RMhmwNQAAAAJ&amp;hl=fr";
 
 export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
   {
@@ -53,7 +56,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "VMASC",
     location: "Suffolk, VA, USA",
     description: "Applied LLMs to simulation and decision-making",
-    body: `Advised by <a href="https://giabbanelli.com/author/philippe-j.-giabbanelli/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, leverages advanced prompt engineering with GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.`,
+    body: `Advised by <a href="${PHILIPPE_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, leverages advanced prompt engineering with GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.`,
   },
   {
     year: "May 2024 — Jul 2024",
@@ -61,7 +64,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "Miami University",
     location: "Oxford, OH, USA",
     description: "LLMs for conceptual modeling and multimodal evaluation",
-    body: `I investigated how LLMs can be integrated with simulation and conceptual modeling. <a href="https://giabbanelli.com/author/philippe-j.-giabbanelli/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe Giabbanelli</a> was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, applying a Design of Experiments methodology to merge complex causal maps using LLMs, and utilizing advanced prompt engineering and style transfer to translate agent-based models into empathetic stories.`,
+    body: `I investigated how LLMs can be integrated with simulation and conceptual modeling. <a href="${PHILIPPE_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe Giabbanelli</a> was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, applying a Design of Experiments methodology to merge complex causal maps using LLMs, and utilizing advanced prompt engineering and style transfer to translate agent-based models into empathetic stories.`,
   },
   {
     year: "Jan 2024 — May 2024",
@@ -69,7 +72,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "EuroMov",
     location: "Alès, Occitanie, France",
     description: "Generative AI applied to artistic movement analysis",
-    body: `Supervised by <a href="https://www.linkedin.com/in/gerard-dray/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Gérard Dray</a>, my research stood at the intersection of AI and art by generating digital artwork from human movement data. I processed raw sensor spreadsheets from an artist's movements and used a remote GPU container to run StableDiffusion with ControlNet and specialized models. I developed an iterative workflow that combined image generation with MATLAB scripts for depth-based image composition, accepting uncertainty to create novel visual compositions and study the expressive potential of diffusion models.`,
+    body: `Supervised by <a href="${GERARD_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Gérard Dray</a>, my research stood at the intersection of AI and art by generating digital artwork from human movement data. I processed raw sensor spreadsheets from an artist's movements and used a remote GPU container to run StableDiffusion with ControlNet and specialized models. I developed an iterative workflow that combined image generation with MATLAB scripts for depth-based image composition, accepting uncertainty to create novel visual compositions and study the expressive potential of diffusion models.`,
   },
   {
     year: "Nov 2023 — Dec 2023",
@@ -204,7 +207,7 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Composing Verifiable Conceptual Models via Building Blocks: Towards Design-Time Verification of Agentic AI Workflows",
     subtitle: "WSC 2026",
-    description: `<strong>${NOE_AUTHOR_LINK}</strong>, Nwala A. C., ${PHILIPPE_AUTHOR_LINK}`,
+    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${ALEXANDER_AUTHOR_LINK}, ${PHILIPPE_AUTHOR_LINK}`,
     link: "https://arxiv.org/abs/2606.21565",
   },
   {
