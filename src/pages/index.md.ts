@@ -4,8 +4,7 @@ import { SITE } from "@/site-config.js";
 export const GET: APIRoute = async () => {
   const markdownContent = `# Noé Flandre (@NoeFlandre)
 
-AI Research Engineer, vibe-learning
-Daily meal : curating datasets & training models
+AI Research Engineer — Geospatial AI & Foundation models
 
 ## Navigation
 

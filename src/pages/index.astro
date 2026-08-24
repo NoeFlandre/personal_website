@@ -9,7 +9,6 @@ import Hr from "@/components/Hr.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import Socials from "@/components/Socials.astro";
 import StructuredData from "@/components/StructuredData.astro";
-import { getPath } from "@/features/blog/utils/getPath";
 import getSortedPosts from "@/features/blog/utils/getSortedPosts";
 import Layout from "@/layouts/Layout.astro";
 import { SOCIALS } from "@/site-config.js";
@@ -34,24 +33,24 @@ const featuredPosts = posts2024AndLater
       (homepageFeaturedOrder.get(a.data.title) ?? Number.MAX_SAFE_INTEGER) -
       (homepageFeaturedOrder.get(b.data.title) ?? Number.MAX_SAFE_INTEGER)
   );
-const publicationPost = posts2024AndLater.find(
-  ({ data }) => data.title === "A small milestone for our empathy and simulation paper"
-);
 const featuredWorkCards = [
+  {
+    label: "Research",
+    title: "GeoReSeT",
+    description:
+      "Multimodal geospatial foundation models connecting text, maps and remote-sensing imagery.",
+    image: "/assets/img/about-map/inria-logo.svg",
+    imageAlt: "Inria logo",
+    imageClass:
+      "h-40 w-full bg-white object-contain p-8 transition-transform duration-300 group-hover:scale-[1.02]",
+    href: "https://geo-reset.sylvainlobry.com/",
+  },
   {
     label: "Internship",
     title: "Airbus Defence and Space",
     description: "Finetuning on satellite imagery of the VLM underlying Airbus Geo Explore",
     image: "/assets/img/about-map/airbus_defence_and_space_work.jpeg",
     href: AIRBUS_GEO_EXPLORE_URL,
-  },
-  {
-    label: "Publication",
-    title: "Empathetic Narratives from ABMs",
-    description:
-      "Research on turning agent-based simulations into readable, faithful stories with LLMs.",
-    image: "/assets/img/about-map/miami_university_work.jpeg",
-    href: publicationPost ? getPath(publicationPost.id, publicationPost.filePath) : "/posts",
   },
   {
     label: "Volunteering",
@@ -100,7 +99,7 @@ const featuredWorkCards = [
             </a>
           </div>
           <p>
-            AI Research Engineer, vibe-learning<br />Daily meal : curating datasets & training models
+            AI Research Engineer — Geospatial AI & Foundation models
           </p>
           {
             // only display if at least one social link is enabled
@@ -129,8 +128,11 @@ const featuredWorkCards = [
           >
             <img
               src={getImageThumbnailPath(item.image)}
-              alt={item.title}
-              class="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              alt={item.imageAlt ?? item.title}
+              class={
+                item.imageClass ??
+                "h-40 w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              }
               loading={index === 0 ? "eager" : "lazy"}
               decoding="async"
             />
