@@ -49,6 +49,7 @@ test("homepage featured work starts with GeoReSeT and keeps Airbus before Tsiky"
       "Multimodal geospatial foundation models connecting text, maps and remote-sensing imagery."
     )
   );
+  assert.ok(homepage.includes("Helped in building a classroom in Namibia"));
   assert.match(homepage, /href: "https:\/\/geo-reset\.sylvainlobry\.com\/"/);
   assert.match(homepage, /image: "\/assets\/img\/about-map\/inria-logo\.svg"/);
   assert.doesNotMatch(homepage, /Empathetic Narratives from ABMs/);
