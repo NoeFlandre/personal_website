@@ -38,6 +38,12 @@ test("homepage featured work starts with GeoReSeT and keeps Airbus before Tsiky"
   assert.ok(geoResetPosition < airbusPosition);
   assert.ok(airbusPosition < tsikyPosition);
   assert.match(homepage, /label: "Research"/);
+  assert.match(homepage, /label: "Industry Research"/);
+  assert.ok(
+    homepage.includes(
+      "Vision-language models and fine-tuning on satellite imagery for Airbus Geo Explore."
+    )
+  );
   assert.ok(
     homepage.includes(
       "Multimodal geospatial foundation models connecting text, maps and remote-sensing imagery."
