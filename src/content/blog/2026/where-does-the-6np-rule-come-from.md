@@ -1,5 +1,5 @@
 ---
-title: "Where does the 6NP rule comes from?"
+title: "Where does the 6NP rule come from?"
 description: "The 6NP rule is a shortcut for estimating how many floating-point operations are needed to train a dense neural network."
 pubDatetime: 2026-08-25T12:00:00+02:00
 tags: ["Post"]

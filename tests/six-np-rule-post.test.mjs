@@ -14,7 +14,7 @@ test("the 6NP rule post preserves the notes and equation formatting", () => {
 
   const { data, content } = matter(readFileSync(postPath, "utf8"));
 
-  assert.equal(data.title, "Where does the 6NP rule comes from?");
+  assert.equal(data.title, "Where does the 6NP rule come from?");
   assert.equal(data.unlisted, false);
   assert.match(
     content,
