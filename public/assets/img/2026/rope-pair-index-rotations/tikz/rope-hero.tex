@@ -1,0 +1,29 @@
+\documentclass[tikz,border=12pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+
+\definecolor{ink}{HTML}{0F172A}
+\definecolor{linegray}{HTML}{64748B}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\sffamily,
+  >=Latex,
+  line cap=round,
+  line join=round
+]
+  \fill[white] (0,0) rectangle (7.2,4.6);
+
+  % A two-dimensional RoPE pair rotates on a circle.
+  \coordinate (center) at (3.6,2.3);
+  \draw[linegray, line width=0.8pt] (center) circle (1.45);
+  \draw[linegray, line width=0.45pt] (2.1,2.3) -- (5.1,2.3);
+  \draw[linegray, line width=0.45pt] (3.6,0.85) -- (3.6,3.75);
+  \draw[ink, ->, line width=1.25pt] (center) -- (4.95,2.3)
+    node[midway, below=4pt] {$x_i$};
+  \draw[ink, ->, line width=1.25pt] (center) -- (4.53,3.41)
+    node[pos=1, above right=6pt, fill=white, inner sep=1pt] {$R_{\theta}x_i$};
+  \draw[ink, ->, line width=0.95pt] (4.38,2.3) arc (0:50:0.78)
+    node[pos=0.52, right=4pt, fill=white, inner sep=1pt] {$\theta$};
+\end{tikzpicture}
+\end{document}
