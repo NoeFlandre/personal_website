@@ -3,7 +3,7 @@
   "mutate": ["src/content.config.ts"],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test --test-concurrency=1 tests/mutation-content-suite.test.mjs"
+    "command": "node --test --test-concurrency=1 tests/mutation-content-suite.mjs"
   },
   "coverageAnalysis": "off",
   "ignorePatterns": [

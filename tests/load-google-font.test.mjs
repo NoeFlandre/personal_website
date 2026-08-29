@@ -17,3 +17,10 @@ test("local font loader returns both embedded Atkinson weights", async () => {
     true
   );
 });
+
+test("local font loader reuses the loaded font collection", async () => {
+  const first = await loadGoogleFonts();
+  const second = await loadGoogleFonts();
+
+  assert.equal(second, first);
+});

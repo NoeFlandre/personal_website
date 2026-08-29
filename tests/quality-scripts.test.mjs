@@ -94,13 +94,13 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     "!src/utils/loadGoogleFont.ts",
   ]);
   assert.match(config.commandRunner.command, /node --test --test-concurrency=1/);
-  assert.match(config.commandRunner.command, /tests\/mutation-suite\.test\.mjs/);
+  assert.match(config.commandRunner.command, /tests\/mutation-suite\.mjs/);
   assert.equal(config.concurrency, 4);
   assert.deepEqual(config.reporters, ["clear-text", "progress"]);
   assert.deepEqual(config.thresholds, { high: 100, low: 100, break: 100 });
 
   const dedicatedConfigs = [
-    ["stryker.routes.config.json", "src/pages/**/*.ts", "tests/mutation-route-suite.test.mjs"],
+    ["stryker.routes.config.json", "src/pages/**/*.ts", "tests/mutation-route-suite.mjs"],
     [
       "stryker.og.config.json",
       [
@@ -108,13 +108,9 @@ test("mutation testing covers the source tree with behavioral tests", () => {
         "src/features/blog/og/**/*.ts",
         "src/utils/loadGoogleFont.ts",
       ],
-      "tests/mutation-og-suite.test.mjs",
+      "tests/mutation-og-suite.mjs",
     ],
-    [
-      "stryker.content.config.json",
-      "src/content.config.ts",
-      "tests/mutation-content-suite.test.mjs",
-    ],
+    ["stryker.content.config.json", "src/content.config.ts", "tests/mutation-content-suite.mjs"],
   ];
 
   for (const [fileName, mutate, testFile] of dedicatedConfigs) {
@@ -131,6 +127,18 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     assert.equal(dedicatedConfig.concurrency, 4);
     assert.deepEqual(dedicatedConfig.reporters, ["clear-text", "progress"]);
     assert.deepEqual(dedicatedConfig.thresholds, { high: 100, low: 100, break: 100 });
+  }
+});
+
+test("mutation harnesses stay outside the regular test glob", () => {
+  for (const harness of [
+    "mutation-suite",
+    "mutation-route-suite",
+    "mutation-og-suite",
+    "mutation-content-suite",
+  ]) {
+    assert.equal(existsSync(new URL(`../tests/${harness}.mjs`, import.meta.url)), true);
+    assert.equal(existsSync(new URL(`../tests/${harness}.test.mjs`, import.meta.url)), false);
   }
 });
 

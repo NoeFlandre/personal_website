@@ -64,6 +64,23 @@ test("thumbnail generation writes a bounded WebP", async () => {
   }
 });
 
+test("thumbnail work runs concurrently without losing input order", async () => {
+  const { mapWithConcurrency } = await loadThumbnailGenerator();
+  let active = 0;
+  let maximumActive = 0;
+
+  const results = await mapWithConcurrency([1, 2, 3, 4, 5, 6], 2, async (value) => {
+    active += 1;
+    maximumActive = Math.max(maximumActive, active);
+    await new Promise((resolve) => setTimeout(resolve, 2));
+    active -= 1;
+    return value * 2;
+  });
+
+  assert.deepEqual(results, [2, 4, 6, 8, 10, 12]);
+  assert.equal(maximumActive, 2);
+});
+
 test("thumbnail generation reuses unchanged previews and refreshes changed sources", async () => {
   const { generateImageThumbnails } = await loadThumbnailGenerator();
   const tempDir = await mkdtemp(path.join(tmpdir(), "image-thumb-cache-test-"));

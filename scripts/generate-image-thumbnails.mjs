@@ -13,6 +13,7 @@ const PUBLIC_DIR = path.join(REPO_ROOT, "public");
 const CONTENT_DIR = path.join(REPO_ROOT, "src/content");
 const MAP_IMAGES_DIR = path.join(PUBLIC_DIR, "assets/img/about-map");
 const THUMBNAIL_WIDTH = 320;
+const THUMBNAIL_CONCURRENCY = 4;
 const IMAGE_EXTENSIONS = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]);
 
 const toLocalPath = (inputPath) =>
@@ -60,6 +61,22 @@ async function discoverHeroImages(directory = CONTENT_DIR) {
 async function discoverMapImages(directory = MAP_IMAGES_DIR, publicDir = PUBLIC_DIR) {
   const files = await walkFiles(directory);
   return new Set(files.filter(isImageFile).map((filePath) => toPublicPath(filePath, publicDir)));
+}
+
+export async function mapWithConcurrency(items, concurrency, callback) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+  const workerCount = Math.min(Math.max(1, concurrency), items.length);
+
+  async function worker() {
+    while (nextIndex < items.length) {
+      const index = nextIndex++;
+      results[index] = await callback(items[index], index);
+    }
+  }
+
+  await Promise.all(Array.from({ length: workerCount }, worker));
+  return results;
 }
 
 export async function generateThumbnail({ inputPath, outputPath, width = THUMBNAIL_WIDTH }) {
@@ -125,20 +142,23 @@ export async function generateImageThumbnails({
       .map((entry) => rm(path.join(outputDirectory, entry.name), { force: true }))
   );
 
-  let generatedCount = 0;
-  for (const { inputPath, inputMtimeMs, outputPath } of sources) {
-    try {
-      const outputStats = await stat(outputPath);
-      if (outputStats.mtimeMs >= inputMtimeMs) continue;
-    } catch {
-      // The preview does not exist yet, so generate it below.
+  const generated = await mapWithConcurrency(
+    sources,
+    THUMBNAIL_CONCURRENCY,
+    async ({ inputPath, inputMtimeMs, outputPath }) => {
+      try {
+        const outputStats = await stat(outputPath);
+        if (outputStats.mtimeMs >= inputMtimeMs) return false;
+      } catch {
+        // The preview does not exist yet, so generate it below.
+      }
+
+      await generateThumbnail({ inputPath, outputPath });
+      return true;
     }
+  );
 
-    await generateThumbnail({ inputPath, outputPath });
-    generatedCount += 1;
-  }
-
-  return { generatedCount, skippedCount };
+  return { generatedCount: generated.filter(Boolean).length, skippedCount };
 }
 
 const isCliInvocation =

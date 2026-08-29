@@ -11,7 +11,7 @@
   ],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test --test-concurrency=1 tests/mutation-suite.test.mjs"
+    "command": "node --test --test-concurrency=1 tests/mutation-suite.mjs"
   },
   "coverageAnalysis": "off",
   "ignorePatterns": [
