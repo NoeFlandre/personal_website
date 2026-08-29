@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { readFileSync as readFile } from "node:fs";
-import { mkdtemp, rm } from "node:fs/promises";
+import { existsSync, readFileSync as readFile } from "node:fs";
+import { mkdir, mkdtemp, rm, stat, utimes } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -59,6 +59,74 @@ test("thumbnail generation writes a bounded WebP", async () => {
     const metadata = await sharp(outputPath).metadata();
     assert.equal(metadata.format, "webp");
     assert.ok(metadata.width <= 320);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("thumbnail generation reuses unchanged previews and refreshes changed sources", async () => {
+  const { generateImageThumbnails } = await loadThumbnailGenerator();
+  const tempDir = await mkdtemp(path.join(tmpdir(), "image-thumb-cache-test-"));
+  const publicDir = path.join(tempDir, "public");
+  const contentDir = path.join(tempDir, "content");
+  const sourcePath = path.join(publicDir, "image.png");
+  const outputPath = path.join(publicDir, "generated/image-thumbnails/image.webp");
+
+  try {
+    await mkdir(path.join(publicDir, "assets/img/about-map"), { recursive: true });
+    await mkdir(contentDir, { recursive: true });
+    await sharp({
+      create: { width: 16, height: 16, channels: 3, background: { r: 20, g: 40, b: 60 } },
+    })
+      .png()
+      .toFile(sourcePath);
+
+    const firstRun = await generateImageThumbnails({ publicDir, contentDir });
+    const secondRun = await generateImageThumbnails({ publicDir, contentDir });
+
+    assert.equal(firstRun.generatedCount, 1);
+    assert.equal(secondRun.generatedCount, 0);
+    assert.equal(existsSync(outputPath), true);
+
+    await sharp({
+      create: { width: 16, height: 16, channels: 3, background: { r: 180, g: 90, b: 30 } },
+    })
+      .png()
+      .toFile(sourcePath);
+    const future = new Date((await stat(sourcePath)).mtimeMs + 2_000);
+    await utimes(sourcePath, future, future);
+
+    const thirdRun = await generateImageThumbnails({ publicDir, contentDir });
+    assert.equal(thirdRun.generatedCount, 1);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("thumbnail generation removes previews whose sources no longer exist", async () => {
+  const { generateImageThumbnails } = await loadThumbnailGenerator();
+  const tempDir = await mkdtemp(path.join(tmpdir(), "image-thumb-stale-test-"));
+  const publicDir = path.join(tempDir, "public");
+  const contentDir = path.join(tempDir, "content");
+  const sourcePath = path.join(publicDir, "image.png");
+  const outputPath = path.join(publicDir, "generated/image-thumbnails/image.webp");
+
+  try {
+    await mkdir(path.join(publicDir, "assets/img/about-map"), { recursive: true });
+    await mkdir(contentDir, { recursive: true });
+    await sharp({
+      create: { width: 16, height: 16, channels: 3, background: { r: 20, g: 40, b: 60 } },
+    })
+      .png()
+      .toFile(sourcePath);
+
+    await generateImageThumbnails({ publicDir, contentDir });
+    await rm(sourcePath);
+
+    const result = await generateImageThumbnails({ publicDir, contentDir });
+
+    assert.equal(result.skippedCount, 1);
+    assert.equal(existsSync(outputPath), false);
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }

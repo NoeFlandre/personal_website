@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 
 const workflow = readFileSync(
@@ -26,7 +26,10 @@ test("Astro CI builds once and reuses the artifact for browser tests", () => {
 });
 
 test("Astro CI runs the complete quality gate in its own job", () => {
-  assert.equal(runCommands.includes("npm run test:coverage && npm run test:crap:report"), true);
+  assert.equal(
+    runCommands.includes("npm run check && npm run test:coverage && npm run test:crap:report"),
+    true
+  );
   assert.equal(runCommands.includes("npm run test:quality"), false);
   assert.equal(runCommands.includes("npm run test:mutation"), false);
   assert.match(workflow, /jobs:\n\s+quality:/);
@@ -36,4 +39,12 @@ test("Astro CI runs the complete quality gate in its own job", () => {
     assert.match(workflow, new RegExp(`- ${suite}`));
   }
   assert.match(workflow, /run: npm run test:mutation:\$\{\{ matrix\.suite \}\}/);
+});
+
+test("Biome check shares the quality job instead of a duplicate workflow", () => {
+  assert.equal(existsSync(new URL("../.github/workflows/lint.yml", import.meta.url)), false);
+  assert.match(
+    workflow,
+    /quality:[\s\S]*?run: npm run check && npm run test:coverage && npm run test:crap:report/
+  );
 });

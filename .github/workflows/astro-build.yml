@@ -32,7 +32,7 @@ jobs:
         run: npm ci
 
       - name: Run quality gates
-        run: npm run test:coverage && npm run test:crap:report
+        run: npm run check && npm run test:coverage && npm run test:crap:report
 
   mutation:
     runs-on: ubuntu-latest

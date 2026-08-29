@@ -3,7 +3,30 @@ import test from "node:test";
 import { createServer } from "vite";
 import { SITE } from "../src/site-config.js";
 
-const post = { data: { title: "Mutation test title", author: "Mutation author" } };
+const post = {
+  id: "mutation-test-post",
+  digest: "mutation-test-digest",
+  data: { title: "Mutation test title", author: "Mutation author" },
+};
+const cachePost = {
+  id: "cache-test-post",
+  digest: "cache-test-digest",
+  data: { title: "Cache test title", author: "Cache test author" },
+};
+const cacheKeyPost = {
+  id: "cache-key-test-post",
+  digest: "cache-key-test-digest",
+  data: { title: "Cache key first", author: "Cache key author" },
+};
+const updatedCacheKeyPost = {
+  ...cacheKeyPost,
+  data: { title: "Cache key updated", author: "Cache key author" },
+};
+const retryPost = {
+  id: "retry-after-failure-post",
+  digest: "retry-after-failure-digest",
+  data: { title: "Retry after failure", author: "Retry author" },
+};
 
 async function loadTemplateModules() {
   const server = await createServer({
@@ -69,19 +92,37 @@ async function loadImageGenerator() {
         enforce: "pre",
         resolveId(id) {
           if (id === "@resvg/resvg-js") return "\0resvg-og-test";
-          if (id.endsWith("/src/features/blog/og/templates/post.js")) return "\0post-og-test";
-          if (id.endsWith("/src/features/blog/og/templates/site.js")) return "\0site-og-test";
+          if (id.endsWith("templates/post.js")) return "\0post-og-test";
+          if (id.endsWith("templates/site.js")) return "\0site-og-test";
           return undefined;
         },
         load(id) {
           if (id === "\0resvg-og-test") {
-            return `export class Resvg {
+            return `let retryRenderCalls = 0;
+            export class Resvg {
               constructor(svg) { this.svg = svg; }
-              render() { return { asPng: () => new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]) }; }
+              render() {
+                if (this.svg.includes("Retry after failure")) {
+                  retryRenderCalls += 1;
+                  if (retryRenderCalls === 1) throw new Error("transient render failure");
+                }
+                const png = [137, 80, 78, 71, 13, 10, 26, 10];
+                if (this.svg.includes("Cache test title")) {
+                  png.push(this.svg.endsWith(":1") ? 1 : 2);
+                }
+                if (this.svg.includes("Cache key first")) png.push(1);
+                if (this.svg.includes("Cache key updated")) png.push(2);
+                return { asPng: () => new Uint8Array(png) };
+              }
             }`;
           }
           if (id === "\0post-og-test") {
-            return `export default async (value) => "post-svg:" + value.data.title;`;
+            return `let postTemplateCalls = 0;
+            export default async (value) => {
+              postTemplateCalls += 1;
+              const suffix = value.data.title === "Cache test title" ? ":" + postTemplateCalls : "";
+              return "post-svg:" + value.data.title + suffix;
+            };`;
           }
           if (id === "\0site-og-test") {
             return `export default async () => "site-svg";`;
@@ -384,6 +425,48 @@ test("OG image generation converts both SVG templates to PNG bytes", async () =>
     const expected = [137, 80, 78, 71, 13, 10, 26, 10];
     assert.deepEqual([...(await module.generateOgImageForPost(post))], expected);
     assert.deepEqual([...(await module.generateOgImageForSite())], expected);
+  } finally {
+    await close();
+  }
+});
+
+test("repeated post OG generation reuses the rendered PNG", async () => {
+  const { close, module } = await loadImageGenerator();
+
+  try {
+    const first = await module.generateOgImageForPost(cachePost);
+    const second = await module.generateOgImageForPost(cachePost);
+
+    assert.deepEqual([...second], [...first]);
+  } finally {
+    await close();
+  }
+});
+
+test("post OG cache keys invalidate when post data changes", async () => {
+  const { close, module } = await loadImageGenerator();
+
+  try {
+    const first = await module.generateOgImageForPost(cacheKeyPost);
+    const updated = await module.generateOgImageForPost(updatedCacheKeyPost);
+
+    assert.notDeepEqual([...updated], [...first]);
+  } finally {
+    await close();
+  }
+});
+
+test("failed post OG rendering is removed from the cache before retrying", async () => {
+  const { close, module } = await loadImageGenerator();
+
+  try {
+    await assert.rejects(
+      () => module.generateOgImageForPost(retryPost),
+      /transient render failure/
+    );
+    const result = await module.generateOgImageForPost(retryPost);
+
+    assert.deepEqual([...result], [137, 80, 78, 71, 13, 10, 26, 10]);
   } finally {
     await close();
   }

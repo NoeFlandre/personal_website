@@ -1,4 +1,4 @@
-import { access, mkdir, readdir, readFile, rm } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
@@ -77,7 +77,7 @@ export async function generateImageThumbnails({
   contentDir = CONTENT_DIR,
 } = {}) {
   const outputDirectory = path.join(publicDir, IMAGE_THUMBNAIL_DIRECTORY);
-  await rm(outputDirectory, { recursive: true, force: true });
+  await mkdir(outputDirectory, { recursive: true });
 
   const sourcePaths = new Set(["/image.png"]);
   const heroImages = await discoverHeroImages(contentDir);
@@ -90,15 +90,15 @@ export async function generateImageThumbnails({
     sourcePaths.add(sourcePath);
   }
 
-  let generatedCount = 0;
   let skippedCount = 0;
+  const sources = [];
 
   for (const sourcePath of [...sourcePaths].sort()) {
     const inputPath = path.join(publicDir, sourcePath.slice(1));
-    const outputPath = path.join(outputDirectory, getImageThumbnailFileName(sourcePath));
+    let inputStats;
 
     try {
-      await access(inputPath);
+      inputStats = await stat(inputPath);
     } catch {
       skippedCount += 1;
       console.warn(`[image-thumbnails] Missing source, skipped: ${sourcePath}`);
@@ -108,6 +108,30 @@ export async function generateImageThumbnails({
     if (!isImageFile(inputPath)) {
       skippedCount += 1;
       continue;
+    }
+
+    sources.push({
+      inputPath,
+      inputMtimeMs: inputStats.mtimeMs,
+      outputPath: path.join(outputDirectory, getImageThumbnailFileName(sourcePath)),
+    });
+  }
+
+  const expectedOutputs = new Set(sources.map(({ outputPath }) => path.basename(outputPath)));
+  const outputEntries = await readdir(outputDirectory, { withFileTypes: true });
+  await Promise.all(
+    outputEntries
+      .filter((entry) => entry.isFile() && !expectedOutputs.has(entry.name))
+      .map((entry) => rm(path.join(outputDirectory, entry.name), { force: true }))
+  );
+
+  let generatedCount = 0;
+  for (const { inputPath, inputMtimeMs, outputPath } of sources) {
+    try {
+      const outputStats = await stat(outputPath);
+      if (outputStats.mtimeMs >= inputMtimeMs) continue;
+    } catch {
+      // The preview does not exist yet, so generate it below.
     }
 
     await generateThumbnail({ inputPath, outputPath });
