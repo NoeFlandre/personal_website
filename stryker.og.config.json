@@ -7,9 +7,10 @@
   ],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test --test-concurrency=1 tests/mutation-og-suite.mjs"
+    "command": "node --test --test-concurrency=4 tests/og-images.test.mjs tests/load-google-font.test.mjs"
   },
   "coverageAnalysis": "off",
+  "cleanTempDir": "always",
   "ignorePatterns": [
     ".astro/**",
     ".stryker-tmp/**",

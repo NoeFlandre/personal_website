@@ -41,7 +41,11 @@ jobs:
       fail-fast: false
       matrix:
         suite:
-          - source
+          - source-about-client
+          - source-about-map
+          - source-career
+          - source-blog
+          - source-core
           - routes
           - og
           - content

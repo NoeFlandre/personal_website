@@ -3,9 +3,10 @@
   "mutate": ["src/pages/**/*.ts"],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test --test-concurrency=1 tests/mutation-route-suite.mjs"
+    "command": "node --test --test-concurrency=4 tests/route-api.test.mjs"
   },
   "coverageAnalysis": "off",
+  "cleanTempDir": "always",
   "ignorePatterns": [
     ".astro/**",
     ".stryker-tmp/**",

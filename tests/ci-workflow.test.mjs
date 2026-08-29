@@ -35,9 +35,19 @@ test("Astro CI runs the complete quality gate in its own job", () => {
   assert.match(workflow, /jobs:\n\s+quality:/);
   assert.match(workflow, /jobs:\n[\s\S]*mutation:/);
   assert.match(workflow, /fail-fast: false/);
-  for (const suite of ["source", "routes", "og", "content"]) {
+  for (const suite of [
+    "source-about-client",
+    "source-about-map",
+    "source-career",
+    "source-blog",
+    "source-core",
+    "routes",
+    "og",
+    "content",
+  ]) {
     assert.match(workflow, new RegExp(`- ${suite}`));
   }
+  assert.doesNotMatch(workflow, /\n\s+- source\s*$/m);
   assert.match(workflow, /run: npm run test:mutation:\$\{\{ matrix\.suite \}\}/);
 });
 
