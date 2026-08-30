@@ -86,6 +86,61 @@ test("the recommendations carousel responds to keyboard input and remains access
   await expectAccessible(page, "recommendations carousel after keyboard navigation");
 });
 
+test("the About introduction keeps its image and copy layout contract", async ({
+  page,
+}, testInfo) => {
+  await page.goto("/about");
+
+  const intro = page.locator("#about-intro");
+  const image = intro.locator("img");
+  const firstParagraph = intro.locator("p").first();
+
+  await expect(image).toBeVisible();
+  await expect(firstParagraph).toBeVisible();
+  await expect(firstParagraph).toContainText("I am an AI Research Engineer");
+
+  const layout = await firstParagraph.evaluate((paragraph) => {
+    const textColumn = paragraph.parentElement;
+    const imageColumn = textColumn?.parentElement?.firstElementChild;
+    if (!textColumn || !imageColumn) {
+      throw new Error("The About introduction columns are missing.");
+    }
+
+    return {
+      paragraphMarginTop: getComputedStyle(paragraph).marginTop,
+      imageTop: imageColumn.getBoundingClientRect().top,
+      imageBottom: imageColumn.getBoundingClientRect().bottom,
+      textTop: textColumn.getBoundingClientRect().top,
+    };
+  });
+
+  expect(layout.paragraphMarginTop).toBe("0px");
+
+  if (isMobileProject(testInfo)) {
+    expect(layout.textTop).toBeGreaterThanOrEqual(layout.imageBottom - 1);
+    return;
+  }
+
+  expect(Math.abs(layout.textTop - layout.imageTop)).toBeLessThanOrEqual(1);
+});
+
+test("the About map renders its current controls without legacy text blocks", async ({ page }) => {
+  await page.goto("/about");
+
+  const map = page.locator("[data-about-map-root]");
+
+  await expect(map).toBeVisible();
+  await expect(
+    map.getByRole("heading", { name: "Where I worked, studied, and traveled" })
+  ).toBeVisible();
+  await expect(map.locator("[data-map-canvas]")).toHaveAttribute(
+    "aria-label",
+    "Interactive map with location markers"
+  );
+  await expect(map.locator(".about-map__eyebrow")).toHaveCount(0);
+  await expect(map.locator(".about-map__subtitle")).toHaveCount(0);
+});
+
 test("the About map filters and cards respond to keyboard input", async ({ page }) => {
   await page.goto("/about");
 
