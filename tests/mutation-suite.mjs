@@ -8,6 +8,7 @@ import "./about-map-regression.test.mjs";
 import "./adjacent-posts.test.mjs";
 import "./blog-archive-groups.test.mjs";
 import "./blog-content-tags.test.mjs";
+import "./blog-group-by.test.mjs";
 import "./blog-markdown-indexes.test.mjs";
 import "./blog-utils.test.mjs";
 import "./career-timeline-data.test.mjs";

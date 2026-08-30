@@ -1,5 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 import getSortedPosts from "./getSortedPosts.ts";
+import { groupBy } from "./groupBy.ts";
 import { getPostPath } from "./postPath.ts";
 
 export interface PostsByYear {
@@ -8,18 +9,9 @@ export interface PostsByYear {
 }
 
 export function getPostsByYear(posts: CollectionEntry<"blog">[]): PostsByYear[] {
-  const postsByYear = new Map<number, CollectionEntry<"blog">[]>();
-
-  for (const post of getSortedPosts(posts)) {
-    const year = new Date(post.data.pubDatetime).getFullYear();
-    const yearPosts = postsByYear.get(year);
-
-    if (yearPosts) {
-      yearPosts.push(post);
-    } else {
-      postsByYear.set(year, [post]);
-    }
-  }
+  const postsByYear = groupBy(getSortedPosts(posts), (post) =>
+    new Date(post.data.pubDatetime).getFullYear()
+  );
 
   return Array.from(postsByYear, ([year, yearPosts]) => ({ year, posts: yearPosts })).sort(
     (a, b) => b.year - a.year
