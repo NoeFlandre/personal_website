@@ -10,7 +10,7 @@ import { initPostDetails } from "../src/features/blog/client/postDetailsRerun.js
 import { createPostDetailsSession } from "../src/features/blog/client/postDetailsSession.js";
 import * as clientLifecycleUtils from "../src/utils/clientLifecycle.js";
 
-const { createClientLifecycle } = clientLifecycleUtils;
+const { createClientLifecycle, scheduleAbortableTimeout } = clientLifecycleUtils;
 
 function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
@@ -216,6 +216,33 @@ function createCopyArticle() {
   article.appendChild(codeBlock);
   return { article, codeBlock };
 }
+
+test("scheduleAbortableTimeout cancels its timer when the lifecycle aborts", () => {
+  const controller = new AbortController();
+  const clearTimeoutCalls = [];
+  let scheduledCallback;
+  let scheduledDelay;
+
+  const timerId = scheduleAbortableTimeout({
+    callback: () => undefined,
+    clearTimeoutFn: (id) => clearTimeoutCalls.push(id),
+    delay: 250,
+    setTimeoutFn: (callback, delay) => {
+      scheduledCallback = callback;
+      scheduledDelay = delay;
+      return 17;
+    },
+    signal: controller.signal,
+  });
+
+  assert.equal(timerId, 17);
+  assert.equal(typeof scheduledCallback, "function");
+  assert.equal(scheduledDelay, 250);
+
+  controller.abort();
+
+  assert.deepEqual(clearTimeoutCalls, [17]);
+});
 
 test("Astro transition hooks register each callback once", () => {
   const documentRef = new TrackedEventTarget();

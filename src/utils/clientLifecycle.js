@@ -1,3 +1,15 @@
+export function scheduleAbortableTimeout({
+  callback,
+  clearTimeoutFn,
+  delay,
+  setTimeoutFn,
+  signal,
+}) {
+  const timeoutId = setTimeoutFn(callback, delay);
+  signal.addEventListener("abort", () => clearTimeoutFn(timeoutId));
+  return timeoutId;
+}
+
 export function createAstroTransitionHooks() {
   let hooksBound = false;
 

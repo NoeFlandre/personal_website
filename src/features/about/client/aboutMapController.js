@@ -1,3 +1,4 @@
+import { scheduleAbortableTimeout } from "../../../utils/clientLifecycle.js";
 import { getMapRetryDelayMs, shouldRetryMapInit } from "../utils/aboutMap.js";
 import { createAboutMapSession } from "./aboutMapSession.js";
 
@@ -24,10 +25,13 @@ export function createAboutMapController({
   };
 
   const scheduleTimeout = (callback, delay) => {
-    const signal = getLifecycleSignal();
-    const timeoutId = setTimeoutFn(callback, delay);
-    signal.addEventListener("abort", () => clearTimeoutFn(timeoutId));
-    return timeoutId;
+    return scheduleAbortableTimeout({
+      callback,
+      clearTimeoutFn,
+      delay,
+      setTimeoutFn,
+      signal: getLifecycleSignal(),
+    });
   };
 
   const mapSession = createAboutMapSession({

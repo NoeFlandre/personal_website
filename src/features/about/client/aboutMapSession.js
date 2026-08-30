@@ -1,3 +1,4 @@
+import { scheduleAbortableTimeout } from "../../../utils/clientLifecycle.js";
 import { getPlaceTypeLabel, parsePlacesDataset } from "../utils/aboutMap.js";
 import { createMapRuntime } from "./aboutMapInteractionCoordinator.js";
 
@@ -207,9 +208,13 @@ export function createAboutMapSession({
     });
 
     const scheduleTimeout = (callback, delay) => {
-      const timeoutId = setTimeoutFn(callback, delay);
-      signal.addEventListener("abort", () => clearTimeoutFn(timeoutId));
-      return timeoutId;
+      return scheduleAbortableTimeout({
+        callback,
+        clearTimeoutFn,
+        delay,
+        setTimeoutFn,
+        signal,
+      });
     };
 
     let activeMap = null;

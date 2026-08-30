@@ -14,6 +14,10 @@ const sessionSource = readFileSync(
   new URL("../src/features/about/client/aboutMapSession.js", import.meta.url),
   "utf8"
 );
+const clientLifecycleSource = readFileSync(
+  new URL("../src/utils/clientLifecycle.js", import.meta.url),
+  "utf8"
+);
 const interactionCoordinatorSource = readFileSync(
   new URL("../src/features/about/client/aboutMapInteractionCoordinator.js", import.meta.url),
   "utf8"
@@ -45,18 +49,19 @@ test("AboutTravelMap releases browser resources before Astro swaps pages", () =>
     /windowRef\?\.addEventListener\("resize", updateCardsNav, \{ signal \}\)/
   );
   assert.match(controllerSource, /documentRef\.addEventListener\("astro:before-swap", cleanup\)/);
+  assert.match(controllerSource, /scheduleAbortableTimeout\(\{/);
+  assert.equal(
+    sessionSource.match(/\bscheduleAbortableTimeout\(/g)?.length,
+    1,
+    "the map session delegates timer scheduling"
+  );
+  assert.equal(
+    controllerSource.match(/\bscheduleAbortableTimeout\(/g)?.length,
+    1,
+    "the map controller delegates timer scheduling"
+  );
   assert.match(
-    sessionSource,
+    clientLifecycleSource,
     /signal\.addEventListener\("abort", \(\) => clearTimeoutFn\(timeoutId\)\)/
-  );
-  assert.equal(
-    controllerSource.match(/\bsetTimeoutFn\(/g)?.length,
-    1,
-    "the lifecycle scheduler may call the injected timer"
-  );
-  assert.equal(
-    sessionSource.match(/\bsetTimeoutFn\(/g)?.length,
-    1,
-    "only the session scheduler may call the injected timer"
   );
 });
