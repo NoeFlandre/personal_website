@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   buildArchivesMarkdown,
   buildPostsMarkdown,
+  getPostsByYear,
 } from "../src/features/blog/utils/markdownIndexes.ts";
 
 function createPost({
@@ -11,6 +12,7 @@ function createPost({
   filePath = `src/content/blog/${id}.md`,
   title = id,
   pubDatetime = new Date("2025-01-01T00:00:00.000Z"),
+  modDatetime,
   draft = false,
   unlisted = false,
 } = {}) {
@@ -22,12 +24,40 @@ function createPost({
       description: `${title} description`,
       author: "Noe",
       pubDatetime,
+      modDatetime,
       draft,
       unlisted,
       tags: ["Post"],
     },
   };
 }
+
+test("getPostsByYear returns visible posts grouped in descending publication years", () => {
+  const groups = getPostsByYear([
+    createPost({
+      id: "newer",
+      pubDatetime: new Date("2025-02-01T00:00:00.000Z"),
+      modDatetime: new Date("2024-01-01T00:00:00.000Z"),
+    }),
+    createPost({
+      id: "older",
+      pubDatetime: new Date("2024-12-01T00:00:00.000Z"),
+      modDatetime: new Date("2025-01-01T00:00:00.000Z"),
+    }),
+    createPost({ id: "hidden", draft: true, pubDatetime: new Date("2026-01-01T00:00:00.000Z") }),
+  ]);
+
+  assert.deepEqual(
+    groups.map(({ year, posts }) => ({
+      year,
+      posts: posts.map((post) => post.id),
+    })),
+    [
+      { year: 2025, posts: ["newer"] },
+      { year: 2024, posts: ["older"] },
+    ]
+  );
+});
 
 test("buildPostsMarkdown uses canonical post paths and excludes hidden posts", () => {
   const markdown = buildPostsMarkdown([

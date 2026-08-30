@@ -61,6 +61,26 @@ test("getArchiveGroups excludes hidden posts and orders years, months, and posts
   );
 });
 
+test("getArchiveGroups orders months by publication month despite modification dates", () => {
+  const groups = getArchiveGroups([
+    createPost({
+      id: "february-post",
+      pubDatetime: "2025-02-10T00:00:00.000Z",
+      modDatetime: "2025-01-01T00:00:00.000Z",
+    }),
+    createPost({
+      id: "january-post",
+      pubDatetime: "2025-01-10T00:00:00.000Z",
+      modDatetime: "2025-02-01T00:00:00.000Z",
+    }),
+  ]);
+
+  assert.deepEqual(
+    groups[0].months.map((monthGroup) => monthGroup.month),
+    [2, 1]
+  );
+});
+
 test("archive presentation helpers keep month labels and year counts centralized", () => {
   assert.deepEqual(MONTH_NAMES, [
     "January",

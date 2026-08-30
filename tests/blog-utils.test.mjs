@@ -276,6 +276,23 @@ test("getPostsByGroupCondition groups posts and passes each original index", () 
   );
 });
 
+test("getPostsByGroupCondition supports prototype-like group names", () => {
+  const grouped = getPostsByGroupCondition(
+    [createPost({ id: "prototype-key" }), createPost({ id: "constructor-key" })],
+    (post) => (post.id === "prototype-key" ? "__proto__" : "constructor")
+  );
+
+  assert.deepEqual(Object.keys(grouped), ["__proto__", "constructor"]);
+  assert.deepEqual(
+    grouped.__proto__.map((post) => post.id),
+    ["prototype-key"]
+  );
+  assert.deepEqual(
+    grouped.constructor.map((post) => post.id),
+    ["constructor-key"]
+  );
+});
+
 test("tag helpers normalize tag names consistently across blog utilities", () => {
   const post = createPost({
     id: "tagged",

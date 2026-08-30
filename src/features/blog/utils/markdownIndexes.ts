@@ -2,26 +2,38 @@ import type { CollectionEntry } from "astro:content";
 import getSortedPosts from "./getSortedPosts.ts";
 import { getPostPath } from "./postPath.ts";
 
+export interface PostsByYear {
+  year: number;
+  posts: CollectionEntry<"blog">[];
+}
+
+export function getPostsByYear(posts: CollectionEntry<"blog">[]): PostsByYear[] {
+  const postsByYear = new Map<number, CollectionEntry<"blog">[]>();
+
+  for (const post of getSortedPosts(posts)) {
+    const year = new Date(post.data.pubDatetime).getFullYear();
+    const yearPosts = postsByYear.get(year);
+
+    if (yearPosts) {
+      yearPosts.push(post);
+    } else {
+      postsByYear.set(year, [post]);
+    }
+  }
+
+  return Array.from(postsByYear, ([year, yearPosts]) => ({ year, posts: yearPosts })).sort(
+    (a, b) => b.year - a.year
+  );
+}
+
 export function buildPostsMarkdown(posts: CollectionEntry<"blog">[]) {
-  const sortedPosts = getSortedPosts(posts);
+  const postsByYear = getPostsByYear(posts);
   let markdownContent = "# All Posts\n\n";
 
-  const postsByYear = sortedPosts.reduce(
-    (acc, post) => {
-      const year = new Date(post.data.pubDatetime).getFullYear();
-      if (!acc[year]) acc[year] = [];
-      acc[year].push(post);
-      return acc;
-    },
-    {} as Record<number, typeof sortedPosts>
-  );
-
-  const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
-
-  for (const year of years) {
+  for (const { year, posts: postsInYear } of postsByYear) {
     markdownContent += `## ${year}\n\n`;
 
-    for (const post of postsByYear[Number(year)]) {
+    for (const post of postsInYear) {
       const date = new Date(post.data.pubDatetime).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
@@ -37,26 +49,14 @@ export function buildPostsMarkdown(posts: CollectionEntry<"blog">[]) {
 }
 
 export function buildArchivesMarkdown(posts: CollectionEntry<"blog">[]) {
-  const sortedPosts = getSortedPosts(posts);
+  const postsByYear = getPostsByYear(posts);
   let markdownContent = "# Archives\n\n";
-  markdownContent += `Total posts: ${sortedPosts.length}\n\n`;
-
-  const postsByYear = sortedPosts.reduce(
-    (acc, post) => {
-      const year = new Date(post.data.pubDatetime).getFullYear();
-      if (!acc[year]) acc[year] = [];
-      acc[year].push(post);
-      return acc;
-    },
-    {} as Record<number, typeof sortedPosts>
-  );
-
-  const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
+  markdownContent += `Total posts: ${postsByYear.reduce((count, group) => count + group.posts.length, 0)}\n\n`;
 
   markdownContent += "## Posts by Year\n\n";
 
-  for (const year of years) {
-    const count = postsByYear[Number(year)].length;
+  for (const { year, posts: postsInYear } of postsByYear) {
+    const count = postsInYear.length;
     markdownContent += `- [${year}](/posts.md#${year}) (${count} post${count !== 1 ? "s" : ""})\n`;
   }
 
