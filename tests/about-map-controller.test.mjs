@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   createAboutMapController,
+  getAboutMapRoots,
   startAboutMap,
 } from "../src/features/about/client/aboutMapController.js";
 import { createAboutMapSession } from "../src/features/about/client/aboutMapSession.js";
@@ -20,6 +21,15 @@ function createHarness() {
   });
   return { controller, ...fixture };
 }
+
+test("About-map root discovery returns every root and handles a missing document", () => {
+  const { documentRef, root } = createHarness();
+  const secondRoot = {};
+  documentRef.roots.push(secondRoot);
+
+  assert.deepEqual(getAboutMapRoots(documentRef), [root, secondRoot]);
+  assert.deepEqual(getAboutMapRoots(null), []);
+});
 
 test("controller mounts the map and applies a selected place-type filter", () => {
   const { controller, leaflet, root } = createHarness();

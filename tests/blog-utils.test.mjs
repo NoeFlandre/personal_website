@@ -5,7 +5,7 @@ import { getPath } from "../src/features/blog/utils/getPath.ts";
 import getPostsByGroupCondition from "../src/features/blog/utils/getPostsByGroupCondition.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
-import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
+import getUniqueTags, { getUniqueTagInfos } from "../src/features/blog/utils/getUniqueTags.ts";
 import { shouldGenerateDynamicOgImage } from "../src/features/blog/utils/ogImages.ts";
 import postFilter, {
   isDraftFreePost,
@@ -223,6 +223,13 @@ test("getUniqueTags deduplicates, slugifies, and excludes hidden posts", () => {
   assert.deepEqual(getUniqueTags(posts), [
     { tag: "ai", tagName: "AI" },
     { tag: "open-source", tagName: "Open Source" },
+    { tag: "paper-review", tagName: "Paper Review" },
+  ]);
+});
+
+test("getUniqueTagInfos keeps the first label for each normalized tag", () => {
+  assert.deepEqual(getUniqueTagInfos(["AI", "ai", "Paper Review"]), [
+    { tag: "ai", tagName: "AI" },
     { tag: "paper-review", tagName: "Paper Review" },
   ]);
 });

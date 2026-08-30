@@ -113,26 +113,11 @@ const filters = [
     justify-content: space-between;
   }
 
-  .about-map__eyebrow {
-    margin: 0;
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--foreground) 62%, transparent);
-  }
-
   .about-map__title {
     margin: 0.2rem 0 0;
     font-size: clamp(1.15rem, 2.2vw, 1.5rem);
     line-height: 1.2;
     color: color-mix(in srgb, var(--foreground) 95%, black 5%);
-  }
-
-  .about-map__subtitle {
-    margin: 0;
-    max-width: 32ch;
-    font-size: 0.9rem;
-    color: color-mix(in srgb, var(--foreground) 76%, transparent);
   }
 
   .about-map__filters {
@@ -421,10 +406,6 @@ const filters = [
 
     .about-map__card {
       flex-basis: min(90%, 17rem);
-    }
-
-    .about-map__subtitle {
-      max-width: 100%;
     }
 
     .about-map__cards-nav {

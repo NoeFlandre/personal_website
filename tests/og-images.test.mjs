@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createServer } from "vite";
+import { createOgFrame, createOgRenderOptions } from "../src/features/blog/og/templates/frame.js";
 import { SITE } from "../src/site-config.js";
 
 const post = {
@@ -27,6 +28,21 @@ const retryPost = {
   digest: "retry-after-failure-digest",
   data: { title: "Retry after failure", author: "Retry author" },
 };
+
+test("shared OG frame preserves the common shell and render options", () => {
+  const content = [{ type: "span", props: { children: "content" } }];
+
+  const frame = createOgFrame(content);
+
+  assert.equal(frame.type, "div");
+  assert.deepEqual(frame.props.children[1].props.children.props.children, content);
+  assert.deepEqual(createOgRenderOptions(["font"]), {
+    width: 1200,
+    height: 630,
+    embedFont: true,
+    fonts: ["font"],
+  });
+});
 
 async function loadTemplateModules() {
   const server = await createServer({

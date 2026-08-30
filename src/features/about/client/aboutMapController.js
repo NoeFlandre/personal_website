@@ -2,6 +2,11 @@ import { scheduleAbortableTimeout } from "../../../utils/clientLifecycle.js";
 import { getMapRetryDelayMs, shouldRetryMapInit } from "../utils/aboutMap.js";
 import { createAboutMapSession } from "./aboutMapSession.js";
 
+export function getAboutMapRoots(documentRef) {
+  if (!documentRef) return [];
+  return Array.from(documentRef.querySelectorAll("[data-about-map-root]"));
+}
+
 export function createAboutMapController({
   leaflet,
   documentRef = globalThis.document,
@@ -41,6 +46,10 @@ export function createAboutMapController({
     clearTimeoutFn,
   });
 
+  const forEachMapRoot = (callback) => {
+    getAboutMapRoots(documentRef).forEach(callback);
+  };
+
   const init = (root) => {
     if (!root) return;
     if (root.dataset.mapInitState === "ready" || root.dataset.mapInitState === "loading") return;
@@ -57,13 +66,11 @@ export function createAboutMapController({
   };
 
   const setup = () => {
-    documentRef?.querySelectorAll("[data-about-map-root]").forEach((root) => {
-      init(root);
-    });
+    forEachMapRoot(init);
   };
 
   const setupWithRetry = () => {
-    documentRef?.querySelectorAll("[data-about-map-root]").forEach((root) => {
+    forEachMapRoot((root) => {
       try {
         init(root);
       } catch (error) {
