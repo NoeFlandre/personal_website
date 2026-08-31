@@ -223,6 +223,12 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     assert.deepEqual(config.thresholds, { high: 100, low: 100, break: 100 });
   }
 
+  const aboutClientConfig = JSON.parse(readWorkspaceFile("stryker.config.json"));
+  assert.match(
+    aboutClientConfig.commandRunner.command,
+    /tests\/testimonials-carousel-client\.test\.mjs/
+  );
+
   const dedicatedConfigs = [
     ["stryker.routes.config.json", "src/pages/**/*.ts", "tests/route-api.test.mjs"],
     [

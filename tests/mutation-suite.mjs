@@ -22,5 +22,6 @@ import "./post-filter-env.test.mjs";
 import "./reading-time.test.mjs";
 import "./site-config.test.mjs";
 import "./structured-data.test.mjs";
+import "./testimonials-carousel-client.test.mjs";
 import "./url-utils.test.mjs";
 import "./youtube-embeds.test.mjs";

@@ -9,7 +9,7 @@
   ],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test --test-concurrency=1 tests/about-map-controller.test.mjs tests/about-map-data.test.mjs tests/about-map-session-contract.test.mjs tests/about-map-regression.test.mjs tests/adjacent-posts.test.mjs tests/blog-archive-groups.test.mjs tests/blog-content-tags.test.mjs tests/blog-group-by.test.mjs tests/blog-markdown-indexes.test.mjs tests/blog-utils.test.mjs tests/career-timeline-data.test.mjs tests/client-lifecycle.test.mjs tests/critical-css.test.mjs tests/masked-image-modeling-visibility.test.mjs tests/middleware.test.mjs tests/post-details-session.test.mjs tests/post-filter-options.test.mjs tests/post-filter-env.test.mjs tests/reading-time.test.mjs tests/site-config.test.mjs tests/structured-data.test.mjs tests/url-utils.test.mjs tests/youtube-embeds.test.mjs"
+    "command": "node --test --test-concurrency=1 tests/about-map-controller.test.mjs tests/about-map-data.test.mjs tests/about-map-session-contract.test.mjs tests/about-map-regression.test.mjs tests/adjacent-posts.test.mjs tests/blog-archive-groups.test.mjs tests/blog-content-tags.test.mjs tests/blog-group-by.test.mjs tests/blog-markdown-indexes.test.mjs tests/blog-utils.test.mjs tests/career-timeline-data.test.mjs tests/client-lifecycle.test.mjs tests/critical-css.test.mjs tests/masked-image-modeling-visibility.test.mjs tests/middleware.test.mjs tests/post-details-session.test.mjs tests/post-filter-options.test.mjs tests/post-filter-env.test.mjs tests/reading-time.test.mjs tests/site-config.test.mjs tests/structured-data.test.mjs tests/testimonials-carousel-client.test.mjs tests/url-utils.test.mjs tests/youtube-embeds.test.mjs"
   },
   "coverageAnalysis": "off",
   "cleanTempDir": "always",
