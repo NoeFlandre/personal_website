@@ -23,23 +23,15 @@ function extractPathId(input, marker) {
   return normalizeYouTubeId(path.split(/[?#]/)[0]);
 }
 
-function extractKnownYouTubeId(input) {
-  return (
-    [
-      extractWatchId(input),
-      extractPathId(input, "youtu.be/"),
-      extractPathId(input, "youtube.com/embed/"),
-    ].find((id) => id !== null) ?? null
-  );
-}
-
 export function extractYouTubeId(input) {
   if (typeof input !== "string") return "";
 
-  const knownId = extractKnownYouTubeId(input);
-  if (knownId !== null) return knownId;
-
-  return normalizeYouTubeId(input);
+  return (
+    extractWatchId(input) ??
+    extractPathId(input, "youtu.be/") ??
+    extractPathId(input, "youtube.com/embed/") ??
+    normalizeYouTubeId(input)
+  );
 }
 
 export function getYouTubeEmbedSrc(input) {

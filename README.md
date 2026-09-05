@@ -15,9 +15,9 @@ I'm Noe Flandre, an AI Research Engineer focused on datasets, model training, an
 ├── src/
 │   ├── assets/          # Icons and images used in components
 │   ├── components/      # Reusable UI components
-│   │   └── ui/          # React components
 │   ├── content/         # Content collections
-│   │   └── blog/        # Blog posts in Markdown format (organized by year)
+│   │   └── blog/        # Blog posts in Markdown format
+│   ├── features/        # About-map, career, and blog modules
 │   ├── layouts/         # Page layouts and templates
 │   ├── pages/           # Routes and pages
 │   ├── styles/          # Global styles and CSS
@@ -25,7 +25,6 @@ I'm Noe Flandre, an AI Research Engineer focused on datasets, model training, an
 ├── astro.config.mjs     # Astro configuration
 ├── vercel.json          # Vercel deployment and CSP configuration
 ├── package.json         # Project dependencies and scripts
-├── tailwind.config.mjs  # Tailwind CSS configuration
 └── LICENSE              # Dual license (CC BY 4.0 + MIT)
 ```
 

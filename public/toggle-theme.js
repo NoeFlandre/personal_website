@@ -1,5 +1,3 @@
-/* eslint-env browser */
-
 // Get theme data from local storage
 let currentTheme = localStorage.getItem("theme");
 const themeSetTimestamp = localStorage.getItem("themeSetTimestamp");

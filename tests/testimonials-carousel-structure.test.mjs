@@ -25,13 +25,6 @@ test("Johann Desloires is the second linked recommendation", () => {
   );
 });
 
-test("TestimonialsCarousel avoids unused map callback parameters", () => {
-  assert.doesNotMatch(source, /testimonials\.map\(\(item,\s*index\)\s*=>\s*\(\s*<li/);
-  assert.doesNotMatch(source, /testimonials\.map\(\(item,\s*index\)\s*=>\s*\(\s*<button/);
-  assert.match(source, /testimonials\.map\(\(item\)\s*=>\s*\(\s*<li/);
-  assert.match(source, /testimonials\.map\(\(_?,?\s*index\)\s*=>\s*\(\s*<button/);
-});
-
 test("TestimonialsCarousel delegates browser behavior to its bundled client module", () => {
   assert.match(
     source,

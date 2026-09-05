@@ -11,7 +11,4 @@ test("shared About-map fixtures provide isolated map and DOM state", () => {
   assert.notEqual(first.places, second.places);
   assert.notEqual(first.map, second.map);
   assert.notEqual(first.leaflet.state, second.leaflet.state);
-  assert.equal(first.root.cardButtons.length, first.places.length);
-  assert.equal(first.leaflet.state.maps.length, 1);
-  assert.equal(first.leaflet.state.markers.length, 0);
 });

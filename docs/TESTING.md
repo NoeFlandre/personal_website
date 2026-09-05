@@ -1,6 +1,7 @@
 # Testing and risk checks
 
-The site uses Node's built-in test runner for unit and regression tests.
+The site uses Node's built-in test runner for unit and regression tests. Use Node 22.18 or
+newer: the tests import TypeScript directly using [native type stripping](https://nodejs.org/docs/latest-v22.x/api/typescript.html#type-stripping).
 
 ```sh
 npm test

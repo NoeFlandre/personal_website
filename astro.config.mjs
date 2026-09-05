@@ -56,10 +56,6 @@ export default defineConfig({
         // Always exclude archives if not showing them
         if (!SITE.showArchives && page.endsWith("/archives")) return false;
 
-        // Optionally exclude tag pages to reduce sitemap bloat
-        // Uncomment the following line to exclude all tag pages:
-        // if (page.includes("/tags/")) return false;
-
         return true;
       },
       serialize: (item) => {
@@ -115,9 +111,6 @@ export default defineConfig({
           item.priority = 0.4;
           item.changefreq = ChangeFreqEnum.WEEKLY;
         }
-
-        // Note: lastmod dates for individual posts would need to be set
-        // from the actual post data, which requires more complex integration
 
         return item;
       },

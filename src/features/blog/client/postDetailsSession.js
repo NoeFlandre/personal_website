@@ -1,3 +1,4 @@
+import { scheduleAbortableTimeout } from "../../../utils/clientLifecycle.js";
 import { buildYouTubeEmbedMarkup } from "../../../utils/youtubeEmbeds.js";
 
 function createProgressBar(documentRef, signal) {
@@ -117,10 +118,15 @@ function attachCopyButtons(
     if (signal.aborted) return;
     button.innerText = "Copied";
 
-    const timeoutId = setTimeoutFn(() => {
-      button.innerText = copyButtonLabel;
-    }, 700);
-    signal.addEventListener("abort", () => clearTimeoutFn(timeoutId));
+    scheduleAbortableTimeout({
+      callback: () => {
+        button.innerText = copyButtonLabel;
+      },
+      clearTimeoutFn,
+      delay: 700,
+      setTimeoutFn,
+      signal,
+    });
   }
 }
 

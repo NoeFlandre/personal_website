@@ -8,6 +8,12 @@ const workflow = readFileSync(
 );
 const runCommands = [...workflow.matchAll(/^\s*run:\s*(.+)$/gm)].map((match) => match[1].trim());
 
+test("CI uses a Node release line with native TypeScript test support", () => {
+  const nodeMajor = Number(workflow.match(/^\s+NODE_VERSION: "(\d+)"$/m)?.[1]);
+
+  assert.ok(nodeMajor >= 22, "Direct TypeScript test imports require Node 22.18 or newer");
+});
+
 test("Astro CI builds once and reuses the artifact for browser tests", () => {
   assert.equal(runCommands.includes("npm run test:e2e:browser"), true);
   assert.equal(runCommands.includes("npm run test:e2e"), false);

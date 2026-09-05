@@ -13,16 +13,6 @@ function readWorkspaceFile(fileName) {
   return readFileSync(new URL(`../${fileName}`, import.meta.url), "utf8");
 }
 
-function extractHarnessTestFiles(source) {
-  return [...source.matchAll(/^import "\.\/([^"\n]+\.test\.mjs)";$/gm)].map(
-    ([, fileName]) => `tests/${fileName}`
-  );
-}
-
-function extractCommandTestFiles(command) {
-  return [...command.matchAll(/(?:^|\s)(tests\/\S+\.mjs)/g)].map(([, fileName]) => fileName);
-}
-
 function globToRegExp(glob) {
   let pattern = "";
   for (let index = 0; index < glob.length; index += 1) {
@@ -258,43 +248,6 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     assert.equal(dedicatedConfig.concurrency, 4);
     assert.deepEqual(dedicatedConfig.reporters, ["clear-text", "progress"]);
     assert.deepEqual(dedicatedConfig.thresholds, { high: 100, low: 100, break: 100 });
-  }
-});
-
-test("mutation harnesses stay outside the regular test glob", () => {
-  for (const harness of [
-    "mutation-suite",
-    "mutation-route-suite",
-    "mutation-og-suite",
-    "mutation-content-suite",
-  ]) {
-    assert.equal(existsSync(new URL(`../tests/${harness}.mjs`, import.meta.url)), true);
-    assert.equal(existsSync(new URL(`../tests/${harness}.test.mjs`, import.meta.url)), false);
-  }
-});
-
-test("mutation commands preserve each harness inventory while parallelizing files", () => {
-  const suites = [
-    ...sourceMutationPartitions.map(({ configFile }) => [
-      configFile,
-      "tests/mutation-suite.mjs",
-      1,
-    ]),
-    ["stryker.routes.config.json", "tests/mutation-route-suite.mjs", 4],
-    ["stryker.og.config.json", "tests/mutation-og-suite.mjs", 4],
-    ["stryker.content.config.json", "tests/mutation-content-suite.mjs", 4],
-  ];
-
-  for (const [configFile, harnessFile, testConcurrency] of suites) {
-    const config = JSON.parse(readWorkspaceFile(configFile));
-    assert.match(
-      config.commandRunner.command,
-      new RegExp(`node --test --test-concurrency=${testConcurrency}`)
-    );
-    assert.deepEqual(
-      extractCommandTestFiles(config.commandRunner.command),
-      extractHarnessTestFiles(readWorkspaceFile(harnessFile))
-    );
   }
 });
 

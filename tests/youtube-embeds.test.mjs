@@ -23,6 +23,30 @@ test("extractYouTubeId supports watch, short, embed, and raw ids", () => {
   assert.equal(extractYouTubeId("/abc123XYZ"), "");
 });
 
+test("extractYouTubeId prioritizes watch, then short, then embed markers", () => {
+  const overlappingPaths = "https://www.youtube.com/embed/embedId?short=https://youtu.be/shortId";
+
+  assert.equal(
+    extractYouTubeId(`${overlappingPaths}?watch=youtube.com/watch&v=watchId`),
+    "watchId"
+  );
+  assert.equal(extractYouTubeId(overlappingPaths), "shortId");
+});
+
+test("extractYouTubeId does not fall through recognized markers with rejected ids", () => {
+  const embedUrl = "https://www.youtube.com/embed/embedId";
+  const shortUrl = `https://youtu.be/shortId?embed=${embedUrl}`;
+
+  for (const input of [
+    `https://www.youtube.com/watch?v=&next=${shortUrl}`,
+    `https://www.youtube.com/watch?v=%ZZ&next=${shortUrl}`,
+    `https://youtu.be/?next=${embedUrl}`,
+    `https://youtu.be/invalid!id?next=${embedUrl}`,
+  ]) {
+    assert.equal(extractYouTubeId(input), "", input);
+  }
+});
+
 test("buildYouTubeEmbedMarkup uses the normalized video id", () => {
   const markup = buildYouTubeEmbedMarkup("https://youtu.be/abc123XYZ?t=42");
 

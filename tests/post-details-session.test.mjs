@@ -513,6 +513,7 @@ test("copy buttons write code, show feedback, and restore their label", async ()
   assert.deepEqual(harness.clipboardWrites, ["const answer = 42;"]);
   assert.equal(copyButton.innerText, "Copied");
   assert.equal(harness.timers.size, 1);
+  assert.equal(harness.timers.values().next().value.delay, 700);
   assert.equal(harness.runNextTimer(), true);
   assert.equal(copyButton.innerText, "Copy");
 

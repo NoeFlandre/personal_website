@@ -1,10 +1,9 @@
 ---
 import { getCollection } from "astro:content";
-import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+import ArchiveGroups from "@/features/blog/components/ArchiveGroups.astro";
 import PostFilterBar from "@/features/blog/components/PostFilterBar.astro";
-import { countArchivePosts, MONTH_NAMES } from "@/features/blog/utils/archivePresentation";
 import { getArchiveGroups } from "@/features/blog/utils/getArchiveGroups";
 import getUniqueTags from "@/features/blog/utils/getUniqueTags";
 import Layout from "@/layouts/Layout.astro";
@@ -21,27 +20,7 @@ const filterTags = getUniqueTags(posts);
     <h1 class="text-2xl font-semibold sm:text-3xl mt-8">All Posts</h1>
     <p class="mt-2 mb-6 italic">Browse all blog posts by year and month</p>
     <PostFilterBar tags={filterTags} />
-    {
-      archiveGroups.map((yearGroup) => (
-          <div class="mb-8">
-            <h2 class="text-2xl font-bold mb-6 border-b border-accent pb-2">
-              {yearGroup.year}
-              <sup class="text-sm ml-1">{countArchivePosts(yearGroup.months)}</sup>
-            </h2>
-            {yearGroup.months.map((monthGroup) => (
-                <div class="mt-8">
-                  <h3 class="text-xl font-bold mb-4">
-                    {MONTH_NAMES[monthGroup.month - 1]}
-                    <sup class="text-sm ml-1">{monthGroup.posts.length}</sup>
-                  </h3>
-                  <ul>
-                    {monthGroup.posts.map((data) => <Card {...data} />)}
-                  </ul>
-                </div>
-              ))}
-          </div>
-        ))
-    }
+    <ArchiveGroups groups={archiveGroups} />
   </main>
   <Footer />
 </Layout>
