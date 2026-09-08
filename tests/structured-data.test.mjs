@@ -40,7 +40,7 @@ test("buildStructuredData uses the configured profile and image for person data"
       "https://huggingface.co/NoeFlandre",
       "https://orcid.org/0009-0002-0237-3727",
     ],
-    jobTitle: "AI Research Engineer, vibe-learning",
+    jobTitle: "AI Research Engineer — Geospatial AI & Foundation models",
     description: SITE.desc,
   });
   assert.equal(structuredData["@type"], "Person");
