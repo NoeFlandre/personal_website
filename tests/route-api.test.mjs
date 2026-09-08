@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 import { SITE } from "../src/site-config.js";
 
@@ -63,7 +64,7 @@ async function loadDynamicImageRoutes() {
     optimizeDeps: { noDiscovery: true },
     server: { middlewareMode: true, hmr: false, ws: false },
     resolve: {
-      alias: { "@": new URL("../src", import.meta.url).pathname },
+      alias: { "@": fileURLToPath(new URL("../src", import.meta.url)) },
     },
     plugins: [
       {
@@ -183,7 +184,7 @@ async function loadMarkdownRoutes() {
     optimizeDeps: { noDiscovery: true },
     server: { middlewareMode: true, hmr: false, ws: false },
     resolve: {
-      alias: { "@": new URL("../src", import.meta.url).pathname },
+      alias: { "@": fileURLToPath(new URL("../src", import.meta.url)) },
     },
     plugins: [
       {

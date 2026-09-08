@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 
 function schemaNode(kind, details = {}) {
@@ -64,7 +65,7 @@ async function loadContentConfig() {
       },
     ],
     resolve: {
-      alias: { "@": new URL("../src", import.meta.url).pathname },
+      alias: { "@": fileURLToPath(new URL("../src", import.meta.url)) },
     },
   });
 

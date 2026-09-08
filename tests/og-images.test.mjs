@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 import { createOgFrame, createOgRenderOptions } from "../src/features/blog/og/templates/frame.js";
 import { SITE } from "../src/site-config.js";
@@ -148,7 +149,7 @@ async function loadImageGenerator() {
       },
     ],
     resolve: {
-      alias: { "@": new URL("../src", import.meta.url).pathname },
+      alias: { "@": fileURLToPath(new URL("../src", import.meta.url)) },
     },
   });
 

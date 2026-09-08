@@ -2,17 +2,18 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
 import { BLOG_TAGS } from "../src/features/blog/contentRules.ts";
 
 const allowedTags = new Set(BLOG_TAGS);
-const blogDir = new URL("../src/content/blog", import.meta.url);
+const blogDir = fileURLToPath(new URL("../src/content/blog", import.meta.url));
 
 test("blog posts use exactly one supported top-level tag", () => {
   const files = readdirSync(blogDir).filter((file) => file.endsWith(".md"));
 
   for (const file of files) {
-    const source = readFileSync(join(blogDir.pathname, file), "utf8");
+    const source = readFileSync(join(blogDir, file), "utf8");
     const { data } = matter(source);
 
     assert.ok(Array.isArray(data.tags), `${file} must declare tags as an array`);
