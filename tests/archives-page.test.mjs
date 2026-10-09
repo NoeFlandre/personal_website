@@ -31,3 +31,13 @@ test("redirect cleanup removes only stylesheet links from static redirects", () 
   assert.doesNotMatch(removeStylesheetLinksFromStaticRedirect(redirectMarkup), /rel="stylesheet"/);
   assert.match(removeStylesheetLinksFromStaticRedirect(regularMarkup), /rel="stylesheet"/);
 });
+
+test("redirect cleanup removes stylesheet links wherever rel appears and keeps other links", () => {
+  const redirectMarkup =
+    '<html><head><link href="/styles.css" rel="stylesheet"><link rel="icon" href="/icon.svg"></head><body data-static-redirect></body></html>';
+
+  assert.equal(
+    removeStylesheetLinksFromStaticRedirect(redirectMarkup),
+    '<html><head><link rel="icon" href="/icon.svg"></head><body data-static-redirect></body></html>'
+  );
+});

@@ -44,6 +44,24 @@ test("preview URLs are deterministic and stay separate from originals", async ()
   assert.notEqual(getImageThumbnailPath("/youtube.png"), "/youtube.png");
 });
 
+test("thumbnail paths leave root, empty, and relative sources unchanged", async () => {
+  const { getImageThumbnailFileName, getImageThumbnailPath } = await loadThumbnailPath();
+
+  assert.equal(getImageThumbnailPath(""), "");
+  assert.equal(getImageThumbnailPath("/"), "/");
+  assert.equal(getImageThumbnailFileName("/"), "/");
+  assert.equal(getImageThumbnailPath("relative.png"), "relative.png");
+  assert.equal(getImageThumbnailFileName("relative.png"), "relative.png");
+});
+
+test("thumbnail names drop empty segments and keep extensionless names whole", async () => {
+  const { getImageThumbnailFileName } = await loadThumbnailPath();
+
+  assert.equal(getImageThumbnailFileName("/assets//img/hero.png"), "assets--img--hero.webp");
+  assert.equal(getImageThumbnailFileName("/logo"), "logo.webp");
+  assert.equal(getImageThumbnailFileName("/.png"), ".png.webp");
+});
+
 test("thumbnail generation writes a bounded WebP", async () => {
   const { generateThumbnail } = await loadThumbnailGenerator();
   const tempDir = await mkdtemp(path.join(tmpdir(), "image-thumb-test-"));
