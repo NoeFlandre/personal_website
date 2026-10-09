@@ -9,6 +9,7 @@ import {
 import { initPostDetails } from "../src/features/blog/client/postDetailsRerun.js";
 import { createPostDetailsSession } from "../src/features/blog/client/postDetailsSession.js";
 import * as clientLifecycleUtils from "../src/utils/clientLifecycle.js";
+import { FakeDocument, FakeElement, TrackedEventTarget } from "./helpers/dom-fakes.mjs";
 
 const { createClientLifecycle, scheduleAbortableTimeout } = clientLifecycleUtils;
 
@@ -16,151 +17,16 @@ function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 }
 
-class TrackedEventTarget extends EventTarget {
+class LifecycleDocument extends FakeDocument {
   constructor() {
-    super();
-    this.listenerEntries = new Map();
-  }
-
-  addEventListener(type, listener, options) {
-    super.addEventListener(type, listener, options);
-
-    const entry = { listener };
-    const entries = this.listenerEntries.get(type) ?? new Set();
-    entries.add(entry);
-    this.listenerEntries.set(type, entries);
-
-    const signal = typeof options === "object" ? options?.signal : undefined;
-    signal?.addEventListener(
-      "abort",
-      () => {
-        entries.delete(entry);
-      },
-      { once: true }
-    );
-  }
-
-  removeEventListener(type, listener, options) {
-    super.removeEventListener(type, listener, options);
-    const entries = this.listenerEntries.get(type);
-    entries?.forEach((entry) => {
-      if (entry.listener === listener) entries.delete(entry);
-    });
-  }
-
-  listenerCount(type) {
-    return this.listenerEntries.get(type)?.size ?? 0;
-  }
-}
-
-class FakeElement extends TrackedEventTarget {
-  constructor() {
-    super();
-    this.attributes = new Map();
-    this.children = [];
-    this.dataset = {};
-    this.style = {};
-    this.parentNode = null;
-  }
-
-  appendChild(child) {
-    child.parentNode?.removeChild(child);
-    child.parentNode = this;
-    this.children.push(child);
-    return child;
-  }
-
-  insertBefore(child, reference) {
-    child.parentNode?.removeChild(child);
-    const index = this.children.indexOf(reference);
-    if (index < 0) return this.appendChild(child);
-    child.parentNode = this;
-    this.children.splice(index, 0, child);
-    return child;
-  }
-
-  removeChild(child) {
-    const index = this.children.indexOf(child);
-    if (index >= 0) this.children.splice(index, 1);
-    child.parentNode = null;
-    return child;
-  }
-
-  remove() {
-    this.parentNode?.removeChild(this);
-  }
-
-  replaceWith(replacement) {
-    const parent = this.parentNode;
-    if (!parent) return;
-    const index = parent.children.indexOf(this);
-    if (index < 0) return;
-    replacement.parentNode?.removeChild(replacement);
-    replacement.parentNode = parent;
-    parent.children[index] = replacement;
-    this.parentNode = null;
-  }
-
-  setAttribute(name, value) {
-    this.attributes.set(name, String(value));
-  }
-
-  getAttribute(name) {
-    return this.attributes.get(name) ?? null;
-  }
-
-  hasAttribute(name) {
-    return this.attributes.has(name);
-  }
-
-  removeAttribute(name) {
-    this.attributes.delete(name);
-  }
-
-  contains(target) {
-    return target === this || this.children.includes(target);
-  }
-
-  scrollIntoView(options) {
-    this.scrollIntoViewOptions = options;
-  }
-
-  querySelector() {
-    return null;
-  }
-
-  querySelectorAll() {
-    return [];
-  }
-}
-
-class FakeDocument extends TrackedEventTarget {
-  constructor() {
-    super();
-    this.body = new FakeElement();
-    this.documentElement = {
-      clientHeight: 100,
-      scrollHeight: 100,
-      scrollTop: 0,
-    };
+    super({ scrollHeight: 100 });
     this.currentArticle = null;
     this.elementsById = new Map();
   }
 
-  createElement() {
-    return new FakeElement();
-  }
-
-  createTreeWalker() {
-    return { nextNode: () => null };
-  }
-
   querySelector(selector) {
     if (selector === "#article") return this.currentArticle;
-    if (selector === ".progress-container[data-post-progress]") {
-      return this.body.children.find((child) => child.dataset.postProgress === "true") ?? null;
-    }
-    return null;
+    return super.querySelector(selector);
   }
 
   getElementById(id) {
@@ -334,7 +200,7 @@ test("About layout reruns its dedicated client module", () => {
 });
 
 test("initPostDetails ignores a missing document or article", () => {
-  const document = new FakeDocument();
+  const document = new LifecycleDocument();
 
   withGlobals({ document: undefined, window: { scrollTo() {} } }, () => {
     assert.doesNotThrow(() => initPostDetails());
@@ -349,7 +215,7 @@ test("initPostDetails ignores a missing document or article", () => {
 });
 
 test("initPostDetails does not duplicate listeners and cleans up before a swap", () => {
-  const document = new FakeDocument();
+  const document = new LifecycleDocument();
   const article = new FakeElement();
   document.currentArticle = article;
   const scrollCalls = [];
@@ -387,7 +253,7 @@ test("initPostDetails does not duplicate listeners and cleans up before a swap",
 });
 
 test("post details session mounts and cleans up its browser enhancements", () => {
-  const document = new FakeDocument();
+  const document = new LifecycleDocument();
   const article = new FakeElement();
   const session = createPostDetailsSession({
     documentRef: document,
@@ -410,7 +276,7 @@ test("post details session mounts and cleans up its browser enhancements", () =>
 });
 
 test("copy feedback reset is canceled when the post lifecycle ends", async () => {
-  const document = new FakeDocument();
+  const document = new LifecycleDocument();
   const { article, codeBlock } = createCopyArticle();
   document.currentArticle = article;
   const pendingTimers = new Map();
@@ -453,7 +319,7 @@ test("copy feedback reset is canceled when the post lifecycle ends", async () =>
 });
 
 test("copy completion does not update detached UI after the post lifecycle ends", async () => {
-  const document = new FakeDocument();
+  const document = new LifecycleDocument();
   const { article, codeBlock } = createCopyArticle();
   document.currentArticle = article;
   let resolveClipboardWrite;
@@ -487,7 +353,7 @@ test("copy completion does not update detached UI after the post lifecycle ends"
 });
 
 test("initAboutOutline initializes one root once and reconnects after a swap", () => {
-  const document = new FakeDocument();
+  const document = new LifecycleDocument();
   const root = new FakeElement();
   const link = new FakeElement();
   const section = new FakeElement();
@@ -568,7 +434,7 @@ test("outline helpers reject non-fragment links and choose the nearest visible s
 });
 
 test("initAboutOutline skips roots without links or matching sections", () => {
-  const document = new FakeDocument();
+  const document = new LifecycleDocument();
   const root = new FakeElement();
   root.querySelectorAll = (selector) => {
     if (selector === "[data-outline-link]") return [];
@@ -633,7 +499,7 @@ test("createClientLifecycle cleans up a failed setup before rethrowing", () => {
 });
 
 test("initAboutOutline activates visible sections and closes the mobile outline", () => {
-  const document = new FakeDocument();
+  const document = new LifecycleDocument();
   const root = new FakeElement();
   const link = new FakeElement();
   const otherLink = new FakeElement();
