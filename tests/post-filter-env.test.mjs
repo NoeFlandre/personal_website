@@ -1,37 +1,28 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createServer } from "vite";
+import { loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
 async function loadPostFilterWithDevFlag(devFlag, expression = "import.meta.env?.DEV ?? false") {
-  const server = await createServer({
-    appType: "custom",
-    root: process.cwd(),
-    optimizeDeps: { noDiscovery: true },
-    server: { middlewareMode: true, hmr: false, ws: false },
-    plugins: [
-      {
-        name: "post-filter-development-env",
-        enforce: "pre",
-        transform(code, id) {
-          if (!id.endsWith("/src/features/blog/utils/postFilter.ts")) return undefined;
-          if (!code.includes(expression)) {
-            throw new Error(`expected "${expression}" in postFilter.ts`);
-          }
-          return code.replace(expression, devFlag);
+  const { close, modules } = await loadSourceModule(
+    { postFilter: "/src/features/blog/utils/postFilter.ts" },
+    {
+      plugins: [
+        {
+          name: "post-filter-development-env",
+          enforce: "pre",
+          transform(code, id) {
+            if (!id.endsWith("/src/features/blog/utils/postFilter.ts")) return undefined;
+            if (!code.includes(expression)) {
+              throw new Error(`expected "${expression}" in postFilter.ts`);
+            }
+            return code.replace(expression, devFlag);
+          },
         },
-      },
-    ],
-  });
+      ],
+    }
+  );
 
-  try {
-    return {
-      module: await server.ssrLoadModule("/src/features/blog/utils/postFilter.ts"),
-      close: () => server.close(),
-    };
-  } catch (error) {
-    await server.close();
-    throw error;
-  }
+  return { module: modules.postFilter, close };
 }
 
 test("post visibility uses the development environment default when no option is supplied", async () => {
