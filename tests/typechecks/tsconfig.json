@@ -1,4 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./post-layout-metadata.ts"]
+  "include": ["../../.astro/types.d.ts", "./post-layout-metadata.ts", "./js-helpers.ts"]
 }

@@ -1,3 +1,16 @@
+/**
+ * Schedules a timeout that is cleared when the signal aborts.
+ *
+ * @template TimeoutId
+ * @param {{
+ *   callback: () => void,
+ *   clearTimeoutFn: (timeoutId: TimeoutId) => void,
+ *   delay: number,
+ *   setTimeoutFn: (callback: () => void, delay: number) => TimeoutId,
+ *   signal: AbortSignal,
+ * }} options
+ * @returns {TimeoutId} The id returned by setTimeoutFn.
+ */
 export function scheduleAbortableTimeout({
   callback,
   clearTimeoutFn,
