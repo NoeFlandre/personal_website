@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Removed universal CSS transitions that caused performance issues
   - Targeted only elements that actually change during theme switching
   - Added hardware acceleration for iOS Safari using transform3d
+- Legacy `/blog` and nested `/blog/*` URLs redirect from `vercel.json`; the middleware copy never ran on the static deploy and was removed
 
 ## [2025-01-06]
 

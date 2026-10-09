@@ -78,7 +78,6 @@ const sourceMutationPartitions = [
     mutate: [
       "src/env.d.ts",
       "src/types.d.ts",
-      "src/middleware.js",
       "src/site-config.js",
       "src/utils/**/*.js",
       "src/utils/**/*.ts",
