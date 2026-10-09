@@ -41,12 +41,14 @@ const backUrl = SITE.showBackButton ? Astro.url.pathname : "/";
 </main>
 
 <script>
+  import { setBackUrl } from "@/utils/backUrl.js";
+
   document.addEventListener("astro:page-load", () => {
     const mainContent: HTMLElement | null =
       document.querySelector("#main-content");
     const backUrl = mainContent?.dataset?.backurl;
     if (backUrl) {
-      sessionStorage.setItem("backUrl", backUrl);
+      setBackUrl(backUrl);
     }
   });
 </script>

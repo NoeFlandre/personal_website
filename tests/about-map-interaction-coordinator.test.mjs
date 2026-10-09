@@ -18,7 +18,6 @@ test("interaction coordinator owns marker setup and filter visibility", () => {
     },
     places: fixture.places,
     ui: {
-      root: fixture.root,
       filterButtons: fixture.filterButtons,
       cardButtons: fixture.cardButtons,
       cardsViewport: null,

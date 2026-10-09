@@ -139,12 +139,16 @@ export function highlightMapSelection({
   return placeId;
 }
 
+function isPlaceVisible(place, filter) {
+  return filter === "all" || place.type === filter;
+}
+
 export function updateMapVisibility({
   activeFilter,
   activePlaceId,
   mapPlaces,
   markersById,
-  root,
+  cardsById,
   map,
   leaflet,
   cardsViewport,
@@ -153,9 +157,9 @@ export function updateMapVisibility({
   const visiblePositions = [];
 
   mapPlaces.forEach((place) => {
-    const isVisible = activeFilter === "all" || place.type === activeFilter;
+    const isVisible = isPlaceVisible(place, activeFilter);
     const marker = markersById.get(place.id);
-    const card = root.querySelector(`[data-place-id="${place.id}"]`);
+    const card = cardsById.get(place.id);
 
     if (card) {
       card.dataset.hidden = isVisible ? "false" : "true";
@@ -181,20 +185,21 @@ export function updateMapVisibility({
   updateCardsNav();
 
   return mapPlaces.some(
-    (place) => place.id === activePlaceId && (activeFilter === "all" || place.type === activeFilter)
+    (place) => place.id === activePlaceId && isPlaceVisible(place, activeFilter)
   );
 }
 
 export function createMapInteractionCoordinator({
   map: { leaflet, instance: map, element: mapElement },
   places: mapPlaces,
-  ui: { root, filterButtons, cardButtons, cardsViewport },
+  ui: { filterButtons, cardButtons, cardsViewport },
   environment: { windowRef },
   lifecycle: { signal, clearTimeoutFn, scheduleTimeout },
   presentation: { markerIcon, popupMarkup, popupMaxWidth, popupPanPadding },
   updateCardsNav,
 }) {
   const markersById = new Map();
+  const cardsById = new Map(cardButtons.map((card) => [card.dataset.placeId, card]));
   let activeFilter = "all";
   let activePlaceId = null;
   const markerOffsets = getMarkerOffsets(mapPlaces);
@@ -216,7 +221,7 @@ export function createMapInteractionCoordinator({
       activePlaceId,
       mapPlaces,
       markersById,
-      root,
+      cardsById,
       map,
       leaflet,
       cardsViewport,
@@ -352,7 +357,6 @@ export function createMapRuntime({
   leaflet,
   map,
   mapElement,
-  root,
   mapPlaces,
   filterButtons,
   cardButtons,
@@ -370,7 +374,7 @@ export function createMapRuntime({
   const coordinator = createMapInteractionCoordinator({
     map: { leaflet, instance: map, element: mapElement },
     places: mapPlaces,
-    ui: { root, filterButtons, cardButtons, cardsViewport },
+    ui: { filterButtons, cardButtons, cardsViewport },
     environment: { windowRef },
     lifecycle: { signal, clearTimeoutFn, scheduleTimeout },
     presentation: { markerIcon, popupMarkup, popupMaxWidth, popupPanPadding },

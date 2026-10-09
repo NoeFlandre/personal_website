@@ -726,15 +726,10 @@ test("highlighting marks only the selected card and scrolls visible cards", () =
 test("visibility updates cards, layers, bounds, and selected-state invalidation", () => {
   const workCard = { dataset: { placeId: "work" } };
   const travelCard = { dataset: { placeId: "travel" } };
-  const root = {
-    querySelector(selector) {
-      return selector.includes('"work"')
-        ? workCard
-        : selector.includes('"travel"')
-          ? travelCard
-          : null;
-    },
-  };
+  const cardsById = new Map([
+    ["work", workCard],
+    ["travel", travelCard],
+  ]);
   const layers = [];
   const removed = [];
   const fitBoundsCalls = [];
@@ -778,7 +773,7 @@ test("visibility updates cards, layers, bounds, and selected-state invalidation"
         ["work", workMarker],
         ["travel", travelMarker],
       ]),
-      root,
+      cardsById,
       map,
       leaflet,
       cardsViewport,
@@ -804,7 +799,7 @@ test("visibility updates cards, layers, bounds, and selected-state invalidation"
       activePlaceId: "work",
       mapPlaces: places,
       markersById: new Map([["work", workMarker]]),
-      root,
+      cardsById,
       map,
       leaflet,
       cardsViewport: null,
@@ -823,7 +818,7 @@ test("visibility updates cards, layers, bounds, and selected-state invalidation"
         ["work", workMarker],
         ["travel", travelMarker],
       ]),
-      root,
+      cardsById,
       map,
       leaflet,
       cardsViewport: null,
@@ -837,7 +832,7 @@ test("visibility updates cards, layers, bounds, and selected-state invalidation"
       activePlaceId: "missing",
       mapPlaces: places,
       markersById: new Map([["work", workMarker]]),
-      root,
+      cardsById,
       map,
       leaflet,
       cardsViewport: null,
@@ -845,6 +840,39 @@ test("visibility updates cards, layers, bounds, and selected-state invalidation"
     }),
     false
   );
+});
+
+test("visibility finds cards in the prebuilt card map instead of querying the DOM per place", () => {
+  const workCard = { dataset: { placeId: "work" } };
+  const travelCard = { dataset: { placeId: "travel" } };
+  const map = {
+    fitBounds() {},
+    removeLayer() {},
+  };
+
+  updateMapVisibility({
+    activeFilter: "work",
+    activePlaceId: null,
+    mapPlaces: [
+      { id: "work", type: "work", lat: 48, lng: 2 },
+      { id: "travel", type: "travel", lat: 28, lng: 77 },
+    ],
+    markersById: new Map([
+      ["work", { addTo() {} }],
+      ["travel", { addTo() {} }],
+    ]),
+    cardsById: new Map([
+      ["work", workCard],
+      ["travel", travelCard],
+    ]),
+    map,
+    leaflet: { latLngBounds: (positions) => ({ positions }) },
+    cardsViewport: null,
+    updateCardsNav: () => undefined,
+  });
+
+  assert.equal(workCard.dataset.hidden, "false");
+  assert.equal(travelCard.dataset.hidden, "true");
 });
 
 test("map runtime wires markers, filters, card selection, popups, and delayed resize work", () => {
@@ -866,7 +894,6 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
     leaflet,
     map: runtimeMap,
     mapElement,
-    root,
   } = fixture;
   filters[1].setAttribute = undefined;
   viewport.scrollLeft = 22;
@@ -878,7 +905,6 @@ test("map runtime wires markers, filters, card selection, popups, and delayed re
     leaflet,
     map: runtimeMap,
     mapElement,
-    root,
     mapPlaces: places,
     filterButtons: filters,
     cardButtons: cards,

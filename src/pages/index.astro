@@ -174,11 +174,13 @@ const featuredWorkCards = [
 </Layout>
 
 <script>
+  import { setBackUrl } from "@/utils/backUrl.js";
+
   document.addEventListener("astro:page-load", () => {
     const indexLayout = (document.querySelector("#main-content") as HTMLElement)
       ?.dataset?.layout;
     if (indexLayout) {
-      sessionStorage.setItem("backUrl", "/");
+      setBackUrl("/");
     }
   });
 </script>

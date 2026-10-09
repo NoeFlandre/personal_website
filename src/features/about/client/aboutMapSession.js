@@ -232,7 +232,6 @@ export function createAboutMapSession({
         leaflet,
         map,
         mapElement: elements.mapElement,
-        root,
         mapPlaces: elements.mapPlaces,
         filterButtons: elements.filterButtons,
         cardButtons: elements.cardButtons,
