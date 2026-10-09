@@ -14,7 +14,11 @@ class FixedDate extends Date {
   }
 }
 
-function runThemeScript({ initialStorage = {}, withViewTransitions = false } = {}) {
+function runThemeScript({
+  initialStorage = {},
+  withViewTransitions = false,
+  blockedStorage = false,
+} = {}) {
   const storage = new Map(Object.entries(initialStorage));
   const rootAttributes = new Map();
   const buttonAttributes = new Map();
@@ -50,12 +54,15 @@ function runThemeScript({ initialStorage = {}, withViewTransitions = false } = {
 
   const localStorage = {
     getItem(key) {
+      if (blockedStorage) throw new Error("storage blocked");
       return storage.get(key) ?? null;
     },
     removeItem(key) {
+      if (blockedStorage) throw new Error("storage blocked");
       storage.delete(key);
     },
     setItem(key, value) {
+      if (blockedStorage) throw new Error("storage blocked");
       storage.set(key, value);
     },
   };
@@ -147,6 +154,22 @@ test("theme clicks persist the toggled preference in both rendering paths", () =
     assert.equal(theme.getColorScheme(), "light");
     assert.equal(theme.getStoredValue("theme"), "light");
     assert.equal(theme.getStoredValue("themeSetTimestamp"), String(now));
+  }
+});
+
+test("theme script keeps working when storage throws", () => {
+  for (const withViewTransitions of [false, true]) {
+    const theme = runThemeScript({ blockedStorage: true, withViewTransitions });
+
+    assert.equal(theme.getTheme(), "dark");
+    assert.equal(theme.getButtonLabel(), "dark");
+    assert.equal(theme.getColorScheme(), "dark");
+
+    theme.click();
+
+    assert.equal(theme.getTheme(), "light");
+    assert.equal(theme.getButtonLabel(), "light");
+    assert.equal(theme.getColorScheme(), "light");
   }
 });
 
