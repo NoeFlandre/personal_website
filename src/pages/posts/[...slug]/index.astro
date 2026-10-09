@@ -2,7 +2,7 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import getSortedPosts from "@/features/blog/utils/getSortedPosts";
 import { isPostRoutable } from "@/features/blog/utils/postFilter";
-import { getPostStaticPathParams } from "@/features/blog/utils/staticPaths";
+import { getPostStaticPaths } from "@/features/blog/utils/postStaticPaths";
 import PostDetails from "@/layouts/PostDetails.astro";
 
 export interface Props {
@@ -10,12 +10,7 @@ export interface Props {
 }
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => isPostRoutable(data));
-
-  return posts.map((post) => ({
-    params: getPostStaticPathParams(post),
-    props: { post },
-  }));
+  return getPostStaticPaths(({ data }) => isPostRoutable(data));
 }
 
 const { post } = Astro.props;
