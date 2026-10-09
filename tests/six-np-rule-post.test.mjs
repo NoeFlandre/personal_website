@@ -10,7 +10,6 @@ const postPath = new URL(
 
 test("the 6NP rule post preserves the notes and equation formatting", () => {
   assert.equal(existsSync(postPath), true);
-  if (!existsSync(postPath)) return;
 
   const { data, content } = matter(readFileSync(postPath, "utf8"));
 

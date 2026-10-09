@@ -381,7 +381,9 @@ test("active map cleanup is idempotent for mounted and empty sessions", () => {
   let removeCount = 0;
   const map = { remove: () => removeCount++ };
   assert.equal(removeActiveMap(null), null);
-  assert.equal(removeActiveMap(map), null);
+  const activeMap = removeActiveMap(map);
+  assert.equal(activeMap, null);
+  assert.equal(removeActiveMap(activeMap), null);
   assert.equal(removeCount, 1);
 });
 
@@ -662,8 +664,6 @@ test("highlighting marks only the selected card and scrolls visible cards", () =
       throw new Error("hidden cards must not scroll");
     },
   };
-  const missingMarker = { id: "missing" };
-
   assert.equal(
     highlightMapSelection({
       placeId: "one",
@@ -693,7 +693,6 @@ test("highlighting marks only the selected card and scrolls visible cards", () =
     block: "nearest",
     inline: "nearest",
   });
-  assert.equal(missingMarker.id, "missing");
   assert.doesNotThrow(() =>
     highlightMapSelection({
       placeId: "unknown",

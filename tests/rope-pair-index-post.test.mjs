@@ -11,7 +11,6 @@ const heroSourcePath = new URL(
 
 test("the RoPE pair-index post preserves the notes and local-review metadata", () => {
   assert.equal(existsSync(postPath), true);
-  if (!existsSync(postPath)) return;
 
   const { data, content } = matter(readFileSync(postPath, "utf8"));
 
@@ -27,7 +26,6 @@ test("the RoPE pair-index post preserves the notes and local-review metadata", (
   assert.doesNotMatch(content, /^\\\]$/m);
 
   assert.equal(existsSync(heroSourcePath), true);
-  if (!existsSync(heroSourcePath)) return;
 
   const heroSource = readFileSync(heroSourcePath, "utf8");
   assert.match(heroSource, /circle \(1\.45\)/);
