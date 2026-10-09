@@ -8,7 +8,7 @@ const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 test("all publication links for Noé Flandre use his Google Scholar profile", () => {
   for (const publication of CAREER_TIMELINE_PUBLICATIONS) {
-    const description = publication.description ?? "";
+    const description = publication.descriptionHtml ?? "";
 
     assert.match(
       description,

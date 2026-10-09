@@ -47,13 +47,33 @@ test("career timeline entries include titles and years", () => {
   }
 });
 
+test("plain text timeline fields never contain markup", () => {
+  const sections = [
+    CAREER_TIMELINE_EXPERIENCE,
+    CAREER_TIMELINE_EDUCATION,
+    CAREER_TIMELINE_PROJECTS,
+    CAREER_TIMELINE_AWARDS,
+    CAREER_TIMELINE_HUMANITARIAN_IMPACT,
+    CAREER_TIMELINE_PUBLICATIONS,
+  ];
+
+  for (const section of sections) {
+    for (const item of section) {
+      for (const text of [item.title, item.subtitle, item.description, item.location]) {
+        if (text === undefined) continue;
+        assert.doesNotMatch(text, /<[a-zA-Z/]/, `${item.year} ${item.title}`);
+      }
+    }
+  }
+});
+
 test("the about publications section highlights the editor's pick", () => {
   const empathyPaper = CAREER_TIMELINE_PUBLICATIONS.find((item) =>
     item.title.includes("Promoting empathy in decision-making")
   );
 
   assert.ok(empathyPaper);
-  assert.match(empathyPaper.description ?? "", /Selected as the Editor's Pick/);
+  assert.match(empathyPaper.descriptionHtml ?? "", /Selected as the Editor's Pick/);
 });
 
 test("the publications section starts with the two HICSS-60 papers", () => {
@@ -63,14 +83,14 @@ test("the publications section starts with the two HICSS-60 papers", () => {
       title:
         "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
       subtitle: "Hawaii International Conference on System Sciences",
-      description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
+      descriptionHtml: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
     },
     {
       year: "2026",
       title:
         "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
       subtitle: "Hawaii International Conference on System Sciences",
-      description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
+      descriptionHtml: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
     },
   ]);
 });
@@ -88,7 +108,7 @@ test("all publications use linked full author names", () => {
   ];
 
   for (const publication of CAREER_TIMELINE_PUBLICATIONS) {
-    const description = publication.description ?? "";
+    const description = publication.descriptionHtml ?? "";
 
     for (const author of authorLinks) {
       assert.ok(description.includes(`href="${author.href}"`));
@@ -107,10 +127,10 @@ test("the WSC publication links Alexander Nwala to his Google Scholar profile", 
 
   assert.ok(publication);
   assert.equal(
-    publication.description,
+    publication.descriptionHtml,
     `${NOE_AUTHOR}, ${ALEXANDER_AUTHOR_LINK}, ${PHILIPPE_AUTHOR_LINK}`
   );
-  assert.doesNotMatch(publication.description ?? "", /Nwala A\. C\./);
+  assert.doesNotMatch(publication.descriptionHtml ?? "", /Nwala A\. C\./);
 });
 
 test("all publication dates use year-only values", () => {
@@ -290,21 +310,21 @@ test("career timeline preserves the published content contract", () => {
         title:
           "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
         subtitle: "Hawaii International Conference on System Sciences",
-        description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
+        descriptionHtml: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
       },
       {
         year: "2026",
         title:
           "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
         subtitle: "Hawaii International Conference on System Sciences",
-        description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
+        descriptionHtml: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
       },
       {
         year: "2026",
         title:
           "Composing Verifiable Conceptual Models via Building Blocks: Towards Design-Time Verification of Agentic AI Workflows",
         subtitle: "WSC 2026",
-        description: `${NOE_AUTHOR}, ${ALEXANDER_AUTHOR_LINK}, ${PHILIPPE_AUTHOR_LINK}`,
+        descriptionHtml: `${NOE_AUTHOR}, ${ALEXANDER_AUTHOR_LINK}, ${PHILIPPE_AUTHOR_LINK}`,
         link: "https://arxiv.org/abs/2606.21565",
       },
       {
@@ -312,7 +332,7 @@ test("career timeline preserves the published content contract", () => {
         title:
           "Distilling the Complexity of Agent-Based Simulations Into Textual Explanations via Large Language Models",
         subtitle: "Big Data and Cognitive Computing",
-        description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK}`,
+        descriptionHtml: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK}`,
         link: "https://doi.org/10.3390/bdcc10040121",
       },
       {
@@ -320,7 +340,7 @@ test("career timeline preserves the published content contract", () => {
         title:
           "Promoting empathy in decision-making by turning agent-based models into stories using large-language models",
         subtitle: "Journal of Simulation",
-        description: `Daumas C., ${PHILIPPE_AUTHOR_LINK}, ${NOE_AUTHOR} · Selected as the Editor's Pick`,
+        descriptionHtml: `Daumas C., ${PHILIPPE_AUTHOR_LINK}, ${NOE_AUTHOR} · Selected as the Editor's Pick`,
         link: "https://www.researchgate.net/publication/395240074_Promoting_empathy_in_decision-making_by_turning_agent-based_models_into_stories_using_large-language_models",
       },
       {
@@ -328,7 +348,7 @@ test("career timeline preserves the published content contract", () => {
         title:
           "Can large language models learn conceptual modeling by looking at slide decks and pass graduate examinations? an empirical study",
         subtitle: "ER 2024 (EmpER'24)",
-        description: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK}`,
+        descriptionHtml: `${NOE_AUTHOR}, ${PHILIPPE_AUTHOR_LINK}`,
         link: "https://link.springer.com/chapter/10.1007/978-3-031-75599-6_15",
       },
     ],

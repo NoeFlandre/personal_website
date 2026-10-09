@@ -1,10 +1,14 @@
+/** Inline HTML rendered with set:html. Only fields typed with it may hold markup. */
+export type TimelineHtml = string;
+
 export interface TimelineItem {
   year: string;
   title: string;
   subtitle?: string;
   description?: string;
-  body?: string;
-  details?: string[];
+  descriptionHtml?: TimelineHtml;
+  body?: TimelineHtml;
+  details?: TimelineHtml[];
   location?: string;
   link?: string;
 }
@@ -193,21 +197,21 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
     subtitle: "Hawaii International Conference on System Sciences",
-    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
+    descriptionHtml: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
   },
   {
     year: "2026",
     title:
       "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
     subtitle: "Hawaii International Conference on System Sciences",
-    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
+    descriptionHtml: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
   },
   {
     year: "2026",
     title:
       "Composing Verifiable Conceptual Models via Building Blocks: Towards Design-Time Verification of Agentic AI Workflows",
     subtitle: "WSC 2026",
-    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${ALEXANDER_AUTHOR_LINK}, ${PHILIPPE_AUTHOR_LINK}`,
+    descriptionHtml: `<strong>${NOE_AUTHOR_LINK}</strong>, ${ALEXANDER_AUTHOR_LINK}, ${PHILIPPE_AUTHOR_LINK}`,
     link: "https://arxiv.org/abs/2606.21565",
   },
   {
@@ -215,7 +219,7 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Distilling the Complexity of Agent-Based Simulations Into Textual Explanations via Large Language Models",
     subtitle: "Big Data and Cognitive Computing",
-    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK}`,
+    descriptionHtml: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK}`,
     link: "https://doi.org/10.3390/bdcc10040121",
   },
   {
@@ -223,7 +227,7 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Promoting empathy in decision-making by turning agent-based models into stories using large-language models",
     subtitle: "Journal of Simulation",
-    description: `Daumas C., ${PHILIPPE_AUTHOR_LINK}, <strong>${NOE_AUTHOR_LINK}</strong> · Selected as the Editor's Pick`,
+    descriptionHtml: `Daumas C., ${PHILIPPE_AUTHOR_LINK}, <strong>${NOE_AUTHOR_LINK}</strong> · Selected as the Editor's Pick`,
     link: "https://www.researchgate.net/publication/395240074_Promoting_empathy_in_decision-making_by_turning_agent-based_models_into_stories_using_large-language_models",
   },
   {
@@ -231,7 +235,7 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Can large language models learn conceptual modeling by looking at slide decks and pass graduate examinations? an empirical study",
     subtitle: "ER 2024 (EmpER'24)",
-    description: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK}`,
+    descriptionHtml: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK}`,
     link: "https://link.springer.com/chapter/10.1007/978-3-031-75599-6_15",
   },
 ];
