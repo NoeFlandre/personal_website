@@ -52,6 +52,8 @@ test("thumbnail paths leave root, empty, and relative sources unchanged", async 
   assert.equal(getImageThumbnailFileName("/"), "/");
   assert.equal(getImageThumbnailPath("relative.png"), "relative.png");
   assert.equal(getImageThumbnailFileName("relative.png"), "relative.png");
+  assert.equal(getImageThumbnailPath("img/a.png"), "img/a.png");
+  assert.equal(getImageThumbnailFileName("img/a.png"), "img/a.png");
 });
 
 test("thumbnail names drop empty segments and keep extensionless names whole", async () => {
