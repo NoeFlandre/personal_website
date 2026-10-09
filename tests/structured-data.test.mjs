@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { SITE } from "../src/site-config.js";
+import { SITE, SOCIALS } from "../src/site-config.js";
 import { buildStructuredData, serializeStructuredData } from "../src/utils/structuredData.ts";
+
+const profileHref = (name) => SOCIALS.find((social) => social.name === name).href;
 
 test("buildStructuredData uses the configured site URL for website data", () => {
   const structuredData = buildStructuredData("WebSite");
@@ -35,18 +37,31 @@ test("buildStructuredData uses the configured profile and image for person data"
     url: SITE.profile,
     image: `${SITE.website}${SITE.ogImage}`,
     sameAs: [
-      "https://github.com/NoeFlandre",
-      "https://x.com/NoeFlandre",
-      "https://huggingface.co/NoeFlandre",
-      "https://orcid.org/0009-0002-0237-3727",
+      profileHref("HuggingFace"),
+      profileHref("Github"),
+      profileHref("ORCID"),
+      profileHref("X"),
     ],
-    jobTitle: "AI Research Engineer — Geospatial AI & Foundation models",
+    jobTitle: SITE.desc,
     description: SITE.desc,
   });
   assert.equal(structuredData["@type"], "Person");
   assert.equal(structuredData.url, SITE.profile);
   assert.equal(structuredData.image, `${SITE.website}${SITE.ogImage}`);
   assert.doesNotMatch(JSON.stringify(structuredData), /github\.io/);
+});
+
+test("buildStructuredData follows site config changes for person data", (t) => {
+  const github = SOCIALS.find((social) => social.name === "Github");
+  t.mock.property(SITE, "desc", "Changed job title");
+  t.mock.property(github, "href", "https://github.com/example");
+
+  const structuredData = buildStructuredData("Person");
+
+  assert.equal(structuredData.jobTitle, "Changed job title");
+  assert.equal(structuredData.description, "Changed job title");
+  assert.ok(structuredData.sameAs.includes("https://github.com/example"));
+  assert.equal(structuredData.sameAs.includes("https://github.com/NoeFlandre"), false);
 });
 
 test("buildStructuredData omits undefined optional blog fields", () => {
