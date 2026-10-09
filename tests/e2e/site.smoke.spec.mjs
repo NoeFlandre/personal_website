@@ -65,3 +65,13 @@ test("the mobile article stays inside the viewport and the theme control toggles
   await themeButton.click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
+
+test("the homepage lists the selected featured posts in the configured order", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.locator("#featured h3")).toHaveText([
+    "How to describe a place on Earth using text? Part 1: wikidata",
+    "I am joining the EVERGREEN research team",
+    "Breaking down the maths behind Masked Image Modeling",
+  ]);
+});
