@@ -10,7 +10,13 @@ const allowedTags = new Set(BLOG_TAGS);
 const blogDir = fileURLToPath(new URL("../src/content/blog", import.meta.url));
 
 test("blog posts use exactly one supported top-level tag", () => {
-  const files = readdirSync(blogDir).filter((file) => file.endsWith(".md"));
+  const files = readdirSync(blogDir, { recursive: true }).filter((file) => file.endsWith(".md"));
+
+  assert.ok(files.length > 0, "blog tag scan found no posts");
+  assert.ok(
+    files.some((file) => file.includes("/")),
+    "blog tag scan must include nested year folders"
+  );
 
   for (const file of files) {
     const source = readFileSync(join(blogDir, file), "utf8");
