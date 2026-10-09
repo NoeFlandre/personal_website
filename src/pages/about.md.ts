@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { markdownResponse } from "../utils/markdownResponse.ts";
 
 // Resolved from this module, not process.cwd(). The build emits this route into
 // dist/pages/, as deep as src/pages/, so the same relative path works in both.
@@ -24,14 +25,7 @@ export function createAboutMarkdownResponse(
     return new Response("Not found", { status: 404 });
   }
 
-  // Return the markdown content with proper headers
-  return new Response(rawContent, {
-    status: 200,
-    headers: {
-      "Content-Type": "text/markdown; charset=utf-8",
-      "Cache-Control": "public, max-age=3600",
-    },
-  });
+  return markdownResponse(rawContent);
 }
 
 export const GET: APIRoute = async () => createAboutMarkdownResponse();
