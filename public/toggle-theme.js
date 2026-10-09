@@ -1,6 +1,34 @@
+// Storage can throw (blocked site data, privacy modes). Keep values in memory
+// for this page load so the script still runs.
+const memoryStorage = new Map();
+
+function readStorage(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return memoryStorage.get(key) ?? null;
+  }
+}
+
+function writeStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    memoryStorage.set(key, value);
+  }
+}
+
+function removeStorage(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    memoryStorage.delete(key);
+  }
+}
+
 // Get theme data from local storage
-let currentTheme = localStorage.getItem("theme");
-const themeSetTimestamp = localStorage.getItem("themeSetTimestamp");
+let currentTheme = readStorage("theme");
+const themeSetTimestamp = readStorage("themeSetTimestamp");
 let userHasManuallySetTheme = false;
 
 // Check if manual theme preference has expired (24 hours)
@@ -13,8 +41,8 @@ if (themeSetTimestamp) {
     userHasManuallySetTheme = true;
   } else {
     // Expired - clear manual settings
-    localStorage.removeItem("theme");
-    localStorage.removeItem("themeSetTimestamp");
+    removeStorage("theme");
+    removeStorage("themeSetTimestamp");
     currentTheme = null;
   }
 }
@@ -32,8 +60,8 @@ function getPreferredTheme() {
 let themeValue = getPreferredTheme();
 
 function setPreference() {
-  localStorage.setItem("theme", themeValue);
-  localStorage.setItem("themeSetTimestamp", Date.now().toString());
+  writeStorage("theme", themeValue);
+  writeStorage("themeSetTimestamp", Date.now().toString());
   reflectPreference();
 }
 
