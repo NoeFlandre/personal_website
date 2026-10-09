@@ -52,7 +52,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Article schema for blog posts
   - WebSite schema for homepage
   - Person schema for author information
-- Critical CSS inlining for faster initial page render (#102)
 - Keyboard navigation improvements (#102)
   - Arrow key navigation between posts
   - Escape key to close mobile menu
