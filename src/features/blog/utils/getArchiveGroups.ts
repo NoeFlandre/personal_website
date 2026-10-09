@@ -2,6 +2,7 @@ import type { CollectionEntry } from "astro:content";
 
 import { groupBy } from "./groupBy.ts";
 import { getPostsByYear } from "./markdownIndexes.ts";
+import { getSiteDateParts } from "./siteDate.ts";
 
 export interface ArchiveMonthGroup {
   month: number;
@@ -17,7 +18,7 @@ export function getArchiveGroups(posts: CollectionEntry<"blog">[]): ArchiveYearG
   return getPostsByYear(posts).map(({ year, posts: postsInYear }) => {
     const postsByMonth = groupBy(
       postsInYear,
-      (post) => new Date(post.data.pubDatetime).getMonth() + 1
+      (post) => getSiteDateParts(new Date(post.data.pubDatetime)).month
     );
 
     return {

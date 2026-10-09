@@ -2,6 +2,7 @@ import type { CollectionEntry } from "astro:content";
 import getSortedPosts from "./getSortedPosts.ts";
 import { groupBy } from "./groupBy.ts";
 import { getPostPath } from "./postPath.ts";
+import { formatSiteMonthDay, getSiteDateParts } from "./siteDate.ts";
 
 export interface PostsByYear {
   year: number;
@@ -9,8 +10,9 @@ export interface PostsByYear {
 }
 
 export function getPostsByYear(posts: CollectionEntry<"blog">[]): PostsByYear[] {
-  const postsByYear = groupBy(getSortedPosts(posts), (post) =>
-    new Date(post.data.pubDatetime).getFullYear()
+  const postsByYear = groupBy(
+    getSortedPosts(posts),
+    (post) => getSiteDateParts(new Date(post.data.pubDatetime)).year
   );
 
   return Array.from(postsByYear, ([year, yearPosts]) => ({ year, posts: yearPosts })).sort(
@@ -26,10 +28,7 @@ export function buildPostsMarkdown(posts: CollectionEntry<"blog">[]) {
     markdownContent += `## ${year}\n\n`;
 
     for (const post of postsInYear) {
-      const date = new Date(post.data.pubDatetime).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      });
+      const date = formatSiteMonthDay(new Date(post.data.pubDatetime));
       markdownContent += `- ${date}: [${post.data.title}](${getPostPath(post)})\n`;
     }
 
