@@ -114,6 +114,14 @@ test("quality scripts cover the root config, public browser script, source, and 
   assert.equal(packageJson.scripts.format, `biome format --write ${qualityPaths}`);
 });
 
+test("Biome scope excludes only generated public assets", () => {
+  const publicExclusions = biomeConfig.files.includes.filter(
+    (pattern) => pattern.startsWith("!") && pattern.includes("public")
+  );
+
+  assert.deepEqual(publicExclusions, ["!**/public/generated"]);
+});
+
 test("Biome schema matches the configured CLI version", () => {
   const biomeVersion = packageJson.devDependencies["@biomejs/biome"].replace(/^[^\d]*/, "");
 
