@@ -4,14 +4,16 @@ import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
 import sharp from "sharp";
 import {
+  ABOUT_PORTRAIT_PATH,
   getImageThumbnailFileName,
   IMAGE_THUMBNAIL_DIRECTORY,
+  stripQueryAndHash,
 } from "../src/utils/imageThumbnailPath.mjs";
 
 const REPO_ROOT = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const PUBLIC_DIR = path.join(REPO_ROOT, "public");
 const CONTENT_DIR = path.join(REPO_ROOT, "src/content");
-const MAP_IMAGES_DIR = path.join(PUBLIC_DIR, "assets/img/about-map");
+const MAP_IMAGES_DIRECTORY = "assets/img/about-map";
 const THUMBNAIL_WIDTH = 320;
 const THUMBNAIL_CONCURRENCY = 4;
 const IMAGE_EXTENSIONS = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]);
@@ -51,14 +53,14 @@ async function discoverHeroImages(directory = CONTENT_DIR) {
 
     const { data } = matter(await readFile(filePath, "utf8"));
     if (typeof data.heroImage === "string" && data.heroImage.startsWith("/")) {
-      sourcePaths.add(data.heroImage.split(/[?#]/, 1)[0]);
+      sourcePaths.add(stripQueryAndHash(data.heroImage));
     }
   }
 
   return sourcePaths;
 }
 
-async function discoverMapImages(directory = MAP_IMAGES_DIR, publicDir = PUBLIC_DIR) {
+async function discoverMapImages(directory, publicDir = PUBLIC_DIR) {
   const files = await walkFiles(directory);
   return new Set(files.filter(isImageFile).map((filePath) => toPublicPath(filePath, publicDir)));
 }
@@ -96,12 +98,9 @@ export async function generateImageThumbnails({
   const outputDirectory = path.join(publicDir, IMAGE_THUMBNAIL_DIRECTORY);
   await mkdir(outputDirectory, { recursive: true });
 
-  const sourcePaths = new Set(["/image.png"]);
+  const sourcePaths = new Set([ABOUT_PORTRAIT_PATH]);
   const heroImages = await discoverHeroImages(contentDir);
-  const mapImages = await discoverMapImages(
-    path.join(publicDir, "assets/img/about-map"),
-    publicDir
-  );
+  const mapImages = await discoverMapImages(path.join(publicDir, MAP_IMAGES_DIRECTORY), publicDir);
 
   for (const sourcePath of [...heroImages, ...mapImages]) {
     sourcePaths.add(sourcePath);
