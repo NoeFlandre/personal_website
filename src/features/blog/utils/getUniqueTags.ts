@@ -2,7 +2,7 @@ import type { CollectionEntry } from "astro:content";
 import postFilter from "./postFilter.ts";
 import { createTagInfo, type TagInfo } from "./tags.ts";
 
-export function getUniqueTagInfos(tagNames: string[]): TagInfo[] {
+function getUniqueTagInfos(tagNames: string[]): TagInfo[] {
   const uniqueTags = new Map<string, TagInfo>();
 
   for (const tagName of tagNames) {
