@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { existsSync, globSync, readFileSync } from "node:fs";
+import { dirname, relative, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -269,6 +270,58 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     assert.deepEqual(dedicatedConfig.reporters, ["clear-text", "progress"]);
     assert.deepEqual(dedicatedConfig.thresholds, { high: 100, low: 100, break: 100 });
   }
+});
+
+// These files mix behavioral tests with source-text checks. docs/TESTING.md keeps
+// source-inspection tests out of Stryker runs, so they stay unlisted until they are split.
+const sourceInspectionTests = [
+  "tests/about-links.test.mjs",
+  "tests/back-url-storage.test.mjs",
+  "tests/gerard-dray-links.test.mjs",
+  "tests/homepage-featured-posts.test.mjs",
+  "tests/markdown-response.test.mjs",
+];
+
+test("every test importing a mutated module is listed in a Stryker command", () => {
+  const root = fileURLToPath(new URL("../", import.meta.url));
+  const strykerConfigs = globSync("stryker*.config.json", { cwd: root }).map((fileName) =>
+    JSON.parse(readWorkspaceFile(fileName))
+  );
+  const listedTests = new Set(
+    strykerConfigs.flatMap(({ commandRunner }) =>
+      commandRunner.command.split(/\s+/).filter((token) => token.endsWith(".test.mjs"))
+    )
+  );
+  const mutationScopes = strykerConfigs.map(({ mutate }) => ({
+    include: mutate.filter((pattern) => !pattern.startsWith("!")),
+    exclude: mutate.filter((pattern) => pattern.startsWith("!")).map((pattern) => pattern.slice(1)),
+  }));
+  const isMutated = (fileName) =>
+    mutationScopes.some(
+      ({ include, exclude }) =>
+        matchesAnyPattern(fileName, include) && !matchesAnyPattern(fileName, exclude)
+    );
+  const importedFiles = (testFile) => {
+    const source = readFileSync(new URL(`../${testFile}`, import.meta.url), "utf8");
+    return [...source.matchAll(/\b(?:from\s+|import\(\s*)["'](\.{1,2}\/[^"']+)["']/g)].map(
+      ([, specifier]) => relative(root, resolve(root, dirname(testFile), specifier))
+    );
+  };
+  const unlisted = globSync(regularTestGlob, { cwd: root }).filter(
+    (testFile) =>
+      !listedTests.has(testFile) && importedFiles(testFile).some((fileName) => isMutated(fileName))
+  );
+
+  assert.deepEqual(
+    unlisted.filter((testFile) => !sourceInspectionTests.includes(testFile)),
+    [],
+    "behavioral tests that import mutated modules must be listed in a Stryker command"
+  );
+  assert.deepEqual(
+    sourceInspectionTests.filter((testFile) => !unlisted.includes(testFile)),
+    [],
+    "sourceInspectionTests entries must still be unlisted tests that import mutated modules"
+  );
 });
 
 test("source mutation partitions are disjoint and preserve the original scope", () => {
