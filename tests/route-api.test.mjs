@@ -1,8 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
-import { createServer } from "vite";
 import { SITE } from "../src/site-config.js";
+import { astroContentStubPlugin, loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
 const testPost = {
   id: "2026-08-18-quality-route-test",
@@ -58,77 +57,58 @@ async function loadDynamicImageRoutes() {
       data: { ...testPost.data, ogImage: "custom-og.png" },
     },
   ];
-  const server = await createServer({
-    appType: "custom",
-    root: process.cwd(),
-    optimizeDeps: { noDiscovery: true },
-    server: { middlewareMode: true, hmr: false, ws: false },
-    resolve: {
-      alias: { "@": fileURLToPath(new URL("../src", import.meta.url)) },
+  const { close, modules } = await loadSourceModule(
+    {
+      indexRoute: "/src/pages/posts/[...slug]/index.png.ts",
+      ogRoute: "/src/pages/posts/[...slug]/og.png.ts",
     },
-    plugins: [
-      {
-        name: "astro-content-test-stub",
-        enforce: "pre",
-        resolveId(id) {
-          return id === "astro:content" ? "\0astro-content-test-stub" : undefined;
-        },
-        load(id) {
-          if (id === "\0astro-content-test-stub") {
-            return `globalThis.__dynamicImageCollectionCalls = [];
-            export async function getCollection(...args) {
-              globalThis.__dynamicImageCollectionCalls.push(args);
-              return ${JSON.stringify(dynamicImagePosts)};
-            }`;
-          }
-          return undefined;
-        },
-      },
-      {
-        name: "site-config-test-stub",
-        enforce: "pre",
-        resolveId(id) {
-          return id === "@/site-config.js" || id.endsWith("/src/site-config.js")
-            ? "\0site-config-test-stub"
-            : undefined;
-        },
-        load(id) {
-          if (id !== "\0site-config-test-stub") return undefined;
-          return `globalThis.__dynamicSiteConfig = ${JSON.stringify(SITE)};
+    {
+      plugins: [
+        astroContentStubPlugin(`globalThis.__dynamicImageCollectionCalls = [];
+          export async function getCollection(...args) {
+            globalThis.__dynamicImageCollectionCalls.push(args);
+            return ${JSON.stringify(dynamicImagePosts)};
+          }`),
+        {
+          name: "site-config-test-stub",
+          enforce: "pre",
+          resolveId(id) {
+            return id === "@/site-config.js" || id.endsWith("/src/site-config.js")
+              ? "\0site-config-test-stub"
+              : undefined;
+          },
+          load(id) {
+            if (id !== "\0site-config-test-stub") return undefined;
+            return `globalThis.__dynamicSiteConfig = ${JSON.stringify(SITE)};
           export const SITE = globalThis.__dynamicSiteConfig;`;
+          },
         },
-      },
-      {
-        name: "og-image-test-stub",
-        enforce: "pre",
-        resolveId(id) {
-          return id.endsWith("/src/features/blog/og/generateOgImages")
-            ? "\0og-image-test-stub"
-            : undefined;
-        },
-        load(id) {
-          if (id !== "\0og-image-test-stub") return undefined;
+        {
+          name: "og-image-test-stub",
+          enforce: "pre",
+          resolveId(id) {
+            return id.endsWith("/src/features/blog/og/generateOgImages")
+              ? "\0og-image-test-stub"
+              : undefined;
+          },
+          load(id) {
+            if (id !== "\0og-image-test-stub") return undefined;
 
-          return `export async function generateOgImageForPost() {
+            return `export async function generateOgImageForPost() {
             return new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
           }`;
+          },
         },
-      },
-    ],
-  });
+      ],
+    }
+  );
 
-  try {
-    return {
-      indexRoute: await server.ssrLoadModule("/src/pages/posts/[...slug]/index.png.ts"),
-      ogRoute: await server.ssrLoadModule("/src/pages/posts/[...slug]/og.png.ts"),
-      collectionCalls: () => globalThis.__dynamicImageCollectionCalls,
-      siteConfig: () => globalThis.__dynamicSiteConfig,
-      close: () => server.close(),
-    };
-  } catch (error) {
-    await server.close();
-    throw error;
-  }
+  return {
+    ...modules,
+    collectionCalls: () => globalThis.__dynamicImageCollectionCalls,
+    siteConfig: () => globalThis.__dynamicSiteConfig,
+    close,
+  };
 }
 
 test("dynamic image routes enumerate posts and render PNG responses", async () => {
@@ -178,49 +158,31 @@ test("dynamic image routes enumerate posts and render PNG responses", async () =
 });
 
 async function loadMarkdownRoutes() {
-  const server = await createServer({
-    appType: "custom",
-    root: process.cwd(),
-    optimizeDeps: { noDiscovery: true },
-    server: { middlewareMode: true, hmr: false, ws: false },
-    resolve: {
-      alias: { "@": fileURLToPath(new URL("../src", import.meta.url)) },
+  const { close, modules } = await loadSourceModule(
+    {
+      indexRoute: "/src/pages/index.md.ts",
+      postsRoute: "/src/pages/posts.md.ts",
+      archivesRoute: "/src/pages/archives.md.ts",
+      postRoute: "/src/pages/posts/[...slug].md.ts",
+      robotsRoute: "/src/pages/robots.txt.ts",
+      rssRoute: "/src/pages/rss.xml.ts",
     },
-    plugins: [
-      {
-        name: "astro-content-test-stub",
-        enforce: "pre",
-        resolveId(id) {
-          return id === "astro:content" ? "\0astro-content-test-stub" : undefined;
-        },
-        load(id) {
-          if (id !== "\0astro-content-test-stub") return undefined;
-
-          return `globalThis.__markdownCollectionCalls = [];
+    {
+      plugins: [
+        astroContentStubPlugin(`globalThis.__markdownCollectionCalls = [];
           export async function getCollection(...args) {
             globalThis.__markdownCollectionCalls.push(args);
             return ${JSON.stringify([testPost])};
-          }`;
-        },
-      },
-    ],
-  });
+          }`),
+      ],
+    }
+  );
 
-  try {
-    return {
-      indexRoute: await server.ssrLoadModule("/src/pages/index.md.ts"),
-      postsRoute: await server.ssrLoadModule("/src/pages/posts.md.ts"),
-      archivesRoute: await server.ssrLoadModule("/src/pages/archives.md.ts"),
-      postRoute: await server.ssrLoadModule("/src/pages/posts/[...slug].md.ts"),
-      robotsRoute: await server.ssrLoadModule("/src/pages/robots.txt.ts"),
-      rssRoute: await server.ssrLoadModule("/src/pages/rss.xml.ts"),
-      collectionCalls: () => globalThis.__markdownCollectionCalls,
-      close: () => server.close(),
-    };
-  } catch (error) {
-    await server.close();
-    throw error;
-  }
+  return {
+    ...modules,
+    collectionCalls: () => globalThis.__markdownCollectionCalls,
+    close,
+  };
 }
 
 test("markdown and feed routes return their generated content", async () => {

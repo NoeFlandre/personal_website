@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
-import { createServer } from "vite";
+import { astroContentStubPlugin, loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
 function schemaNode(kind, details = {}) {
   return {
@@ -26,24 +25,12 @@ function schemaNode(kind, details = {}) {
 }
 
 async function loadContentConfig() {
-  const server = await createServer({
-    appType: "custom",
-    root: process.cwd(),
-    optimizeDeps: { noDiscovery: true },
-    ssr: { noExternal: ["astro"] },
-    server: { middlewareMode: true, hmr: false, ws: false },
-    plugins: [
-      {
-        name: "content-config-astro-stubs",
-        enforce: "pre",
-        resolveId(id) {
-          if (id === "astro:content") return "\0astro-content-config";
-          if (id === "astro/loaders") return "\0astro-loaders-config";
-          return undefined;
-        },
-        load(id) {
-          if (id === "\0astro-content-config") {
-            return `
+  const { close, modules } = await loadSourceModule(
+    { contentConfig: "/src/content.config.ts" },
+    {
+      ssr: { noExternal: ["astro"] },
+      plugins: [
+        astroContentStubPlugin(`
               const node = ${schemaNode.toString()};
               export const z = {
                 object: (shape) => ({ kind: "object", shape }),
@@ -55,29 +42,23 @@ async function loadContentConfig() {
                 coerce: { date: () => node("coerce-date") },
               };
               export const defineCollection = (definition) => definition;
-            `;
-          }
-          if (id === "\0astro-loaders-config") {
+            `),
+        {
+          name: "content-config-astro-loaders-stub",
+          enforce: "pre",
+          resolveId(id) {
+            return id === "astro/loaders" ? "\0astro-loaders-config" : undefined;
+          },
+          load(id) {
+            if (id !== "\0astro-loaders-config") return undefined;
             return `export const glob = (options) => ({ kind: "glob", ...options });`;
-          }
-          return undefined;
+          },
         },
-      },
-    ],
-    resolve: {
-      alias: { "@": fileURLToPath(new URL("../src", import.meta.url)) },
-    },
-  });
+      ],
+    }
+  );
 
-  try {
-    return {
-      module: await server.ssrLoadModule("/src/content.config.ts"),
-      close: () => server.close(),
-    };
-  } catch (error) {
-    await server.close();
-    throw error;
-  }
+  return { module: modules.contentConfig, close };
 }
 
 test("content configuration defines the blog loader and schema contract", async () => {

@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
-import { createServer } from "vite";
 import { createOgFrame, createOgRenderOptions } from "../src/features/blog/og/templates/frame.js";
 import { SITE } from "../src/site-config.js";
+import { loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
 const post = {
   id: "mutation-test-post",
@@ -46,76 +45,67 @@ test("shared OG frame preserves the common shell and render options", () => {
 });
 
 async function loadTemplateModules() {
-  const server = await createServer({
-    appType: "custom",
-    root: process.cwd(),
-    optimizeDeps: { noDiscovery: true },
-    ssr: { noExternal: ["satori"] },
-    server: { middlewareMode: true, hmr: false, ws: false },
-    plugins: [
-      {
-        name: "og-template-dependency-stubs",
-        enforce: "pre",
-        resolveId(id) {
-          if (id === "satori") return "\0satori-og-test";
-          if (id.includes("/src/utils/loadGoogleFont")) return "\0fonts-og-test";
-          return undefined;
-        },
-        load(id) {
-          if (id === "\0satori-og-test") {
-            return `export default async (tree, options) => JSON.stringify({ tree, options });`;
-          }
-          if (id === "\0fonts-og-test") {
-            return `export default async () => [{
+  const { close, modules } = await loadSourceModule(
+    {
+      postTemplate: "/src/features/blog/og/templates/post.js",
+      siteTemplate: "/src/features/blog/og/templates/site.js",
+    },
+    {
+      ssr: { noExternal: ["satori"] },
+      plugins: [
+        {
+          name: "og-template-dependency-stubs",
+          enforce: "pre",
+          resolveId(id) {
+            if (id === "satori") return "\0satori-og-test";
+            if (id.includes("/src/utils/loadGoogleFont")) return "\0fonts-og-test";
+            return undefined;
+          },
+          load(id) {
+            if (id === "\0satori-og-test") {
+              return `export default async (tree, options) => JSON.stringify({ tree, options });`;
+            }
+            if (id === "\0fonts-og-test") {
+              return `export default async () => [{
               name: "Atkinson",
               data: new ArrayBuffer(1),
               weight: 400,
               style: "normal",
             }];
             `;
-          }
-          return undefined;
+            }
+            return undefined;
+          },
         },
-      },
-    ],
-  });
+      ],
+    }
+  );
 
-  try {
-    const postTemplate = (await server.ssrLoadModule("/src/features/blog/og/templates/post.js"))
-      .default;
-    const siteTemplate = (await server.ssrLoadModule("/src/features/blog/og/templates/site.js"))
-      .default;
-    return {
-      postTemplate,
-      siteTemplate,
-      close: () => server.close(),
-    };
-  } catch (error) {
-    await server.close();
-    throw error;
-  }
+  return {
+    postTemplate: modules.postTemplate.default,
+    siteTemplate: modules.siteTemplate.default,
+    close,
+  };
 }
 
 async function loadImageGenerator() {
-  const server = await createServer({
-    appType: "custom",
-    root: process.cwd(),
-    optimizeDeps: { noDiscovery: true },
-    ssr: { noExternal: ["@resvg/resvg-js"] },
-    server: { middlewareMode: true, hmr: false, ws: false },
-    plugins: [
-      {
-        name: "og-generator-dependency-stubs",
-        enforce: "pre",
-        resolveId(id) {
-          if (id === "@resvg/resvg-js") return "\0resvg-og-test";
-          if (id.endsWith("templates/post.js")) return "\0post-og-test";
-          if (id.endsWith("templates/site.js")) return "\0site-og-test";
-          return undefined;
-        },
-        load(id) {
-          if (id === "\0resvg-og-test") {
-            return `let retryRenderCalls = 0;
+  const { close, modules } = await loadSourceModule(
+    { generator: "/src/features/blog/og/generateOgImages.ts" },
+    {
+      ssr: { noExternal: ["@resvg/resvg-js"] },
+      plugins: [
+        {
+          name: "og-generator-dependency-stubs",
+          enforce: "pre",
+          resolveId(id) {
+            if (id === "@resvg/resvg-js") return "\0resvg-og-test";
+            if (id.endsWith("templates/post.js")) return "\0post-og-test";
+            if (id.endsWith("templates/site.js")) return "\0site-og-test";
+            return undefined;
+          },
+          load(id) {
+            if (id === "\0resvg-og-test") {
+              return `let retryRenderCalls = 0;
             export class Resvg {
               constructor(svg) { this.svg = svg; }
               render() {
@@ -132,36 +122,26 @@ async function loadImageGenerator() {
                 return { asPng: () => new Uint8Array(png) };
               }
             }`;
-          }
-          if (id === "\0post-og-test") {
-            return `let postTemplateCalls = 0;
+            }
+            if (id === "\0post-og-test") {
+              return `let postTemplateCalls = 0;
             export default async (value) => {
               postTemplateCalls += 1;
               const suffix = value.data.title === "Cache test title" ? ":" + postTemplateCalls : "";
               return "post-svg:" + value.data.title + suffix;
             };`;
-          }
-          if (id === "\0site-og-test") {
-            return `export default async () => "site-svg";`;
-          }
-          return undefined;
+            }
+            if (id === "\0site-og-test") {
+              return `export default async () => "site-svg";`;
+            }
+            return undefined;
+          },
         },
-      },
-    ],
-    resolve: {
-      alias: { "@": fileURLToPath(new URL("../src", import.meta.url)) },
-    },
-  });
+      ],
+    }
+  );
 
-  try {
-    return {
-      module: await server.ssrLoadModule("/src/features/blog/og/generateOgImages.ts"),
-      close: () => server.close(),
-    };
-  } catch (error) {
-    await server.close();
-    throw error;
-  }
+  return { module: modules.generator, close };
 }
 
 test("post and site OG templates preserve their content and rendering contract", async () => {
