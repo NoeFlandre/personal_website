@@ -55,7 +55,13 @@ export function createAboutMapController({
     if (root.dataset.mapInitState === "ready" || root.dataset.mapInitState === "loading") return;
     root.dataset.mapInitState = "loading";
 
-    const mounted = mapSession.mount(root, getLifecycleSignal());
+    let mounted;
+    try {
+      mounted = mapSession.mount(root, getLifecycleSignal());
+    } catch (error) {
+      root.dataset.mapInitState = "idle";
+      throw error;
+    }
     if (!mounted) {
       root.dataset.mapInitState = "idle";
       return;
@@ -107,7 +113,7 @@ export function createAboutMapController({
 
     documentRef.addEventListener("astro:before-swap", cleanup);
     documentRef.addEventListener("astro:page-load", setupWithRetry);
-    documentRef.addEventListener("astro:after-swap", setup);
+    documentRef.addEventListener("astro:after-swap", setupWithRetry);
   };
 
   return { cleanup, setup, setupWithRetry, start };
