@@ -27,7 +27,11 @@ function createHarness(options = {}) {
   const session = createPostDetailsSession({
     clearTimeoutFn,
     documentRef,
-    navigatorRef: { clipboard: { writeText: async (value) => clipboardWrites.push(value) } },
+    navigatorRef: {
+      clipboard: {
+        writeText: options.writeText ?? (async (value) => clipboardWrites.push(value)),
+      },
+    },
     nodeFilterRef: { SHOW_TEXT: 4 },
     setTimeoutFn,
     windowRef,
@@ -274,7 +278,7 @@ test("aborting a copy session clears feedback timers and restores the code block
   assert.deepEqual(harness.clipboardWrites, ["print('hello')"]);
 });
 
-test("copying a block without a code child writes an empty string", async () => {
+test("copying a block without a code child writes nothing and shows no success", async () => {
   const harness = createHarness();
   const codeBlock = new FakeElement("pre");
   harness.article.appendChild(codeBlock);
@@ -285,7 +289,34 @@ test("copying a block without a code child writes an empty string", async () => 
   await Promise.resolve();
   await Promise.resolve();
 
-  assert.deepEqual(harness.clipboardWrites, [""]);
+  assert.deepEqual(harness.clipboardWrites, []);
+  assert.equal(copyButton.innerText, "Copy");
+  assert.equal(harness.timers.size, 0);
+  controller.abort();
+});
+
+test("copy failures show a failure label and restore their label", async () => {
+  const harness = createHarness({
+    writeText: async () => {
+      throw new Error("clipboard denied");
+    },
+  });
+  const codeBlock = new FakeElement("pre");
+  const code = new FakeElement("code");
+  code.innerText = "const answer = 42;";
+  codeBlock.appendChild(code);
+  harness.article.appendChild(codeBlock);
+  const controller = mount(harness);
+  const copyButton = codeBlock.querySelector(".copy-code");
+
+  copyButton.dispatchEvent(new Event("click"));
+  await Promise.resolve();
+  await Promise.resolve();
+
+  assert.equal(copyButton.innerText, "Copy failed");
+  assert.equal(harness.timers.size, 1);
+  assert.equal(harness.runNextTimer(), true);
+  assert.equal(copyButton.innerText, "Copy");
   controller.abort();
 });
 
