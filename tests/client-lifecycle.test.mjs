@@ -481,21 +481,26 @@ test("initAboutOutline skips roots without links or matching sections", () => {
 test("createClientLifecycle cleans up a failed setup before rethrowing", () => {
   const lifecycle = createClientLifecycle();
   const root = {};
-  let cleanupCalls = 0;
+  let failedSetupAborted = false;
+  let setupCalls = 0;
 
   assert.throws(
     () =>
-      lifecycle.activate(root, () => {
+      lifecycle.activate(root, (signal) => {
+        signal.addEventListener("abort", () => {
+          failedSetupAborted = true;
+        });
         throw new Error("setup failed");
       }),
     /setup failed/
   );
+  assert.equal(failedSetupAborted, true);
 
   lifecycle.activate({}, () => {
-    cleanupCalls += 1;
+    setupCalls += 1;
   });
   lifecycle.cleanup();
-  assert.equal(cleanupCalls, 1);
+  assert.equal(setupCalls, 1);
 });
 
 test("initAboutOutline activates visible sections and closes the mobile outline", () => {
