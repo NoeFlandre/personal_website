@@ -282,10 +282,11 @@ test("tag helpers normalize tag names consistently across blog utilities", () =>
   assert.equal(postHasTag(post, "swift"), false);
 });
 
-test("countWords matches the structured-data word count logic", () => {
+test("countWords ignores leading and trailing whitespace and returns 0 for empty text", () => {
   assert.equal(countWords("one two three"), 3);
-  assert.equal(countWords(" spaced   words "), 4);
-  assert.equal(countWords(""), 1);
+  assert.equal(countWords(" spaced   words "), 2);
+  assert.equal(countWords(""), 0);
+  assert.equal(countWords("   \n\t  "), 0);
 });
 
 test("getReadingTimeForPost keeps the existing fallback behavior for missing post bodies", () => {
