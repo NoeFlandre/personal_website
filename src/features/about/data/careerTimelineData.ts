@@ -1,3 +1,5 @@
+import { AIRBUS_GEO_EXPLORE_URL, authorLink, externalLink } from "./links.ts";
+
 /** Inline HTML rendered with set:html. Only fields typed with it may hold markup. */
 export type TimelineHtml = string;
 
@@ -13,15 +15,14 @@ export interface TimelineItem {
   link?: string;
 }
 
-const AIRBUS_GEO_EXPLORE_URL =
-  "https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/";
 const NOE_SCHOLAR_URL = "https://scholar.google.com/citations?user=NOvshPMAAAAJ&amp;hl=en";
-const NOE_AUTHOR_LINK = `<a href="${NOE_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Noe Y. Flandre</a>`;
+const NOE_AUTHOR_LINK = authorLink(NOE_SCHOLAR_URL, "Noe Y. Flandre");
 const PHILIPPE_SCHOLAR_URL = "https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en";
-const PHILIPPE_AUTHOR_LINK = `<a href="${PHILIPPE_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>`;
+const PHILIPPE_AUTHOR_LINK = authorLink(PHILIPPE_SCHOLAR_URL, "Philippe J. Giabbanelli");
 const ALEXANDER_SCHOLAR_URL = "https://scholar.google.com/citations?user=LqrUey4AAAAJ&amp;hl=en";
-const ALEXANDER_AUTHOR_LINK = `<a href="${ALEXANDER_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Alexander Nwala</a>`;
+const ALEXANDER_AUTHOR_LINK = authorLink(ALEXANDER_SCHOLAR_URL, "Alexander Nwala");
 const GERARD_SCHOLAR_URL = "https://scholar.google.com/citations?user=RMhmwNQAAAAJ&amp;hl=fr";
+const HICSS_ACCEPTED = `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`;
 
 export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
   {
@@ -32,9 +33,9 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     description:
       "Conducting research on LLM-based geoparsing to link unstructured text to geographic locations and footprints",
     link: "https://geo-reset.sylvainlobry.com/",
-    body: `Working on the <a href="https://geo-reset.sylvainlobry.com/" target="_blank" rel="noopener noreferrer">GEO-ReSeT</a> project.`,
+    body: `Working on the ${externalLink("https://geo-reset.sylvainlobry.com/", "GEO-ReSeT")} project.`,
     details: [
-      'Supervisors: <a href="https://scholar.google.com/citations?user=IUqydU0AAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Diego Marcos</a>, <a href="https://scholar.google.com/citations?user=GWACYGoAAAAJ&amp;hl=it" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Roberto Interdonato</a>',
+      `Supervisors: ${authorLink("https://scholar.google.com/citations?user=IUqydU0AAAAJ&amp;hl=en", "Diego Marcos")}, ${authorLink("https://scholar.google.com/citations?user=GWACYGoAAAAJ&amp;hl=it", "Roberto Interdonato")}`,
       "Team: EVERGREEN (Earth obserVation and machine lEarning foR aGRo-Environmental challENges)",
     ],
   },
@@ -43,7 +44,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     title: "Independent Researcher",
     location: "India",
     description: "Agentic AI workflows and LLM applications",
-    body: `Following graduation, I pursued independent research focusing on agentic AI workflows and the application of LLMs to both agent-based models and conceptual modeling (<a href="https://arxiv.org/abs/2606.21565" target="_blank" rel="noopener noreferrer">example project</a>).`,
+    body: `Following graduation, I pursued independent research focusing on agentic AI workflows and the application of LLMs to both agent-based models and conceptual modeling (${externalLink("https://arxiv.org/abs/2606.21565", "example project")}).`,
   },
   {
     year: "Jun 2025 — Nov 2025",
@@ -52,7 +53,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     location: "Toulouse, France",
     description: "Fine-tuning of Vision-Language Models on Satellite Images",
     link: AIRBUS_GEO_EXPLORE_URL,
-    body: `Under the supervision of <a href="https://www.linkedin.com/in/fahdbenatia/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Fahd Benatia</a>, I conducted research on the underlying AI model of <a href="${AIRBUS_GEO_EXPLORE_URL}" target="_blank" rel="noopener noreferrer">Airbus Geo Explore</a>. I conducted a literature review of state-of-the-art fine-tuning techniques for VLMs in remote sensing, I built a benchmark suite to compare models and training strategies, and implemented end-to-end fine-tuning pipelines on Google Cloud Platform.`,
+    body: `Under the supervision of ${authorLink("https://www.linkedin.com/in/fahdbenatia/", "Fahd Benatia")}, I conducted research on the underlying AI model of ${externalLink(AIRBUS_GEO_EXPLORE_URL, "Airbus Geo Explore")}. I conducted a literature review of state-of-the-art fine-tuning techniques for VLMs in remote sensing, I built a benchmark suite to compare models and training strategies, and implemented end-to-end fine-tuning pipelines on Google Cloud Platform.`,
   },
   {
     year: "Aug 2024",
@@ -60,7 +61,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "VMASC",
     location: "Suffolk, VA, USA",
     description: "Applied LLMs to simulation and decision-making",
-    body: `Advised by <a href="${PHILIPPE_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, leverages advanced prompt engineering with GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.`,
+    body: `Advised by ${PHILIPPE_AUTHOR_LINK}, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, leverages advanced prompt engineering with GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.`,
   },
   {
     year: "May 2024 — Jul 2024",
@@ -68,7 +69,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "Miami University",
     location: "Oxford, OH, USA",
     description: "LLMs for conceptual modeling and multimodal evaluation",
-    body: `I investigated how LLMs can be integrated with simulation and conceptual modeling. <a href="${PHILIPPE_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe Giabbanelli</a> was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, applying a Design of Experiments methodology to merge complex causal maps using LLMs, and utilizing advanced prompt engineering and style transfer to translate agent-based models into empathetic stories.`,
+    body: `I investigated how LLMs can be integrated with simulation and conceptual modeling. ${authorLink(PHILIPPE_SCHOLAR_URL, "Philippe Giabbanelli")} was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, applying a Design of Experiments methodology to merge complex causal maps using LLMs, and utilizing advanced prompt engineering and style transfer to translate agent-based models into empathetic stories.`,
   },
   {
     year: "Jan 2024 — May 2024",
@@ -76,7 +77,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "EuroMov",
     location: "Alès, Occitanie, France",
     description: "Generative AI applied to artistic movement analysis",
-    body: `Supervised by <a href="${GERARD_SCHOLAR_URL}" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Gérard Dray</a>, my research stood at the intersection of AI and art by generating digital artwork from human movement data. I processed raw sensor spreadsheets from an artist's movements and used a remote GPU container to run StableDiffusion with ControlNet and specialized models. I developed an iterative workflow that combined image generation with MATLAB scripts for depth-based image composition, accepting uncertainty to create novel visual compositions and study the expressive potential of diffusion models.`,
+    body: `Supervised by ${authorLink(GERARD_SCHOLAR_URL, "Gérard Dray")}, my research stood at the intersection of AI and art by generating digital artwork from human movement data. I processed raw sensor spreadsheets from an artist's movements and used a remote GPU container to run StableDiffusion with ControlNet and specialized models. I developed an iterative workflow that combined image generation with MATLAB scripts for depth-based image composition, accepting uncertainty to create novel visual compositions and study the expressive potential of diffusion models.`,
   },
   {
     year: "Nov 2023 — Dec 2023",
@@ -84,7 +85,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "Centre Hospitalier de Thuir",
     location: "Thuir, Occitanie, France",
     description: "BI dashboards to modernize hospital data reporting",
-    body: ` I modernized hospital data reporting under the supervision of <a href="https://www.linkedin.com/in/cl%C3%A9ment-naudy-7270b114a/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Clément Naudy</a>,  by replacing manual export processes with real-time QlikView dashboards connected to administrative and medical ERPs. I wrote SQL queries and QlikView load scripts to extract, transform, and model hospital data, building dashboards to track key indicators such as medical activity or absenteeism. Finally, I authored technical documentation to ensure project sustainability.`,
+    body: ` I modernized hospital data reporting under the supervision of ${authorLink("https://www.linkedin.com/in/cl%C3%A9ment-naudy-7270b114a/", "Clément Naudy")},  by replacing manual export processes with real-time QlikView dashboards connected to administrative and medical ERPs. I wrote SQL queries and QlikView load scripts to extract, transform, and model hospital data, building dashboards to track key indicators such as medical activity or absenteeism. Finally, I authored technical documentation to ensure project sustainability.`,
   },
   {
     year: "May 2023 — Jun 2023",
@@ -92,7 +93,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "Haï Mask",
     location: "Alès, Occitanie, France",
     description: "Market study for a connected sports mask project",
-    body: `Supervised by <a href="https://www.linkedin.com/in/maxime-menardo-ab437a159/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Maxime Menardo</a>, I conducted a 5-week market study that included a PESTEL analysis, competitive mapping, and target audience profiling. I surveyed 22 high-level athletes to validate product features and test price sensitivity, ultimately building a 4P marketing plan, a CRM strategy, and a go-to-market action plan. I also designed a multi-platform communication strategy with promotional content mockups and analyzed pro sports club budgets to identify B2B prospects.`,
+    body: `Supervised by ${authorLink("https://www.linkedin.com/in/maxime-menardo-ab437a159/", "Maxime Menardo")}, I conducted a 5-week market study that included a PESTEL analysis, competitive mapping, and target audience profiling. I surveyed 22 high-level athletes to validate product features and test price sensitivity, ultimately building a 4P marketing plan, a CRM strategy, and a go-to-market action plan. I also designed a multi-platform communication strategy with promotional content mockups and analyzed pro sports club budgets to identify B2B prospects.`,
   },
 ];
 
@@ -118,9 +119,9 @@ export const CAREER_TIMELINE_EDUCATION: TimelineItem[] = [
     subtitle: "Exchange Semester",
     location: "Mumbai, India",
     details: [
-      'Human-Centered AI — Prof. <a href="https://www.linkedin.com/in/arpitagarwal729/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Arpit Agarwal</a>',
-      'Advanced Image processing — Prof. <a href="https://www.cse.iitb.ac.in/~ajitvr/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Ajit Rajwade</a>',
-      'Medical Image processing — Prof. <a href="https://www.cse.iitb.ac.in/~suyash/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Suyash P. Awate</a>',
+      `Human-Centered AI — Prof. ${authorLink("https://www.linkedin.com/in/arpitagarwal729/", "Arpit Agarwal")}`,
+      `Advanced Image processing — Prof. ${authorLink("https://www.cse.iitb.ac.in/~ajitvr/", "Ajit Rajwade")}`,
+      `Medical Image processing — Prof. ${authorLink("https://www.cse.iitb.ac.in/~suyash/", "Suyash P. Awate")}`,
     ],
   },
 ];
@@ -197,14 +198,14 @@ export const CAREER_TIMELINE_PUBLICATIONS: TimelineItem[] = [
     title:
       "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
     subtitle: "Hawaii International Conference on System Sciences",
-    descriptionHtml: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
+    descriptionHtml: HICSS_ACCEPTED,
   },
   {
     year: "2026",
     title:
       "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
     subtitle: "Hawaii International Conference on System Sciences",
-    descriptionHtml: `<strong>${NOE_AUTHOR_LINK}</strong>, ${PHILIPPE_AUTHOR_LINK} · Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027).`,
+    descriptionHtml: HICSS_ACCEPTED,
   },
   {
     year: "2026",

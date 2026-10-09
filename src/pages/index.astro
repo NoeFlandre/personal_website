@@ -9,14 +9,13 @@ import Hr from "@/components/Hr.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import Socials from "@/components/Socials.astro";
 import StructuredData from "@/components/StructuredData.astro";
+import { AIRBUS_GEO_EXPLORE_URL } from "@/features/about/data/links.ts";
 import getSortedPosts from "@/features/blog/utils/getSortedPosts";
 import Layout from "@/layouts/Layout.astro";
 import { SOCIALS } from "@/site-config.js";
 import { getImageThumbnailPath } from "@/utils/imageThumbnailPath.mjs";
 
 const posts = await getCollection("blog");
-const AIRBUS_GEO_EXPLORE_URL =
-  "https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/";
 
 const sortedPosts = getSortedPosts(posts);
 const posts2024AndLater = sortedPosts.filter(({ data }) => data.pubDatetime.getFullYear() >= 2024);
