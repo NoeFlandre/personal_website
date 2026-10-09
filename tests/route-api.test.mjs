@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { tmpdir } from "node:os";
 import test, { mock } from "node:test";
-import { SITE } from "../src/site-config.js";
+import { SITE, SOCIALS } from "../src/site-config.js";
 import { astroContentStubPlugin, loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
 const testPost = {
@@ -253,15 +253,13 @@ test("markdown and feed routes return their generated content", async () => {
     assert.match(await postsResponse.text(), /Quality route test/);
 
     const archivesResponse = await archivesRoute.GET();
-    assert.equal(archivesResponse.status, 200);
-    assert.equal(archivesResponse.headers.get("content-type"), "text/markdown; charset=utf-8");
-    assert.equal(archivesResponse.headers.get("cache-control"), "public, max-age=3600");
-    assert.match(await archivesResponse.text(), /Total posts: 1/);
+    assert.equal(archivesResponse.status, 404);
+    assert.equal(await archivesResponse.text(), "Not found");
 
     assert.deepEqual(await postRoute.getStaticPaths(), [
       { params: { slug: "quality-route-test" }, props: { post: testPost } },
     ]);
-    const postPathFilter = collectionCalls()[2][1];
+    const postPathFilter = collectionCalls()[1][1];
     assert.equal(
       postPathFilter({ data: { ...testPost.data, draft: true, unlisted: false } }),
       false
@@ -287,9 +285,86 @@ test("markdown and feed routes return their generated content", async () => {
     assert.match(rssText, /2026/);
     assert.deepEqual(
       collectionCalls().map(([name]) => name),
-      ["blog", "blog", "blog", "blog"]
+      ["blog", "blog", "blog"]
     );
   } finally {
     await close();
+  }
+});
+
+function siteConfigStubPlugin(showArchives) {
+  const stubId = "\0site-config-markdown-test-stub";
+
+  return {
+    name: "site-config-markdown-test-stub",
+    enforce: "pre",
+    resolveId(id) {
+      return id === "@/site-config.js" || id.endsWith("/src/site-config.js") ? stubId : undefined;
+    },
+    load(id) {
+      if (id !== stubId) return undefined;
+
+      return `export const SITE = ${JSON.stringify({ ...SITE, showArchives })};
+        export const SOCIALS = ${JSON.stringify(SOCIALS)};`;
+    },
+  };
+}
+
+async function loadSiteMarkdownRoutes(showArchives) {
+  const { close, modules } = await loadSourceModule(
+    {
+      indexRoute: "/src/pages/index.md.ts",
+      archivesRoute: "/src/pages/archives.md.ts",
+    },
+    {
+      plugins: [
+        astroContentStubPlugin(`export async function getCollection() {
+          return ${JSON.stringify([testPost])};
+        }`),
+        siteConfigStubPlugin(showArchives),
+      ],
+    }
+  );
+
+  return { ...modules, close };
+}
+
+test("the index markdown endpoint builds its identity and links from site-config", async () => {
+  const { indexRoute, close } = await loadSiteMarkdownRoutes(false);
+
+  try {
+    const body = await (await indexRoute.GET()).text();
+
+    assert.ok(body.startsWith(`# ${SITE.title}\n`));
+    assert.ok(body.includes(`\n${SITE.desc}\n`));
+    for (const social of SOCIALS.filter((entry) => entry.active)) {
+      assert.ok(body.includes(`- [${social.name}](${social.href})`), social.name);
+    }
+    assert.match(body, /\[Email\]\(mailto:noeflandre@gmail\.com\)/);
+    assert.doesNotMatch(body, /noe\.flandre@gmail\.com/);
+    assert.doesNotMatch(body, /\/archives\.md/);
+  } finally {
+    await close();
+  }
+});
+
+test("archives markdown and its index link follow the showArchives flag", async () => {
+  const hidden = await loadSiteMarkdownRoutes(false);
+  try {
+    const hiddenArchives = await hidden.archivesRoute.GET();
+    assert.equal(hiddenArchives.status, 404);
+    assert.equal(await hiddenArchives.text(), "Not found");
+  } finally {
+    await hidden.close();
+  }
+
+  const shown = await loadSiteMarkdownRoutes(true);
+  try {
+    assert.match(await (await shown.indexRoute.GET()).text(), /- \[Archives\]\(\/archives\.md\)/);
+    const shownArchives = await shown.archivesRoute.GET();
+    assert.equal(shownArchives.status, 200);
+    assert.match(await shownArchives.text(), /Total posts: 1/);
+  } finally {
+    await shown.close();
   }
 });

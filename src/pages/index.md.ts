@@ -1,24 +1,29 @@
 import type { APIRoute } from "astro";
-import { SITE } from "@/site-config.js";
+import { SITE, SOCIALS } from "@/site-config.js";
 import { markdownResponse } from "../utils/markdownResponse.ts";
 
 export const GET: APIRoute = async () => {
-  const markdownContent = `# Noé Flandre (@NoeFlandre)
+  const navigation = [
+    "- [About](/about.md)",
+    "- [Recent Posts](/posts.md)",
+    ...(SITE.showArchives ? ["- [Archives](/archives.md)"] : []),
+    "- [RSS Feed](/rss.xml)",
+  ].join("\n");
+  const links = SOCIALS.filter((social) => social.active)
+    .map((social) => `- [${social.name}](${social.href})`)
+    .join("\n");
 
-AI Research Engineer — Geospatial AI & Foundation models
+  const markdownContent = `# ${SITE.title}
+
+${SITE.desc}
 
 ## Navigation
 
-- [About](/about.md)
-- [Recent Posts](/posts.md)
-- [Archives](/archives.md)
-- [RSS Feed](/rss.xml)
+${navigation}
 
 ## Links
 
-- Twitter: [@NoeFlandre](https://x.com/NoeFlandre)
-- GitHub: [@NoeFlandre](https://github.com/NoeFlandre)
-- Email: noe.flandre@gmail.com
+${links}
 
 ---
 
