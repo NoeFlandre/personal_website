@@ -4,6 +4,16 @@ import { BLOG_TAGS } from "@/features/blog/contentRules";
 import { SITE } from "@/site-config.js";
 import { BLOG_PATH } from "./features/blog/contentPaths.ts";
 
+// Same check dayjs .tz() relies on, so a bad zone fails schema validation instead of the build.
+function isValidTimeZone(zone: string) {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: zone });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 const blog = defineCollection({
   loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${BLOG_PATH}` }),
   schema: ({ image }) =>
@@ -21,7 +31,13 @@ const blog = defineCollection({
       description: z.string(),
       canonicalURL: z.string().optional(),
       hideEditPost: z.boolean().optional(),
-      timezone: z.string().optional(),
+      // "" is allowed: Datetime.astro falls back to SITE.timezone for an empty value.
+      timezone: z
+        .string()
+        .refine((zone) => zone === "" || isValidTimeZone(zone), {
+          message: "Invalid IANA time zone",
+        })
+        .optional(),
       // Additional fields from existing posts
       source: z.string().optional(),
       AIDescription: z.boolean().optional(),
