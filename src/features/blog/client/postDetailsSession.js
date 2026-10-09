@@ -115,10 +115,16 @@ function attachCopyButtons(
   async function copyCode(block, button) {
     const code = block.querySelector("code");
     const text = code?.innerText;
+    if (!text) return;
 
-    await navigatorRef.clipboard.writeText(text ?? "");
+    let label = "Copied";
+    try {
+      await navigatorRef.clipboard.writeText(text);
+    } catch {
+      label = "Copy failed";
+    }
     if (signal.aborted) return;
-    button.innerText = "Copied";
+    button.innerText = label;
 
     scheduleAbortableTimeout({
       callback: () => {
