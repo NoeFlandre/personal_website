@@ -116,7 +116,7 @@
 
   /* Override inline styles for comments in light mode */
   html[data-theme="light"] pre code span[style*="color:#6C757D"],
-  :root pre code span[style*="color:#6C757D"] {
+  :root:not([data-theme="dark"]) pre code span[style*="color:#6C757D"] {
     color: #495057 !important;
   }
 
