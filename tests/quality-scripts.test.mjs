@@ -49,7 +49,7 @@ const mutationIgnorePatterns = [
 
 const sourceMutationPartitions = [
   {
-    configFile: "stryker.config.json",
+    configFile: "stryker.source-about-client.config.json",
     scriptName: "source-about-client",
     mutate: ["src/features/about/client/**/*.js", "src/features/about/utils/**/*.js"],
   },
@@ -159,7 +159,10 @@ test("quality scripts expose coverage, CRAP, and mutation checks", () => {
       .map(({ scriptName }) => `npm run test:mutation:${scriptName}`)
       .join(" && ")
   );
-  assert.equal(packageJson.scripts["test:mutation:source-about-client"], "stryker run");
+  assert.equal(
+    packageJson.scripts["test:mutation:source-about-client"],
+    "stryker run stryker.source-about-client.config.json"
+  );
   assert.equal(
     packageJson.scripts["test:mutation:source-about-map"],
     "stryker run stryker.source-about-map.config.json"
@@ -213,7 +216,7 @@ test("regular test glob discovers at least one test file", () => {
 });
 
 test("mutation testing covers the source tree with behavioral tests", () => {
-  const sharedConfig = JSON.parse(readWorkspaceFile("stryker.config.json"));
+  const sharedConfig = JSON.parse(readWorkspaceFile("stryker.source-about-client.config.json"));
 
   for (const partition of sourceMutationPartitions) {
     const configPath = new URL(`../${partition.configFile}`, import.meta.url);
@@ -238,7 +241,9 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     assert.deepEqual(config.thresholds, { high: 100, low: 100, break: 100 });
   }
 
-  const aboutClientConfig = JSON.parse(readWorkspaceFile("stryker.config.json"));
+  const aboutClientConfig = JSON.parse(
+    readWorkspaceFile("stryker.source-about-client.config.json")
+  );
   assert.match(
     aboutClientConfig.commandRunner.command,
     /tests\/testimonials-carousel-client\.test\.mjs/

@@ -11,7 +11,7 @@ test("the unused critical CSS module stays removed", () => {
   }
 
   for (const path of [
-    "stryker.config.json",
+    "stryker.source-about-client.config.json",
     "stryker.source-about-map.config.json",
     "stryker.source-blog.config.json",
     "stryker.source-career.config.json",

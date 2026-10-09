@@ -22,7 +22,7 @@
     "test:coverage": "c8 node --test --test-concurrency=4 \"tests/**/*.test.mjs\"",
     "test:crap:report": "crap coverage/c8/coverage-final.json --json crap-report/crap-report.json --html crap-report/html && node scripts/check-crap-score.mjs crap-report/crap-report.json 6",
     "test:crap": "npm run test:coverage && npm run test:crap:report",
-    "test:mutation:source-about-client": "stryker run",
+    "test:mutation:source-about-client": "stryker run stryker.source-about-client.config.json",
     "test:mutation:source-about-map": "stryker run stryker.source-about-map.config.json",
     "test:mutation:source-career": "stryker run stryker.source-career.config.json",
     "test:mutation:source-blog": "stryker run stryker.source-blog.config.json",
