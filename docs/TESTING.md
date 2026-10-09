@@ -13,6 +13,8 @@ Coverage is collected for the source tree and written to `coverage/c8/`:
 npm run test:coverage
 ```
 
+The thresholds in `.c8rc.json` are the coverage floor; the command fails when coverage drops below them.
+
 Mutation testing runs deliberately changed versions of the JavaScript and TypeScript source files.
 The command audits the main source tree, route adapters, Open Graph generation, and the content
 schema in separate Stryker scopes. Each scope has a behavioral test suite and requires every

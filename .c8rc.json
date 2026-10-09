@@ -6,5 +6,9 @@
   "extension": [".js", ".ts", ".mjs"],
   "reporter": ["text", "html", "json"],
   "reports-dir": "coverage/c8",
-  "check-coverage": false
+  "check-coverage": true,
+  "branches": 94,
+  "lines": 99,
+  "statements": 99,
+  "functions": 91
 }

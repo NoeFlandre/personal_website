@@ -297,5 +297,9 @@ test("coverage configuration reports the complete source tree", () => {
   assert.deepEqual(config.extension, [".js", ".ts", ".mjs"]);
   assert.deepEqual(config.reporter, ["text", "html", "json"]);
   assert.equal(config["reports-dir"], "coverage/c8");
-  assert.equal(config["check-coverage"], false);
+  assert.equal(config["check-coverage"], true);
+  assert.equal(config.branches, 94);
+  assert.equal(config.lines, 99);
+  assert.equal(config.statements, 99);
+  assert.equal(config.functions, 91);
 });
