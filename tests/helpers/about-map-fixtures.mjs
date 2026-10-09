@@ -39,10 +39,6 @@ export class FakeElement extends EventTarget {
     this.scrollCalls = this.scrollIntoViewCalls;
   }
 
-  hasClass(name) {
-    return this.classList.contains(name);
-  }
-
   setAttribute(name, value) {
     this.attributes.push([name, value]);
   }
@@ -125,7 +121,6 @@ export class FakeMap {
     this.layers = new Set();
     this.fitBoundsCalls = [];
     this.invalidated = 0;
-    this.invalidatedSizes = 0;
     this.removed = false;
     this.zoom = zoom;
     this.centerDistance = centerDistance;
@@ -189,7 +184,6 @@ export class FakeMap {
 
   invalidateSize() {
     this.invalidated += 1;
-    this.invalidatedSizes = this.invalidated;
   }
 
   once(event, callback) {
@@ -292,7 +286,7 @@ export function createLeafletDouble({ mapOptions = {} } = {}) {
   return leaflet;
 }
 
-export function createTimers() {
+function createTimers() {
   const timers = new Map();
   let nextId = 1;
   return {

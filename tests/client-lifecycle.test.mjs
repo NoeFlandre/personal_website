@@ -362,7 +362,6 @@ test("initAboutOutline initializes one root once and reconnects after a swap", (
   section.id = "section";
   root.querySelectorAll = (selector) => {
     if (selector === "[data-outline-link]") return [link];
-    if (selector === "[data-about-outline-mobile]") return [];
     return [];
   };
   document.querySelector = (selector) => (selector === "[data-about-outline-root]" ? root : null);
@@ -436,11 +435,7 @@ test("outline helpers reject non-fragment links and choose the nearest visible s
 test("initAboutOutline skips roots without links or matching sections", () => {
   const document = new LifecycleDocument();
   const root = new FakeElement();
-  root.querySelectorAll = (selector) => {
-    if (selector === "[data-outline-link]") return [];
-    if (selector === "[data-about-outline-mobile]") return [];
-    return [];
-  };
+  root.querySelectorAll = () => [];
   document.querySelector = (selector) => (selector === "[data-about-outline-root]" ? root : null);
 
   class FakeIntersectionObserver {
@@ -464,7 +459,6 @@ test("initAboutOutline skips roots without links or matching sections", () => {
     missingLink.getAttribute = (name) => (name === "href" ? "#missing" : null);
     missingRoot.querySelectorAll = (selector) => {
       if (selector === "[data-outline-link]") return [missingLink];
-      if (selector === "[data-about-outline-mobile]") return [];
       return [];
     };
     document.querySelector = (selector) =>
