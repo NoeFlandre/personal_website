@@ -2,7 +2,8 @@ import { scheduleAbortableTimeout } from "../../../utils/clientLifecycle.js";
 import { getYouTubeEmbedSrc } from "../../../utils/youtubeEmbeds.js";
 
 function createProgressBar(documentRef, signal) {
-  if (documentRef.querySelector(".progress-container[data-post-progress]")) return;
+  const existingContainer = documentRef.querySelector(".progress-container[data-post-progress]");
+  if (existingContainer) return existingContainer.querySelector(".progress-bar");
 
   const progressContainer = documentRef.createElement("div");
   progressContainer.className = "progress-container fixed top-0 z-10 h-1 w-full bg-background";
@@ -16,15 +17,15 @@ function createProgressBar(documentRef, signal) {
   documentRef.body.appendChild(progressContainer);
 
   signal.addEventListener("abort", () => progressContainer.remove());
+  return progressBar;
 }
 
-function updateScrollProgress(documentRef, signal) {
+function updateScrollProgress(progressBar, documentRef, signal) {
   const update = () => {
     const winScroll = documentRef.body.scrollTop || documentRef.documentElement.scrollTop;
     const height =
       documentRef.documentElement.scrollHeight - documentRef.documentElement.clientHeight;
     const scrolled = height > 0 ? Math.min(100, Math.max(0, (winScroll / height) * 100)) : 0;
-    const progressBar = documentRef.getElementById("myBar");
 
     if (progressBar) {
       progressBar.style.width = `${scrolled}%`;
@@ -35,14 +36,16 @@ function updateScrollProgress(documentRef, signal) {
   update();
 }
 
-function addHeadingLinks(article, signal, documentRef) {
+function addHeadingLinks(article, documentRef, signal) {
   const headings = Array.from(article.querySelectorAll("h2, h3, h4, h5, h6"));
+  const groupedHeadings = [];
   const links = [];
 
   for (const heading of headings) {
     if (!heading.id || heading.querySelector(":scope > .heading-link")) continue;
 
     heading.classList.add("group");
+    groupedHeadings.push(heading);
     const link = documentRef.createElement("a");
     link.className = "heading-link ml-2 opacity-0 group-hover:opacity-100 focus:opacity-100";
     link.href = `#${heading.id}`;
@@ -61,16 +64,15 @@ function addHeadingLinks(article, signal, documentRef) {
     links.forEach((link) => {
       link.remove();
     });
+    groupedHeadings.forEach((heading) => {
+      heading.classList.remove("group");
+    });
   });
 }
 
 function attachCopyButtons(
   article,
-  signal,
-  documentRef,
-  navigatorRef,
-  setTimeoutFn,
-  clearTimeoutFn
+  { clearTimeoutFn, documentRef, navigatorRef, setTimeoutFn, signal }
 ) {
   const copyButtonLabel = "Copy";
   const codeBlocks = Array.from(article.querySelectorAll("pre"));
@@ -230,10 +232,16 @@ export function createPostDetailsSession({
     mount(article, signal) {
       if (!article || !signal || !documentRef) return false;
 
-      createProgressBar(documentRef, signal);
-      updateScrollProgress(documentRef, signal);
-      addHeadingLinks(article, signal, documentRef);
-      attachCopyButtons(article, signal, documentRef, navigatorRef, setTimeoutFn, clearTimeoutFn);
+      const progressBar = createProgressBar(documentRef, signal);
+      updateScrollProgress(progressBar, documentRef, signal);
+      addHeadingLinks(article, documentRef, signal);
+      attachCopyButtons(article, {
+        clearTimeoutFn,
+        documentRef,
+        navigatorRef,
+        setTimeoutFn,
+        signal,
+      });
       backToTop(documentRef, signal);
       addLazyLoading(article);
       setupKeyboardNavigation(documentRef, windowRef, signal);

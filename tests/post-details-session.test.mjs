@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { createPostDetailsSession } from "../src/features/blog/client/postDetailsSession.js";
 import { FakeDocument, FakeElement, FakeTextNode } from "./helpers/dom-fakes.mjs";
@@ -92,6 +93,20 @@ test("scroll progress is initialized and clamped at both bounds", () => {
   controller.abort();
 });
 
+test("scroll progress updates the bar it created without looking it up by id", () => {
+  const harness = createHarness();
+  harness.documentRef.body.scrollTop = 100;
+  const controller = mount(harness);
+  const progressBar = harness.documentRef.getElementById("myBar");
+
+  progressBar.removeAttribute("id");
+  harness.documentRef.body.scrollTop = 150;
+  harness.documentRef.emit("scroll");
+  assert.equal(progressBar.style.width, "75%");
+
+  controller.abort();
+});
+
 test("heading links are added with accessible labels and removed on abort", () => {
   const harness = createHarness();
   const heading = new FakeElement("h2");
@@ -116,6 +131,7 @@ test("heading links are added with accessible labels and removed on abort", () =
 
   controller.abort();
   assert.equal(heading.querySelector(".heading-link"), null);
+  assert.equal(heading.classList.contains("group"), false);
 });
 
 test("heading link labels fall back to the heading id when text is unavailable", () => {
@@ -494,6 +510,16 @@ test("embed processing tolerates a missing NodeFilter dependency", () => {
   });
 
   assert.doesNotThrow(() => session.mount(harness.article, new AbortController().signal));
+});
+
+test("helpers take documentRef before signal and copy buttons take a deps object", () => {
+  const source = readFileSync(
+    new URL("../src/features/blog/client/postDetailsSession.js", import.meta.url),
+    "utf8"
+  );
+
+  assert.doesNotMatch(source, /\bsignal,\s*documentRef\b/);
+  assert.match(source, /function attachCopyButtons\(\s*article,\s*\{[^}]*\}\s*\)/);
 });
 
 test("mount keeps cleanup available when embed processing throws", () => {

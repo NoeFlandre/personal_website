@@ -64,6 +64,12 @@ export class FakeElement extends TrackedEventTarget {
           .join(" ");
       },
       contains: (token) => this.className.split(/\s+/).includes(token),
+      remove: (...tokens) => {
+        this.className = this.className
+          .split(/\s+/)
+          .filter((token) => token && !tokens.includes(token))
+          .join(" ");
+      },
     };
   }
 
