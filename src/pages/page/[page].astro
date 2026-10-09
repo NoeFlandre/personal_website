@@ -3,6 +3,8 @@
 	import type { GetStaticPathsOptions } from "astro";
 		import getSortedPosts from "@/features/blog/utils/getSortedPosts";
 		import FormattedDate from "../../components/FormattedDate.astro";
+		import Footer from "../../components/Footer.astro";
+		import Header from "../../components/Header.astro";
 		import { SITE } from "../../site-config.js";
 		import Layout from "../../layouts/Layout.astro";
 		import { getPath } from "@/features/blog/utils/getPath";
@@ -19,7 +21,8 @@ const { data: posts, currentPage, lastPage } = page;
 ---
 
 <Layout title={`Page ${currentPage} | ${SITE.title}`} description={SITE.desc}>
-  <section class="py-8">
+  <Header />
+  <main id="main-content" class="mx-auto w-full max-w-3xl px-4 py-8">
     <h1 class="text-4xl font-bold tracking-tight mb-10">Latest Posts</h1>
 
     <div class="space-y-12">
@@ -57,7 +60,7 @@ const { data: posts, currentPage, lastPage } = page;
       {
         currentPage > 1 && (
           <a
-            href={currentPage - 1 === 1 ? "/" : `/page/${currentPage - 1}`}
+            href={`/page/${currentPage - 1}`}
             class="px-4 py-2 bg-secondary rounded-md hover:bg-accent"
           >
             ← Previous
@@ -68,7 +71,7 @@ const { data: posts, currentPage, lastPage } = page;
       {
         Array.from({ length: lastPage }).map((_, i) => (
           <a
-            href={i === 0 ? "/" : `/page/${i + 1}`}
+            href={`/page/${i + 1}`}
             class={`px-4 py-2 rounded-md ${
               currentPage === i + 1
                 ? "bg-primary text-primary-foreground"
@@ -91,5 +94,6 @@ const { data: posts, currentPage, lastPage } = page;
         )
       }
     </div>
-  </section>
+  </main>
+  <Footer />
 </Layout>
