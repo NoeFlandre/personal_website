@@ -51,3 +51,21 @@ test("remarkLazyLoadImages preserves existing image hProperties", () => {
   assert.equal(imageNode.data.hProperties.loading, "lazy");
   assert.equal(imageNode.data.hProperties.decoding, "async");
 });
+
+test("remarkLazyLoadImages leaves non-image nodes untouched", () => {
+  const tree = {
+    type: "root",
+    children: [
+      { type: "paragraph", children: [{ type: "text", value: "Intro" }] },
+      { type: "image", url: "/hero.png", alt: "hero" },
+    ],
+  };
+
+  const transform = remarkLazyLoadImages();
+  transform(tree);
+
+  assert.equal(tree.data, undefined);
+  assert.equal(tree.children[0].data, undefined);
+  assert.equal(tree.children[0].children[0].data, undefined);
+  assert.equal(tree.children[1].data.hProperties.loading, "lazy");
+});

@@ -1,9 +1,9 @@
 {
   "all": true,
   "src": ["src"],
-  "include": ["src/**/*.js", "src/**/*.ts"],
+  "include": ["src/**/*.js", "src/**/*.ts", "src/**/*.mjs"],
   "exclude": ["src/**/*.d.ts"],
-  "extension": [".js", ".ts"],
+  "extension": [".js", ".ts", ".mjs"],
   "reporter": ["text", "html", "json"],
   "reports-dir": "coverage/c8",
   "check-coverage": false

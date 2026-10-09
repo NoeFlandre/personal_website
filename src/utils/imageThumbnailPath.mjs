@@ -2,10 +2,10 @@ export const IMAGE_THUMBNAIL_DIRECTORY = "generated/image-thumbnails";
 const THUMBNAIL_ROOT = `/${IMAGE_THUMBNAIL_DIRECTORY}`;
 
 function getThumbnailParts(sourcePath) {
-  if (!sourcePath || !sourcePath.startsWith("/")) return sourcePath;
+  if (!sourcePath || !sourcePath.startsWith("/")) return null;
 
   const cleanPath = sourcePath.split(/[?#]/, 1)[0];
-  const segments = cleanPath.slice(1).split("/").filter(Boolean);
+  const segments = cleanPath.split("/").filter(Boolean);
   const fileName = segments.pop();
 
   if (!fileName) return null;

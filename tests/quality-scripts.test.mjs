@@ -81,12 +81,13 @@ const sourceMutationPartitions = [
       "src/site-config.js",
       "src/utils/**/*.js",
       "src/utils/**/*.ts",
+      "src/utils/**/*.mjs",
       "!src/utils/loadGoogleFont.ts",
     ],
   },
 ];
 
-const originalSourceMutationPatterns = ["src/**/*.js", "src/**/*.ts"];
+const originalSourceMutationPatterns = ["src/**/*.js", "src/**/*.ts", "src/**/*.mjs"];
 const originalSourceMutationExclusions = [
   "src/content.config.ts",
   "src/pages/**/*.ts",
@@ -101,7 +102,7 @@ function trackedSourceFiles() {
     encoding: "utf8",
   })
     .split("\0")
-    .filter((fileName) => /\.(?:js|ts)$/.test(fileName));
+    .filter((fileName) => /\.(?:js|ts|mjs)$/.test(fileName));
 }
 
 test("quality scripts cover the root config, public browser script, source, and tests", () => {
@@ -291,9 +292,9 @@ test("coverage configuration reports the complete source tree", () => {
   const config = JSON.parse(readFileSync(configPath, "utf8"));
   assert.equal(config.all, true);
   assert.deepEqual(config.src, ["src"]);
-  assert.deepEqual(config.include, ["src/**/*.js", "src/**/*.ts"]);
+  assert.deepEqual(config.include, ["src/**/*.js", "src/**/*.ts", "src/**/*.mjs"]);
   assert.deepEqual(config.exclude, ["src/**/*.d.ts"]);
-  assert.deepEqual(config.extension, [".js", ".ts"]);
+  assert.deepEqual(config.extension, [".js", ".ts", ".mjs"]);
   assert.deepEqual(config.reporter, ["text", "html", "json"]);
   assert.equal(config["reports-dir"], "coverage/c8");
   assert.equal(config["check-coverage"], false);
