@@ -1,3 +1,5 @@
+import { AIRBUS_GEO_EXPLORE_URL } from "./links.ts";
+
 export type PlaceType = "work" | "study" | "travel";
 
 export interface AboutMapPlace {
@@ -14,8 +16,6 @@ export interface AboutMapPlace {
 }
 
 const getMapImage = (fileName: string) => `/assets/img/about-map/${fileName}`;
-const AIRBUS_GEO_EXPLORE_URL =
-  "https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/";
 
 export const ABOUT_MAP_PLACES: AboutMapPlace[] = [
   {
