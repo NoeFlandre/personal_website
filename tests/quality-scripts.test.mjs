@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, globSync, readFileSync } from "node:fs";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -8,6 +8,7 @@ const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.me
 const biomeConfig = JSON.parse(readFileSync(new URL("../biome.json", import.meta.url), "utf8"));
 const qualityPaths =
   "astro.config.mjs playwright.config.mjs public/toggle-theme.js scripts src tests";
+const regularTestGlob = "tests/**/*.test.mjs";
 
 function readWorkspaceFile(fileName) {
   return readFileSync(new URL(`../${fileName}`, import.meta.url), "utf8");
@@ -130,7 +131,7 @@ test("quality scripts expose coverage, CRAP, and mutation checks", () => {
   assert.match(packageJson.scripts["test:coverage"], /^c8 /);
   assert.match(
     packageJson.scripts["test:coverage"],
-    /node --test(?: --test-concurrency=\d+)? tests\/\*\*\/\*\.test\.mjs/
+    /node --test(?: --test-concurrency=\d+)? "tests\/\*\*\/\*\.test\.mjs"/
   );
   assert.equal(
     packageJson.scripts["test:crap"],
@@ -187,11 +188,19 @@ test("quality scripts expose coverage, CRAP, and mutation checks", () => {
 });
 
 test("regular test scripts use bounded file-level concurrency", () => {
-  assert.equal(packageJson.scripts.test, "node --test --test-concurrency=4 tests/**/*.test.mjs");
+  assert.equal(packageJson.scripts.test, `node --test --test-concurrency=4 "${regularTestGlob}"`);
   assert.equal(
     packageJson.scripts["test:coverage"],
-    "c8 node --test --test-concurrency=4 tests/**/*.test.mjs"
+    `c8 node --test --test-concurrency=4 "${regularTestGlob}"`
   );
+});
+
+test("regular test glob discovers at least one test file", () => {
+  const discovered = globSync(regularTestGlob, {
+    cwd: fileURLToPath(new URL("../", import.meta.url)),
+  });
+
+  assert.notEqual(discovered.length, 0);
 });
 
 test("mutation testing covers the source tree with behavioral tests", () => {
