@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { tmpdir } from "node:os";
+import test, { mock } from "node:test";
 import { SITE } from "../src/site-config.js";
 import { astroContentStubPlugin, loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
@@ -40,12 +41,53 @@ test("the about markdown endpoint returns a precise 404 when its source is unava
   assert.equal(await response.text(), "Not found");
 });
 
+test("the about markdown endpoint serves its source regardless of the working directory", async () => {
+  const { GET } = await import("../src/pages/about.md.ts");
+  const originalCwd = process.cwd();
+  process.chdir(tmpdir());
+
+  try {
+    const response = await GET();
+
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /^---/);
+  } finally {
+    process.chdir(originalCwd);
+  }
+});
+
+test("the about markdown endpoint logs a read failure before returning 404", async () => {
+  const { createAboutMarkdownResponse } = await import("../src/pages/about.md.ts");
+  const logged = mock.method(console, "error", () => {});
+  const failure = new Error("missing about source");
+
+  try {
+    const response = createAboutMarkdownResponse(() => {
+      throw failure;
+    });
+
+    assert.equal(response.status, 404);
+    assert.equal(await response.text(), "Not found");
+    assert.equal(logged.mock.callCount(), 1);
+    assert.equal(logged.mock.calls[0].arguments.at(-1), failure);
+  } finally {
+    logged.mock.restore();
+  }
+});
+
 test("the about markdown endpoint rejects an undecoded source buffer", async () => {
   const { createAboutMarkdownResponse } = await import("../src/pages/about.md.ts");
-  const response = createAboutMarkdownResponse(() => Buffer.from("about source"));
+  const logged = mock.method(console, "error", () => {});
 
-  assert.equal(response.status, 404);
-  assert.equal(await response.text(), "Not found");
+  try {
+    const response = createAboutMarkdownResponse(() => Buffer.from("about source"));
+
+    assert.equal(response.status, 404);
+    assert.equal(await response.text(), "Not found");
+    assert.equal(logged.mock.callCount(), 1);
+  } finally {
+    logged.mock.restore();
+  }
 });
 
 async function loadDynamicImageRoutes() {
