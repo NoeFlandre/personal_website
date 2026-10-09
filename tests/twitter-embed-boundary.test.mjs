@@ -23,6 +23,7 @@ test("the site does not retain an unsupported Twitter embed path", () => {
   assert.equal(existsSync(new URL("../src/components/TwitterEmbed.astro", import.meta.url)), false);
   assert.equal(packageJson.dependencies?.["astro-embed"], undefined);
   assert.doesNotMatch(layout, /platform\.twitter\.com\/widgets\.js/);
+  assert.doesNotMatch(read("src/env.d.ts"), /twttr/);
 
   for (const path of getMarkdownFiles(new URL("../src/content/blog/", import.meta.url))) {
     assert.doesNotMatch(readFileSync(path, "utf8"), /{%\s*twitter\b/);
