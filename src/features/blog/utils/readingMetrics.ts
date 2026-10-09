@@ -1,7 +1,7 @@
 /**
- * Mirrors the site's existing structured-data word-count behavior so all
- * consumers derive the same count from post bodies.
+ * Counts whitespace-separated words, ignoring leading and trailing whitespace.
  */
 export function countWords(content: string): number {
-  return content.split(/\s+/).length;
+  const trimmed = content.trim();
+  return trimmed === "" ? 0 : trimmed.split(/\s+/).length;
 }
