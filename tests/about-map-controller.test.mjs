@@ -115,7 +115,7 @@ test("controller retries failed mounts, clears retry timers, and runs the retry 
   assert.equal(errors.length, 1);
   assert.equal(errors[0][0], "Failed to initialize About map demo");
   assert.equal(errors[0][1] instanceof Error, true);
-  assert.equal(harness.root.dataset.mapInitState, "loading");
+  assert.equal(harness.root.dataset.mapInitState, "idle");
   assert.equal(harness.root.dataset.mapRetryCount, "1");
   assert.deepEqual(
     [...harness.timers.timers.values()].map(({ delay }) => delay),
@@ -146,6 +146,38 @@ test("controller retries failed mounts, clears retry timers, and runs the retry 
   });
   exhaustedController.start();
   assert.equal(exhausted.timers.timers.size, 0);
+});
+
+test("a map mount that throws leaves the root idle instead of loading", () => {
+  const { controller, root } = createHarness();
+  root.querySelector = () => {
+    throw new Error("mount failed");
+  };
+
+  assert.throws(() => controller.setup(), /mount failed/);
+  assert.equal(root.dataset.mapInitState, "idle");
+});
+
+test("astro:after-swap retries a map whose mount throws", () => {
+  const { controller, documentRef, leaflet, root, timers } = createHarness();
+  controller.start();
+  documentRef.dispatchEvent(new Event("astro:before-swap"));
+
+  root.dataset.mapInitState = "idle";
+  root.querySelector = () => {
+    throw new Error("mount failed");
+  };
+  documentRef.dispatchEvent(new Event("astro:after-swap"));
+
+  assert.equal(root.dataset.mapInitState, "idle");
+  assert.equal(root.dataset.mapRetryCount, "1");
+  assert.equal(timers.timers.size, 1);
+
+  delete root.querySelector;
+  [...timers.timers.values()][0].callback();
+
+  assert.equal(root.dataset.mapInitState, "ready");
+  assert.equal(leaflet.state.maps.length, 2);
 });
 
 test("controller tolerates missing console error methods", () => {
