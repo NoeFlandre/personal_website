@@ -60,7 +60,7 @@ const sourceMutationPartitions = [
   {
     configFile: "stryker.source-career.config.json",
     scriptName: "source-career",
-    mutate: ["src/features/about/data/careerTimelineData.ts"],
+    mutate: ["src/features/about/data/careerTimelineData.ts", "src/features/about/data/links.ts"],
   },
   {
     configFile: "stryker.source-blog.config.json",
