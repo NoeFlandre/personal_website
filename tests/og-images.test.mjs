@@ -49,6 +49,7 @@ async function loadTemplateModules() {
     {
       postTemplate: "/src/features/blog/og/templates/post.js",
       siteTemplate: "/src/features/blog/og/templates/site.js",
+      frame: "/src/features/blog/og/templates/frame.js",
     },
     {
       ssr: { noExternal: ["satori"] },
@@ -58,7 +59,7 @@ async function loadTemplateModules() {
           enforce: "pre",
           resolveId(id) {
             if (id === "satori") return "\0satori-og-test";
-            if (id.includes("/src/utils/loadGoogleFont")) return "\0fonts-og-test";
+            if (id.includes("/src/utils/loadOgFonts")) return "\0fonts-og-test";
             return undefined;
           },
           load(id) {
@@ -84,6 +85,7 @@ async function loadTemplateModules() {
   return {
     postTemplate: modules.postTemplate.default,
     siteTemplate: modules.siteTemplate.default,
+    renderOgFrame: modules.frame.renderOgFrame,
     close,
   };
 }
@@ -410,6 +412,23 @@ test("post and site OG templates preserve their content and rendering contract",
         ],
       },
     });
+  } finally {
+    await close();
+  }
+});
+
+test("renderOgFrame wraps its children in the shared frame and renders with the OG fonts", async () => {
+  const { close, renderOgFrame } = await loadTemplateModules();
+
+  try {
+    const content = [{ type: "span", props: { children: "content" } }];
+    const result = JSON.parse(await renderOgFrame(content));
+
+    assert.deepEqual(result.tree, createOgFrame(content));
+    assert.equal(result.options.width, 1200);
+    assert.equal(result.options.height, 630);
+    assert.equal(result.options.embedFont, true);
+    assert.equal(result.options.fonts[0].name, "Atkinson");
   } finally {
     await close();
   }

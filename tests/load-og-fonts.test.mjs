@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import loadGoogleFonts from "../src/utils/loadGoogleFont.ts";
+import loadOgFonts from "../src/utils/loadOgFonts.ts";
 
-test("local font loader returns both embedded Atkinson weights", async () => {
-  const fonts = await loadGoogleFonts();
+test("OG font loader returns both embedded Atkinson weights", async () => {
+  const fonts = await loadOgFonts();
 
   assert.deepEqual(
     fonts.map(({ name, weight, style }) => ({ name, weight, style })),
@@ -18,9 +18,9 @@ test("local font loader returns both embedded Atkinson weights", async () => {
   );
 });
 
-test("local font loader reuses the loaded font collection", async () => {
-  const first = await loadGoogleFonts();
-  const second = await loadGoogleFonts();
+test("OG font loader reuses the loaded font collection", async () => {
+  const first = await loadOgFonts();
+  const second = await loadOgFonts();
 
   assert.equal(second, first);
 });

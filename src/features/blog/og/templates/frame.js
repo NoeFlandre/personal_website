@@ -1,3 +1,6 @@
+import satori from "satori";
+import loadOgFonts from "../../../../utils/loadOgFonts.ts";
+
 const canvasStyle = {
   background: "#fefbfb",
   width: "100%",
@@ -88,4 +91,15 @@ export function createOgRenderOptions(fonts) {
     embedFont: true,
     fonts,
   };
+}
+
+/**
+ * Renders OG content inside the shared frame with the OG fonts.
+ *
+ * @param {OgChildren} children Nodes placed inside the content column.
+ * @returns {Promise<string>} SVG markup for the 1200x630 frame.
+ */
+export async function renderOgFrame(children) {
+  const fonts = await loadOgFonts();
+  return satori(createOgFrame(children), createOgRenderOptions(fonts));
 }

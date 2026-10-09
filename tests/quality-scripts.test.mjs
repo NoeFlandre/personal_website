@@ -83,7 +83,7 @@ const sourceMutationPartitions = [
       "src/utils/**/*.js",
       "src/utils/**/*.ts",
       "src/utils/**/*.mjs",
-      "!src/utils/loadGoogleFont.ts",
+      "!src/utils/loadOgFonts.ts",
     ],
   },
 ];
@@ -94,7 +94,7 @@ const originalSourceMutationExclusions = [
   "src/pages/**/*.ts",
   "src/features/blog/og/**/*.js",
   "src/features/blog/og/**/*.ts",
-  "src/utils/loadGoogleFont.ts",
+  "src/utils/loadOgFonts.ts",
 ];
 
 function trackedSourceFiles() {
@@ -232,11 +232,7 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     ["stryker.routes.config.json", "src/pages/**/*.ts", "tests/route-api.test.mjs"],
     [
       "stryker.og.config.json",
-      [
-        "src/features/blog/og/**/*.js",
-        "src/features/blog/og/**/*.ts",
-        "src/utils/loadGoogleFont.ts",
-      ],
+      ["src/features/blog/og/**/*.js", "src/features/blog/og/**/*.ts", "src/utils/loadOgFonts.ts"],
       "tests/og-images.test.mjs",
     ],
     ["stryker.content.config.json", "src/content.config.ts", "tests/content-config.test.mjs"],
