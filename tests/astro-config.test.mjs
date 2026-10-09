@@ -27,3 +27,10 @@ test("remark-collapse configuration uses a typed plugin without compiler suppres
     /remarkCollapse:\s*import\("unified"\)\.Plugin<\[CollapseOptions\],\s*import\("mdast"\)\.Root>/
   );
 });
+
+test("sitemap priority config has no post-year buckets", () => {
+  const source = readFileSync(new URL("../astro.config.mjs", import.meta.url), "utf8");
+
+  assert.doesNotMatch(source, /\/posts\/20\d/);
+  assert.doesNotMatch(source, /Recent blog posts \(2024-2025\)/);
+});
