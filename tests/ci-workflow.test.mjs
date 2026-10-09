@@ -6,6 +6,7 @@ const workflow = readFileSync(
   new URL("../.github/workflows/astro-build.yml", import.meta.url),
   "utf8"
 );
+const npmrc = readFileSync(new URL("../.npmrc", import.meta.url), "utf8");
 const runCommands = [...workflow.matchAll(/^\s*run:\s*(.+)$/gm)].map((match) => match[1].trim());
 
 function meetsNodeMinimum(text) {
@@ -84,4 +85,15 @@ test("Biome check shares the quality job instead of a duplicate workflow", () =>
     workflow,
     /quality:[\s\S]*?run: npm run check && npm run test:coverage && npm run test:crap:report/
   );
+});
+
+test("CI reports production dependency advisories without failing on the current backlog", () => {
+  assert.match(
+    workflow,
+    /- name: Audit production dependencies\n\s+run: npm audit --omit=dev\n\s+continue-on-error: true/
+  );
+});
+
+test("npm audit is not disabled in .npmrc", () => {
+  assert.doesNotMatch(npmrc, /^\s*audit\s*=\s*false\s*$/m);
 });
