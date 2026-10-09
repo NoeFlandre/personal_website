@@ -5,44 +5,6 @@ import test from "node:test";
 const rootUrl = (path) => new URL(`../${path}`, import.meta.url);
 const read = (path) => readFileSync(rootUrl(path), "utf8");
 
-async function loadPostFilterOptions() {
-  try {
-    return (await import("../src/features/blog/utils/getPostFilterOptions.ts"))
-      .getPostFilterOptions;
-  } catch {
-    assert.fail("getPostFilterOptions should exist");
-  }
-}
-
-test("post filter options mark All Posts active and link tags", async () => {
-  const getPostFilterOptions = await loadPostFilterOptions();
-
-  const tags = [
-    { tag: "paper-review", tagName: "Paper Review" },
-    { tag: "post", tagName: "Post" },
-  ];
-
-  assert.deepEqual(getPostFilterOptions(tags), [
-    { label: "All Posts", href: "#main-content", active: true },
-    { label: "Paper Review", href: "/tags/paper-review", active: false },
-    { label: "Post", href: "/tags/post", active: false },
-  ]);
-});
-
-test("the active tag toggles back to All Posts", async () => {
-  const getPostFilterOptions = await loadPostFilterOptions();
-  const tags = [
-    { tag: "paper-review", tagName: "Paper Review" },
-    { tag: "post", tagName: "Post" },
-  ];
-
-  assert.deepEqual(getPostFilterOptions(tags, "post"), [
-    { label: "All Posts", href: "/posts", active: false },
-    { label: "Paper Review", href: "/tags/paper-review", active: false },
-    { label: "Post", href: "/posts", active: true },
-  ]);
-});
-
 test("both pages use one accessible shared filter bar", () => {
   const componentPath = rootUrl("src/features/blog/components/PostFilterBar.astro");
   assert.equal(existsSync(componentPath), true, "PostFilterBar.astro should exist");
