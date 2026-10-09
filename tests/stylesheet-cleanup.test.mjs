@@ -27,3 +27,16 @@ test("global.css declares the root view transition name once", () => {
 test("global.css has no animation-duration that the fade shorthand overrides", () => {
   assert.doesNotMatch(read("src/styles/global.css"), /animation-duration/);
 });
+
+test("light-mode comment color selectors never match when data-theme is dark", () => {
+  const css = read("src/styles/typography.css").replace(/\/\*[\s\S]*?\*\//g, "");
+  const [, selectors = ""] = css.match(/([^{};]*)\{\s*color:\s*#495057 !important;/) ?? [];
+  const lightOnly = /^(html\[data-theme="light"\]|:root:not\(\[data-theme="dark"\]\))\s/;
+  const unscoped = selectors
+    .split(",")
+    .map((selector) => selector.trim())
+    .filter((selector) => !lightOnly.test(selector));
+
+  assert.ok(selectors.trim().length > 0, "light-mode comment color rule not found");
+  assert.deepEqual(unscoped, []);
+});
