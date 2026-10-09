@@ -29,12 +29,7 @@ export function getImageThumbnailFileName(sourcePath) {
 }
 
 export function getImageThumbnailPath(sourcePath) {
-  const parts = getThumbnailParts(sourcePath);
-  if (!parts) return sourcePath;
+  if (!getThumbnailParts(sourcePath)) return sourcePath;
 
-  const encodedPath = [...parts.segments, parts.fileName]
-    .map((segment) => encodeURIComponent(segment))
-    .join("--");
-
-  return `${THUMBNAIL_ROOT}/${encodedPath}`;
+  return `${THUMBNAIL_ROOT}/${encodeURIComponent(getImageThumbnailFileName(sourcePath))}`;
 }
