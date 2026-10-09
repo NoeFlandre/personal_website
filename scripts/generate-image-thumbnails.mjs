@@ -1,4 +1,4 @@
-import { mkdir, readdir, readFile, rm, stat } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
@@ -15,6 +15,8 @@ const PUBLIC_DIR = path.join(REPO_ROOT, "public");
 const CONTENT_DIR = path.join(REPO_ROOT, "src/content");
 const MAP_IMAGES_DIRECTORY = "assets/img/about-map";
 const THUMBNAIL_WIDTH = 320;
+const THUMBNAIL_QUALITY = 78;
+const THUMBNAIL_SETTINGS_FILE = ".thumbnail-settings.json";
 const THUMBNAIL_CONCURRENCY = 4;
 const IMAGE_EXTENSIONS = new Set([".avif", ".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp"]);
 
@@ -81,22 +83,33 @@ export async function mapWithConcurrency(items, concurrency, callback) {
   return results;
 }
 
-export async function generateThumbnail({ inputPath, outputPath, width = THUMBNAIL_WIDTH }) {
+export async function generateThumbnail({
+  inputPath,
+  outputPath,
+  width = THUMBNAIL_WIDTH,
+  quality = THUMBNAIL_QUALITY,
+}) {
   const inputFilePath = toLocalPath(inputPath);
   await mkdir(path.dirname(outputPath), { recursive: true });
 
   await sharp(inputFilePath)
     .resize({ width, withoutEnlargement: true })
-    .webp({ quality: 78 })
+    .webp({ quality })
     .toFile(outputPath);
 }
 
 export async function generateImageThumbnails({
   publicDir = PUBLIC_DIR,
   contentDir = CONTENT_DIR,
+  width = THUMBNAIL_WIDTH,
+  quality = THUMBNAIL_QUALITY,
 } = {}) {
   const outputDirectory = path.join(publicDir, IMAGE_THUMBNAIL_DIRECTORY);
   await mkdir(outputDirectory, { recursive: true });
+
+  const settingsPath = path.join(outputDirectory, THUMBNAIL_SETTINGS_FILE);
+  const settings = JSON.stringify({ width, quality });
+  const settingsChanged = (await readFile(settingsPath, "utf8").catch(() => null)) !== settings;
 
   const sourcePaths = new Set([ABOUT_PORTRAIT_PATH]);
   const heroImages = await discoverHeroImages(contentDir);
@@ -137,7 +150,12 @@ export async function generateImageThumbnails({
   const outputEntries = await readdir(outputDirectory, { withFileTypes: true });
   await Promise.all(
     outputEntries
-      .filter((entry) => entry.isFile() && !expectedOutputs.has(entry.name))
+      .filter(
+        (entry) =>
+          entry.isFile() &&
+          entry.name !== THUMBNAIL_SETTINGS_FILE &&
+          !expectedOutputs.has(entry.name)
+      )
       .map((entry) => rm(path.join(outputDirectory, entry.name), { force: true }))
   );
 
@@ -147,16 +165,17 @@ export async function generateImageThumbnails({
     async ({ inputPath, inputMtimeMs, outputPath }) => {
       try {
         const outputStats = await stat(outputPath);
-        if (outputStats.mtimeMs >= inputMtimeMs) return false;
+        if (!settingsChanged && outputStats.mtimeMs >= inputMtimeMs) return false;
       } catch {
         // The preview does not exist yet, so generate it below.
       }
 
-      await generateThumbnail({ inputPath, outputPath });
+      await generateThumbnail({ inputPath, outputPath, width, quality });
       return true;
     }
   );
 
+  await writeFile(settingsPath, settings);
   return { generatedCount: generated.filter(Boolean).length, skippedCount };
 }
 
