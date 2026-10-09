@@ -253,6 +253,10 @@ class FakeDocument extends TrackedEventTarget {
     return element;
   }
 
+  createTextNode(value) {
+    return new FakeTextNode(value);
+  }
+
   createTreeWalker(...args) {
     this.treeWalkerArgs = args;
     const [root] = args;
@@ -674,23 +678,74 @@ test("paragraph YouTube tags become responsive embed elements", () => {
   const paragraph = new FakeElement("p");
   const urlParagraph = new FakeElement("p");
   const plainParagraph = new FakeElement("p");
-  paragraph.textContent = "Watch this: {% youtube dQw4w9WgXcQ %}";
-  urlParagraph.textContent = "Watch this: {% youtube https://youtu.be/dQw4w9WgXcQ?t=42 %}";
-  plainParagraph.textContent = "No video here";
+  paragraph.appendChild(new FakeTextNode("{% youtube dQw4w9WgXcQ %}"));
+  urlParagraph.appendChild(new FakeTextNode("{% youtube https://youtu.be/dQw4w9WgXcQ?t=42 %}"));
+  plainParagraph.appendChild(new FakeTextNode("No video here"));
   harness.article.appendChild(paragraph);
   harness.article.appendChild(urlParagraph);
   harness.article.appendChild(plainParagraph);
   const controller = mount(harness);
 
-  assert.equal(harness.article.querySelectorAll("p").length, 1);
   assert.equal(harness.article.querySelectorAll(".youtube-embed-container").length, 2);
   assert.equal(
-    harness.documentRef.createdElements.some((element) =>
-      element.innerHTML.includes("youtube.com/embed/dQw4w9WgXcQ")
-    ),
-    true
+    paragraph.querySelector("iframe").getAttribute("src"),
+    "https://www.youtube.com/embed/dQw4w9WgXcQ"
   );
-  assert.equal(harness.documentRef.createdElements.at(-1).tagName, "DIV");
+  assert.equal(
+    urlParagraph.querySelector("iframe").getAttribute("src"),
+    "https://www.youtube.com/embed/dQw4w9WgXcQ"
+  );
+  assert.equal(plainParagraph.querySelector("iframe"), null);
+  assert.equal(plainParagraph.textContent, "No video here");
+
+  controller.abort();
+});
+
+test("YouTube tags keep the prose around them in the same paragraph", () => {
+  const harness = createHarness();
+  const paragraph = new FakeElement("p");
+  paragraph.appendChild(new FakeTextNode("Watch this: {% youtube dQw4w9WgXcQ %}"));
+  harness.article.appendChild(paragraph);
+  const controller = mount(harness);
+
+  assert.equal(paragraph.parentNode, harness.article);
+  assert.equal(paragraph.children[0].nodeType, 3);
+  assert.equal(paragraph.children[0].textContent, "Watch this: ");
+  assert.equal(
+    paragraph.querySelector("iframe").getAttribute("src"),
+    "https://www.youtube.com/embed/dQw4w9WgXcQ"
+  );
+
+  controller.abort();
+});
+
+test("every YouTube tag in a paragraph is replaced", () => {
+  const harness = createHarness();
+  const paragraph = new FakeElement("p");
+  paragraph.appendChild(
+    new FakeTextNode("{% youtube dQw4w9WgXcQ %} and {% youtube https://youtu.be/abc123XYZ %}")
+  );
+  harness.article.appendChild(paragraph);
+  const controller = mount(harness);
+
+  assert.deepEqual(
+    paragraph.querySelectorAll("iframe").map((iframe) => iframe.getAttribute("src")),
+    ["https://www.youtube.com/embed/dQw4w9WgXcQ", "https://www.youtube.com/embed/abc123XYZ"]
+  );
+  assert.equal(paragraph.children[1].textContent, " and ");
+
+  controller.abort();
+});
+
+test("text around YouTube tags is inserted as literal text, not parsed as HTML", () => {
+  const harness = createHarness();
+  harness.article.appendChild(new FakeTextNode('1 < 2 <img src="x"> {% youtube dQw4w9WgXcQ %}'));
+  const controller = mount(harness);
+
+  assert.equal(harness.article.querySelectorAll("img").length, 0);
+  assert.equal(harness.article.children[0].nodeType, 3);
+  assert.equal(harness.article.children[0].textContent, '1 < 2 <img src="x"> ');
+  assert.equal(harness.article.querySelectorAll("iframe").length, 1);
 
   controller.abort();
 });
@@ -713,7 +768,7 @@ test("YouTube tags inside text nodes are replaced without leaving the source tex
   assert.equal(harness.documentRef.treeWalkerArgs[0], harness.article);
   assert.equal(harness.documentRef.treeWalkerArgs[1], 4);
   assert.equal(harness.documentRef.treeWalkerArgs[2], null);
-  assert.equal(harness.documentRef.createdElements.at(-1).tagName, "DIV");
+  assert.equal(harness.article.querySelectorAll("iframe").length, 2);
 
   controller.abort();
 });
