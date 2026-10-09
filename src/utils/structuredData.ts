@@ -1,5 +1,7 @@
-import { SITE } from "../site-config.js";
+import { SITE, SOCIALS } from "../site-config.js";
 import { toAbsoluteUrl } from "./url.ts";
+
+const personProfileNames = ["HuggingFace", "Github", "ORCID", "X"];
 
 export type BlogPostingData = {
   title: string;
@@ -77,13 +79,10 @@ function buildPersonStructuredData(): StructuredData {
     name: SITE.author,
     url: SITE.profile,
     image: defaultImage,
-    sameAs: [
-      "https://github.com/NoeFlandre",
-      "https://x.com/NoeFlandre",
-      "https://huggingface.co/NoeFlandre",
-      "https://orcid.org/0009-0002-0237-3727",
-    ],
-    jobTitle: "AI Research Engineer — Geospatial AI & Foundation models",
+    sameAs: SOCIALS.filter((social) => personProfileNames.includes(social.name)).map(
+      (social) => social.href
+    ),
+    jobTitle: SITE.desc,
     description: SITE.desc,
   };
 }
