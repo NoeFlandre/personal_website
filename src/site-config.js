@@ -21,20 +21,6 @@ export const SITE = {
   timezone: "America/Los_Angeles",
 };
 
-export const SITE_TITLE = SITE.title;
-export const SITE_DESCRIPTION = SITE.desc;
-
-export const NAV_LINKS = [
-  {
-    href: "/",
-    label: "Blog",
-  },
-  {
-    href: "/about",
-    label: "About",
-  },
-];
-
 export const SOCIALS = [
   {
     name: "HuggingFace",
