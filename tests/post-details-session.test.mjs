@@ -633,6 +633,42 @@ test("keyboard navigation follows j and k while ignoring editable targets", () =
   assert.equal(harness.documentRef.listenerCount("keydown"), 0);
 });
 
+test("keyboard navigation ignores modifier shortcuts and key repeat", () => {
+  const harness = createHarness();
+  const navigation = new FakeElement("nav");
+  navigation.setAttribute("data-prev-url", "/previous");
+  navigation.setAttribute("data-next-url", "/next");
+  harness.documentRef.body.appendChild(navigation);
+  const controller = mount(harness);
+
+  harness.documentRef.emit("keydown", { ctrlKey: true, key: "k", target: harness.article });
+  harness.documentRef.emit("keydown", { metaKey: true, key: "k", target: harness.article });
+  harness.documentRef.emit("keydown", { altKey: true, key: "j", target: harness.article });
+  harness.documentRef.emit("keydown", { key: "j", repeat: true, target: harness.article });
+  assert.equal(harness.windowRef.location.href, "");
+
+  harness.documentRef.emit("keydown", { key: "j", target: harness.article });
+  assert.equal(harness.windowRef.location.href, "/next");
+
+  controller.abort();
+});
+
+test("keyboard navigation ignores keys inside inherited contenteditable regions", () => {
+  const harness = createHarness();
+  const navigation = new FakeElement("nav");
+  navigation.setAttribute("data-prev-url", "/previous");
+  navigation.setAttribute("data-next-url", "/next");
+  harness.documentRef.body.appendChild(navigation);
+  const controller = mount(harness);
+  const editorChild = new FakeElement("span");
+  editorChild.isContentEditable = true;
+
+  harness.documentRef.emit("keydown", { key: "j", target: editorChild });
+  assert.equal(harness.windowRef.location.href, "");
+
+  controller.abort();
+});
+
 test("paragraph YouTube tags become responsive embed elements", () => {
   const harness = createHarness();
   const paragraph = new FakeElement("p");
