@@ -204,6 +204,8 @@ test("regular test glob discovers at least one test file", () => {
 });
 
 test("mutation testing covers the source tree with behavioral tests", () => {
+  const sharedConfig = JSON.parse(readWorkspaceFile("stryker.config.json"));
+
   for (const partition of sourceMutationPartitions) {
     const configPath = new URL(`../${partition.configFile}`, import.meta.url);
 
@@ -217,6 +219,11 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     assert.deepEqual(config.mutate, partition.mutate);
     assert.match(config.commandRunner.command, /node --test --test-concurrency=1/);
     assert.match(config.commandRunner.command, /tests\/about-map-controller\.test\.mjs/);
+    assert.equal(
+      config.commandRunner.command,
+      sharedConfig.commandRunner.command,
+      `${partition.configFile} should run the shared Stryker test list`
+    );
     assert.equal(config.concurrency, 4);
     assert.deepEqual(config.reporters, ["clear-text", "progress"]);
     assert.deepEqual(config.thresholds, { high: 100, low: 100, break: 100 });
