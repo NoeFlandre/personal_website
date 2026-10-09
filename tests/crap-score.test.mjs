@@ -27,3 +27,36 @@ test("CRAP report check rejects a score at the configured threshold", () => {
 test("CRAP report check rejects reports without measurable functions", () => {
   assert.throws(() => checkCrapReport({}, 6), /contains no measurable functions/);
 });
+
+test("CRAP report check rejects a non-numeric threshold", () => {
+  assert.throws(
+    () => checkCrapReport(reportWithScores([2]), Number("six")),
+    /CRAP threshold must be a finite number/
+  );
+});
+
+test("CRAP report check rejects a function without a numeric crap score", () => {
+  const report = {
+    "src/example.js": {
+      function1: { statements: { crap: 2 } },
+      function2: { statements: {} },
+    },
+  };
+  assert.throws(
+    () => checkCrapReport(report, 6),
+    /src\/example\.js:function2 has no numeric statements\.crap/
+  );
+});
+
+test("CRAP report check rejects a crap score that is not a number", () => {
+  const report = {
+    "src/example.js": {
+      function1: { statements: { crap: 2 } },
+      function2: { statements: { crap: "7" } },
+    },
+  };
+  assert.throws(
+    () => checkCrapReport(report, 6),
+    /src\/example\.js:function2 has no numeric statements\.crap/
+  );
+});
