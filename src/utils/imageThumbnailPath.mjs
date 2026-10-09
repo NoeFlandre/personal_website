@@ -1,6 +1,12 @@
 export const IMAGE_THUMBNAIL_DIRECTORY = "generated/image-thumbnails";
 const THUMBNAIL_ROOT = `/${IMAGE_THUMBNAIL_DIRECTORY}`;
 
+/**
+ * Splits a root-relative image path into its directory segments and a `.webp` file name.
+ *
+ * @param {string | null | undefined} sourcePath Root-relative path, such as "/assets/img/a.png?v=1".
+ * @returns {{ segments: string[], fileName: string } | null} Null when the path is not root-relative or has no file name.
+ */
 function getThumbnailParts(sourcePath) {
   if (!sourcePath || !sourcePath.startsWith("/")) return null;
 

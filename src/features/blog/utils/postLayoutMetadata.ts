@@ -1,19 +1,8 @@
+import type { CollectionEntry } from "astro:content";
 import { toAbsoluteUrl } from "../../../utils/url.ts";
 import { getPath } from "./getPath.ts";
 
-type PostLike = {
-  id: string;
-  filePath?: string;
-  data: {
-    title: string;
-    author?: string;
-    description?: string;
-    ogImage?: string | { src?: string };
-    canonicalURL?: string;
-    pubDatetime?: Date;
-    modDatetime?: Date | null;
-  };
-};
+type PostLike = Pick<CollectionEntry<"blog">, "id" | "filePath" | "data">;
 
 type BuildPostLayoutMetadataInput = {
   post: PostLike;

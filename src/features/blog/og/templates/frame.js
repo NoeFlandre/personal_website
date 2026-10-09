@@ -42,6 +42,20 @@ const contentContainerStyle = {
   height: "90%",
 };
 
+/**
+ * @typedef {string | OgNode | Array<string | OgNode>} OgChildren
+ */
+
+/**
+ * @typedef {{ type: string, props: { style?: Record<string, string | number>, children?: OgChildren } }} OgNode
+ */
+
+/**
+ * Wraps OG content in the shared canvas and panel layout.
+ *
+ * @param {OgChildren} children Nodes placed inside the content column.
+ * @returns {OgNode} Satori element tree for the 1200x630 frame.
+ */
 export function createOgFrame(children) {
   return {
     type: "div",

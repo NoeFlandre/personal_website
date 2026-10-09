@@ -2,6 +2,12 @@ import satori from "satori";
 import loadGoogleFonts from "../../../../utils/loadGoogleFont.ts";
 import { createOgFrame, createOgRenderOptions } from "./frame.js";
 
+/**
+ * Builds the title and byline nodes shown inside the post OG frame.
+ *
+ * @param {{ data: { title: string, author: string } }} post Blog entry to render.
+ * @returns {import("./frame.js").OgNode[]} Children for the frame's content column.
+ */
 function createPostContent(post) {
   return [
     {

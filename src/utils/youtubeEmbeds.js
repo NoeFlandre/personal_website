@@ -1,6 +1,12 @@
 const YOUTUBE_EMBED_CLASS = "youtube-embed-container";
 const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
 
+/**
+ * Returns the trimmed input when it is a valid YouTube video id.
+ *
+ * @param {unknown} input Candidate id; non-string values are rejected.
+ * @returns {string} The trimmed id, or "" when the input is not a valid id.
+ */
 export function normalizeYouTubeId(input) {
   if (typeof input !== "string") return "";
 
