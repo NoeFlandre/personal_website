@@ -21,6 +21,9 @@ function schemaNode(kind, details = {}) {
     or(other) {
       return schemaNode("or", { left: this, right: other });
     },
+    refine(check) {
+      return schemaNode("refine", { inner: this, check });
+    },
   };
 }
 
@@ -105,6 +108,27 @@ test("content configuration defines the blog loader and schema contract", async 
       "Project",
       "Post",
     ]);
+  } finally {
+    await close();
+  }
+});
+
+test("content configuration only accepts post timezones that Intl can resolve", async () => {
+  const { close, module } = await loadContentConfig();
+
+  try {
+    const schema = module.collections.blog.schema({ image: () => schemaNode("image") });
+    const timezone = schema.shape.timezone;
+    assert.equal(timezone.kind, "optional");
+    assert.equal(timezone.inner.kind, "refine");
+    assert.equal(timezone.inner.inner.kind, "string");
+
+    const isAccepted = timezone.inner.check;
+    assert.equal(isAccepted("America/Los_Angeles"), true);
+    assert.equal(isAccepted("Europe/Paris"), true);
+    assert.equal(isAccepted("Mars/Olympus"), false);
+    assert.equal(isAccepted("America/Los_Angelse"), false);
+    assert.equal(isAccepted(""), true);
   } finally {
     await close();
   }
