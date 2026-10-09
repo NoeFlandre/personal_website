@@ -3,11 +3,11 @@
   "mutate": [
     "src/features/blog/og/**/*.js",
     "src/features/blog/og/**/*.ts",
-    "src/utils/loadGoogleFont.ts"
+    "src/utils/loadOgFonts.ts"
   ],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test --test-concurrency=4 tests/og-images.test.mjs tests/load-google-font.test.mjs"
+    "command": "node --test --test-concurrency=4 tests/og-images.test.mjs tests/load-og-fonts.test.mjs"
   },
   "coverageAnalysis": "off",
   "cleanTempDir": "always",

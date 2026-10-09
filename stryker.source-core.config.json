@@ -7,7 +7,7 @@
     "src/utils/**/*.js",
     "src/utils/**/*.ts",
     "src/utils/**/*.mjs",
-    "!src/utils/loadGoogleFont.ts"
+    "!src/utils/loadOgFonts.ts"
   ],
   "testRunner": "command",
   "commandRunner": {

@@ -1,6 +1,4 @@
-import satori from "satori";
-import loadGoogleFonts from "../../../../utils/loadGoogleFont.ts";
-import { createOgFrame, createOgRenderOptions } from "./frame.js";
+import { renderOgFrame } from "./frame.js";
 
 /**
  * Builds the title and byline nodes shown inside the post OG frame.
@@ -71,7 +69,4 @@ function createPostContent(post) {
   ];
 }
 
-export default async (post) => {
-  const fonts = await loadGoogleFonts();
-  return satori(createOgFrame(createPostContent(post)), createOgRenderOptions(fonts));
-};
+export default async (post) => renderOgFrame(createPostContent(post));

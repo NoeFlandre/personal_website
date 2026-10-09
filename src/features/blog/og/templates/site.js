@@ -1,7 +1,5 @@
-import satori from "satori";
 import { SITE } from "../../../../site-config.js";
-import loadGoogleFonts from "../../../../utils/loadGoogleFont.ts";
-import { createOgFrame, createOgRenderOptions } from "./frame.js";
+import { renderOgFrame } from "./frame.js";
 
 function createSiteContent() {
   return [
@@ -58,7 +56,4 @@ function createSiteContent() {
   ];
 }
 
-export default async () => {
-  const fonts = await loadGoogleFonts();
-  return satori(createOgFrame(createSiteContent()), createOgRenderOptions(fonts));
-};
+export default async () => renderOgFrame(createSiteContent());

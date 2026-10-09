@@ -33,7 +33,7 @@ async function loadLocalFont(filePath: string): Promise<ArrayBuffer> {
   return Uint8Array.from(fontBuffer).buffer;
 }
 
-async function loadGoogleFonts() {
+async function loadOgFonts() {
   if (!fontsPromise) {
     fontsPromise = Promise.all(
       fontsConfig.map(async ({ name, filePath, weight, style }) => ({
@@ -48,4 +48,4 @@ async function loadGoogleFonts() {
   return fontsPromise;
 }
 
-export default loadGoogleFonts;
+export default loadOgFonts;
