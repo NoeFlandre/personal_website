@@ -101,12 +101,7 @@ const timelineTitle = (item: TimelineItem, section: TimelineSection) =>
             {item.location && <p class="text-sm text-foreground/50 italic mb-2">{item.location}</p>}
             {section.subtitleInDescription ? (
               <p class={section.descriptionClass}>
-                <span
-                  set:html={(item.description ?? "").replace(
-                    /\*\*Flandre N\.\*\*/g,
-                    "<strong>Flandre N.</strong>"
-                  )}
-                />
+                <span set:html={item.description ?? ""} />
                 <span class="italic"> {item.subtitle}</span>
               </p>
             ) : (

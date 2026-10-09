@@ -23,3 +23,8 @@ test("career timeline renders one entry template with one shared title helper", 
   assert.equal(countMatches(/<h3\b/g), 1);
   assert.equal(countMatches(/const timelineTitle\b/g), 1);
 });
+
+test("career timeline renders publication descriptions without a string replace", () => {
+  assert.equal(countMatches(/\.replace\(/g), 0);
+  assert.equal(countMatches(/set:html=\{item\.description \?\? ""\}/g), 1);
+});
