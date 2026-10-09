@@ -4,9 +4,12 @@ import test from "node:test";
 import { countArchivePosts, MONTH_NAMES } from "../src/features/blog/utils/archivePresentation.ts";
 import { getArchiveGroups } from "../src/features/blog/utils/getArchiveGroups.ts";
 
+// Host zone is ahead of SITE.timezone (America/Los_Angeles), so host-clock dates would change results.
+process.env.TZ = "Asia/Tokyo";
+
 function createPost({
   id,
-  pubDatetime = "2025-01-01T00:00:00.000Z",
+  pubDatetime = "2025-01-01T12:00:00.000Z",
   modDatetime,
   draft = false,
   unlisted = false,
@@ -29,12 +32,12 @@ function createPost({
 
 test("getArchiveGroups excludes hidden posts and orders years, months, and posts descending", () => {
   const groups = getArchiveGroups([
-    createPost({ id: "jan-older", pubDatetime: "2025-01-01T00:00:00.000Z" }),
-    createPost({ id: "jan-newer", pubDatetime: "2025-01-20T00:00:00.000Z" }),
-    createPost({ id: "feb", pubDatetime: "2025-02-10T00:00:00.000Z" }),
-    createPost({ id: "prev-year", pubDatetime: "2024-12-10T00:00:00.000Z" }),
-    createPost({ id: "draft", pubDatetime: "2025-03-10T00:00:00.000Z", draft: true }),
-    createPost({ id: "unlisted", pubDatetime: "2025-03-12T00:00:00.000Z", unlisted: true }),
+    createPost({ id: "jan-older", pubDatetime: "2025-01-01T12:00:00.000Z" }),
+    createPost({ id: "jan-newer", pubDatetime: "2025-01-20T12:00:00.000Z" }),
+    createPost({ id: "feb", pubDatetime: "2025-02-10T12:00:00.000Z" }),
+    createPost({ id: "prev-year", pubDatetime: "2024-12-10T12:00:00.000Z" }),
+    createPost({ id: "draft", pubDatetime: "2025-03-10T12:00:00.000Z", draft: true }),
+    createPost({ id: "unlisted", pubDatetime: "2025-03-12T12:00:00.000Z", unlisted: true }),
   ]);
 
   assert.deepEqual(
@@ -65,12 +68,12 @@ test("getArchiveGroups orders months by publication month despite modification d
   const groups = getArchiveGroups([
     createPost({
       id: "february-post",
-      pubDatetime: "2025-02-10T00:00:00.000Z",
+      pubDatetime: "2025-02-10T12:00:00.000Z",
       modDatetime: "2025-01-01T00:00:00.000Z",
     }),
     createPost({
       id: "january-post",
-      pubDatetime: "2025-01-10T00:00:00.000Z",
+      pubDatetime: "2025-01-10T12:00:00.000Z",
       modDatetime: "2025-02-01T00:00:00.000Z",
     }),
   ]);
@@ -78,6 +81,21 @@ test("getArchiveGroups orders months by publication month despite modification d
   assert.deepEqual(
     groups[0].months.map((monthGroup) => monthGroup.month),
     [2, 1]
+  );
+});
+
+test("getArchiveGroups assigns months in the site timezone rather than the host timezone", () => {
+  // 2025-02-01T04:00Z is 2025-01-31 20:00 in America/Los_Angeles.
+  const groups = getArchiveGroups([
+    createPost({ id: "late-january", pubDatetime: "2025-02-01T04:00:00.000Z" }),
+  ]);
+
+  assert.deepEqual(
+    groups.map((group) => ({
+      year: group.year,
+      months: group.months.map((month) => month.month),
+    })),
+    [{ year: 2025, months: [1] }]
   );
 });
 
