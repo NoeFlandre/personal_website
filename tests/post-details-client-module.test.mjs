@@ -15,7 +15,7 @@ test("post details client module is bundled and reruns after navigation", () => 
     clientModule,
     /import\s+\{\s*createPostDetailsSession\s*\}\s+from\s+"\.\/postDetailsSession\.js";/
   );
-  assert.match(sessionModule, /buildYouTubeEmbedMarkup/);
+  assert.match(sessionModule, /getYouTubeEmbedSrc/);
   assert.match(
     layout,
     /<script>[\s\S]*import\s+\{\s*initPostDetails\s*\}\s+from\s+"@\/features\/blog\/client\/postDetailsRerun\.js";[\s\S]*document\.addEventListener\("astro:page-load",\s*initPostDetails\);[\s\S]*initPostDetails\(\);[\s\S]*<\/script>/

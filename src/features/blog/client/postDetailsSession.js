@@ -1,5 +1,5 @@
 import { scheduleAbortableTimeout } from "../../../utils/clientLifecycle.js";
-import { buildYouTubeEmbedMarkup } from "../../../utils/youtubeEmbeds.js";
+import { getYouTubeEmbedSrc } from "../../../utils/youtubeEmbeds.js";
 
 function createProgressBar(documentRef, signal) {
   if (documentRef.querySelector(".progress-container[data-post-progress]")) return;
@@ -173,20 +173,27 @@ function setupKeyboardNavigation(documentRef, windowRef, signal) {
   );
 }
 
+function createYouTubeEmbed(documentRef, videoId) {
+  const container = documentRef.createElement("div");
+  container.className = "youtube-embed-container";
+
+  const iframe = documentRef.createElement("iframe");
+  iframe.setAttribute("width", "560");
+  iframe.setAttribute("height", "315");
+  iframe.setAttribute("src", getYouTubeEmbedSrc(videoId));
+  iframe.setAttribute("title", "YouTube video player");
+  iframe.setAttribute(
+    "allow",
+    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  );
+  iframe.setAttribute("allowfullscreen", "");
+
+  container.appendChild(iframe);
+  return container;
+}
+
 function processEmbeds(article, documentRef, nodeFilterRef) {
   const youtubeEmbedRegex = /\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/g;
-
-  const pNodes = article.querySelectorAll("p");
-  pNodes.forEach((p) => {
-    const text = p.textContent;
-    const ytMatch = text.match(/\{% youtube (https:\/\/[^\s]+|[a-zA-Z0-9_-]+) %\}/);
-
-    if (!ytMatch) return;
-
-    const container = documentRef.createElement("div");
-    container.innerHTML = buildYouTubeEmbedMarkup(ytMatch[1]);
-    p.replaceWith(container.firstElementChild);
-  });
 
   const walker = documentRef.createTreeWalker(article, nodeFilterRef?.SHOW_TEXT, null);
   const textNodes = [];
@@ -195,24 +202,19 @@ function processEmbeds(article, documentRef, nodeFilterRef) {
   }
 
   textNodes.forEach((textNode) => {
-    let content = textNode.textContent;
-    let hasChanges = false;
+    // split() with a capture group yields [text, videoId, text, ...], so odd indexes are ids.
+    const parts = textNode.textContent.split(youtubeEmbedRegex);
+    if (parts.length === 1) return;
 
-    content = content.replace(youtubeEmbedRegex, (_match, videoId) => {
-      hasChanges = true;
-      return buildYouTubeEmbedMarkup(videoId);
+    const parent = textNode.parentNode;
+    parts.forEach((part, index) => {
+      if (index % 2 === 1) {
+        parent.insertBefore(createYouTubeEmbed(documentRef, part), textNode);
+      } else if (part) {
+        parent.insertBefore(documentRef.createTextNode(part), textNode);
+      }
     });
-
-    if (hasChanges) {
-      const tempDiv = documentRef.createElement("div");
-      tempDiv.innerHTML = content;
-
-      const parent = textNode.parentNode;
-      Array.from(tempDiv.childNodes).forEach((child) => {
-        parent.insertBefore(child, textNode);
-      });
-      parent.removeChild(textNode);
-    }
+    parent.removeChild(textNode);
   });
 }
 
