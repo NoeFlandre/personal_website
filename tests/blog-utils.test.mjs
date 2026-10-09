@@ -2,10 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { getPath } from "../src/features/blog/utils/getPath.ts";
-import getPostsByGroupCondition from "../src/features/blog/utils/getPostsByGroupCondition.ts";
 import getPostsByTag from "../src/features/blog/utils/getPostsByTag.ts";
 import getSortedPosts from "../src/features/blog/utils/getSortedPosts.ts";
-import getUniqueTags, { getUniqueTagInfos } from "../src/features/blog/utils/getUniqueTags.ts";
+import getUniqueTags from "../src/features/blog/utils/getUniqueTags.ts";
 import { shouldGenerateDynamicOgImage } from "../src/features/blog/utils/ogImages.ts";
 import postFilter, {
   isDraftFreePost,
@@ -227,8 +226,10 @@ test("getUniqueTags deduplicates, slugifies, and excludes hidden posts", () => {
   ]);
 });
 
-test("getUniqueTagInfos keeps the first label for each normalized tag", () => {
-  assert.deepEqual(getUniqueTagInfos(["AI", "ai", "Paper Review"]), [
+test("getUniqueTags keeps the first label for each normalized tag", () => {
+  const posts = [createPost({ id: "a", tags: ["AI", "ai", "Paper Review"] })];
+
+  assert.deepEqual(getUniqueTags(posts), [
     { tag: "ai", tagName: "AI" },
     { tag: "paper-review", tagName: "Paper Review" },
   ]);
@@ -262,41 +263,6 @@ test("getPostsByTag returns matching visible posts in sorted order", () => {
   assert.deepEqual(
     getPostsByTag(posts, "paper-review").map((post) => post.id),
     ["second", "first"]
-  );
-});
-
-test("getPostsByGroupCondition groups posts and passes each original index", () => {
-  const posts = [createPost({ id: "a" }), createPost({ id: "b" }), createPost({ id: "c" })];
-  const indexes = [];
-
-  const grouped = getPostsByGroupCondition(posts, (post, index) => {
-    indexes.push(index);
-    return post.id === "b" ? "middle" : "outer";
-  });
-
-  assert.deepEqual(indexes, [0, 1, 2]);
-  assert.deepEqual(
-    Object.fromEntries(
-      Object.entries(grouped).map(([key, values]) => [key, values.map((post) => post.id)])
-    ),
-    { outer: ["a", "c"], middle: ["b"] }
-  );
-});
-
-test("getPostsByGroupCondition supports prototype-like group names", () => {
-  const grouped = getPostsByGroupCondition(
-    [createPost({ id: "prototype-key" }), createPost({ id: "constructor-key" })],
-    (post) => (post.id === "prototype-key" ? "__proto__" : "constructor")
-  );
-
-  assert.deepEqual(Object.keys(grouped), ["__proto__", "constructor"]);
-  assert.deepEqual(
-    grouped.__proto__.map((post) => post.id),
-    ["prototype-key"]
-  );
-  assert.deepEqual(
-    grouped.constructor.map((post) => post.id),
-    ["constructor-key"]
   );
 });
 
