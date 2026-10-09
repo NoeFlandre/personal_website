@@ -38,6 +38,16 @@
       "permanent": true
     },
     {
+      "source": "/blog",
+      "destination": "/posts",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:path*",
+      "destination": "/posts/:path*",
+      "permanent": true
+    },
+    {
       "source": "/posts/llm-codes-transform-developer-docs",
       "destination": "/posts/2025/llm-codes-transform-developer-docs",
       "permanent": true
