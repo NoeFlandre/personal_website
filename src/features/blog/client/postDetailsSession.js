@@ -156,9 +156,16 @@ function addLazyLoading(article) {
   });
 }
 
+function hasModifierKey(event) {
+  return event.ctrlKey || event.metaKey || event.altKey || event.repeat;
+}
+
+function isEditableTarget(target) {
+  return target.matches("input, textarea") || target.isContentEditable;
+}
+
 function getKeyboardNavigationUrl(event, previousUrl, nextUrl) {
-  if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) return null;
-  if (event.target.matches("input, textarea") || event.target.isContentEditable) return null;
+  if (hasModifierKey(event) || isEditableTarget(event.target)) return null;
   return { j: nextUrl, k: previousUrl }[event.key] ?? null;
 }
 

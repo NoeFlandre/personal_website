@@ -8,6 +8,9 @@ const workflow = readFileSync(
 );
 const npmrc = readFileSync(new URL("../.npmrc", import.meta.url), "utf8");
 const runCommands = [...workflow.matchAll(/^\s*run:\s*(.+)$/gm)].map((match) => match[1].trim());
+// Body of a key indented two spaces (a trigger under `on:` or a job under `jobs:`).
+const blockAt = (key) =>
+  workflow.match(new RegExp(`^  ${key}:\\n((?:    .*(?:\\n|$)|\\n)*)`, "m"))?.[1] ?? "";
 
 function meetsNodeMinimum(text) {
   const [, major, minor] = text.match(/^\s+NODE_VERSION: "(\d+)(?:\.(\d+))?"$/m) ?? [];
@@ -96,4 +99,30 @@ test("CI reports production dependency advisories without failing on the current
 
 test("npm audit is not disabled in .npmrc", () => {
   assert.doesNotMatch(npmrc, /^\s*audit\s*=\s*false\s*$/m);
+});
+
+test("pull_request runs on every pull request, not only those targeting main", () => {
+  assert.match(workflow, /^ {2}pull_request:$/m);
+  assert.doesNotMatch(blockAt("pull_request"), /branches/);
+});
+
+test("push runs only on main, which the mutation gate relies on", () => {
+  assert.match(blockAt("push"), /^ {4}branches: \[main\]$/m);
+});
+
+test("fast jobs have no job-level if, so they run on every pull request", () => {
+  for (const job of ["quality", "build", "e2e"]) {
+    assert.doesNotMatch(blockAt(job), /^ {4}if:/m, `${job} must not be gated`);
+  }
+});
+
+test("mutation runs only for pushes or for pull requests into main", () => {
+  assert.match(
+    blockAt("mutation"),
+    /^ {4}if: github\.event_name == 'push' \|\| github\.base_ref == 'main'$/m
+  );
+});
+
+test("workflow token defaults to read-only contents", () => {
+  assert.match(workflow, /^permissions:\n {2}contents: read$/m);
 });

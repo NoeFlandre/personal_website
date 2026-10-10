@@ -20,8 +20,10 @@ import {
   getDisplayReadingTime,
   getReadingTimeForPost,
 } from "../src/features/blog/utils/readingTimeText.ts";
+import { getSiteDateParts } from "../src/features/blog/utils/siteDate.ts";
 import { getPostStaticPathParams } from "../src/features/blog/utils/staticPaths.ts";
 import { createTagInfo, getTagPath, postHasTag } from "../src/features/blog/utils/tags.ts";
+import { loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
 function createPost({
   id,
@@ -171,6 +173,61 @@ test("postFilter delegates to the pure visibility helper", () => {
   const post = createPost({ id: "visible" });
 
   assert.equal(postFilter(post), isPostVisible(post.data));
+});
+
+test("isPostVisible without options hides future posts and shows past posts", () => {
+  const future = createPost({ id: "future", pubDatetime: "2099-01-01T00:00:00.000Z" });
+  const past = createPost({ id: "past", pubDatetime: "2000-01-01T00:00:00.000Z" });
+
+  assert.strictEqual(isPostVisible(future.data), false);
+  assert.strictEqual(isPostVisible(past.data), true);
+});
+
+test("isPostVisible without options shows future posts under the Vite development flag", async () => {
+  const { close, modules } = await loadSourceModule({
+    postFilter: "/src/features/blog/utils/postFilter.ts",
+  });
+
+  try {
+    // Vite's SSR loader reports import.meta.env.DEV as true, so the default is development mode.
+    const future = createPost({ id: "future", pubDatetime: "2099-01-01T00:00:00.000Z" });
+    assert.strictEqual(modules.postFilter.isPostVisible(future.data), true);
+  } finally {
+    await close();
+  }
+});
+
+test("getSiteDateParts reads calendar parts in the site timezone", () => {
+  // Pacific standard time is UTC-8 in February, so the day changes at 08:00Z.
+  assert.deepEqual(getSiteDateParts(new Date("2025-02-01T04:00:00.000Z")), {
+    year: 2025,
+    month: 1,
+    day: 31,
+  });
+  assert.deepEqual(getSiteDateParts(new Date("2025-02-01T07:59:59.999Z")), {
+    year: 2025,
+    month: 1,
+    day: 31,
+  });
+  assert.deepEqual(getSiteDateParts(new Date("2025-02-01T08:00:00.000Z")), {
+    year: 2025,
+    month: 2,
+    day: 1,
+  });
+});
+
+test("getSiteDateParts yields NaN parts instead of throwing when Intl omits a part", () => {
+  const originalFormatToParts = Intl.DateTimeFormat.prototype.formatToParts;
+  Intl.DateTimeFormat.prototype.formatToParts = () => [];
+
+  try {
+    const parts = getSiteDateParts(new Date("2025-02-01T08:00:00.000Z"));
+    assert.equal(Number.isNaN(parts.year), true);
+    assert.equal(Number.isNaN(parts.month), true);
+    assert.equal(Number.isNaN(parts.day), true);
+  } finally {
+    Intl.DateTimeFormat.prototype.formatToParts = originalFormatToParts;
+  }
 });
 
 test("post inclusion helpers keep listed, unlisted, and draft semantics explicit", () => {
