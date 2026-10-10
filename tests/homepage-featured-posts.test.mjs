@@ -23,7 +23,6 @@ test("homepage uses the current professional tagline", () => {
   const tagline = "AI Research Engineer — Geospatial AI & Foundation models";
 
   assert.match(homepage, new RegExp(tagline));
-  assert.match(markdownHomepage, new RegExp(tagline));
   assert.doesNotMatch(homepage, /AI Research Engineer, vibe-learning/);
   assert.doesNotMatch(markdownHomepage, /Daily meal : curating datasets/);
 });

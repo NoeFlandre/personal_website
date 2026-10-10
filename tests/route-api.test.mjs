@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { tmpdir } from "node:os";
 import test, { mock } from "node:test";
-import { SITE } from "../src/site-config.js";
+import { SITE, SOCIALS } from "../src/site-config.js";
 import { astroContentStubPlugin, loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
 const testPost = {
@@ -255,15 +255,13 @@ test("markdown and feed routes return their generated content", async () => {
     assert.match(await postsResponse.text(), /Quality route test/);
 
     const archivesResponse = await archivesRoute.GET();
-    assert.equal(archivesResponse.status, 200);
-    assert.equal(archivesResponse.headers.get("content-type"), "text/markdown; charset=utf-8");
-    assert.equal(archivesResponse.headers.get("cache-control"), "public, max-age=3600");
-    assert.match(await archivesResponse.text(), /Total posts: 1/);
+    assert.equal(archivesResponse.status, 404);
+    assert.equal(await archivesResponse.text(), "Not found");
 
     assert.deepEqual(await postRoute.getStaticPaths(), [
       { params: { slug: "quality-route-test" }, props: { post: testPost } },
     ]);
-    const postPathFilter = collectionCalls()[2][1];
+    const postPathFilter = collectionCalls()[1][1];
     assert.equal(
       postPathFilter({ data: { ...testPost.data, draft: true, unlisted: false } }),
       false
@@ -289,10 +287,116 @@ test("markdown and feed routes return their generated content", async () => {
     assert.match(rssText, /2026/);
     assert.deepEqual(
       collectionCalls().map(([name]) => name),
-      ["blog", "blog", "blog", "blog"]
+      ["blog", "blog", "blog"]
     );
   } finally {
     await close();
+  }
+});
+
+const stubSite = { title: "Test Site", desc: "Test description", website: "https://example.test" };
+const stubSocials = [
+  { name: "Email", href: "mailto:hello@example.test", active: true },
+  { name: "Hidden", href: "https://hidden.example.test", active: false },
+  { name: "GitHub", href: "https://github.com/example", active: true },
+];
+
+function siteConfigStubPlugin(showArchives) {
+  const stubId = "\0site-config-markdown-test-stub";
+
+  return {
+    name: "site-config-markdown-test-stub",
+    enforce: "pre",
+    resolveId(id) {
+      return id === "@/site-config.js" || id.endsWith("/src/site-config.js") ? stubId : undefined;
+    },
+    load(id) {
+      if (id !== stubId) return undefined;
+
+      return `export const SITE = ${JSON.stringify({ ...SITE, ...stubSite, showArchives })};
+        export const SOCIALS = ${JSON.stringify(stubSocials)};`;
+    },
+  };
+}
+
+async function loadSiteMarkdownRoutes(showArchives) {
+  const { close, modules } = await loadSourceModule(
+    {
+      indexRoute: "/src/pages/index.md.ts",
+      archivesRoute: "/src/pages/archives.md.ts",
+    },
+    {
+      plugins: [
+        astroContentStubPlugin(`globalThis.__siteMarkdownCollectionCalls = [];
+          export async function getCollection(...args) {
+            globalThis.__siteMarkdownCollectionCalls.push(args);
+            return ${JSON.stringify([testPost])};
+          }`),
+        siteConfigStubPlugin(showArchives),
+      ],
+    }
+  );
+
+  return {
+    ...modules,
+    collectionCalls: () => globalThis.__siteMarkdownCollectionCalls,
+    close,
+  };
+}
+
+test("the index markdown endpoint renders the whole page from site-config", async () => {
+  const { indexRoute, close } = await loadSiteMarkdownRoutes(false);
+
+  try {
+    assert.equal(
+      await (await indexRoute.GET()).text(),
+      `# Test Site
+
+Test description
+
+## Navigation
+
+- [About](/about.md)
+- [Recent Posts](/posts.md)
+- [RSS Feed](/rss.xml)
+
+## Links
+
+- [Email](mailto:hello@example.test)
+- [GitHub](https://github.com/example)
+
+---
+
+*This is the markdown-only version of https://example.test. Visit [https://example.test](https://example.test) for the full experience.*`
+    );
+  } finally {
+    await close();
+  }
+});
+
+test("archives markdown and its index link follow the showArchives flag", async () => {
+  const hidden = await loadSiteMarkdownRoutes(false);
+  try {
+    const hiddenArchives = await hidden.archivesRoute.GET();
+    assert.equal(hiddenArchives.status, 404);
+    assert.equal(await hiddenArchives.text(), "Not found");
+    assert.equal(hidden.collectionCalls().length, 0);
+  } finally {
+    await hidden.close();
+  }
+
+  const shown = await loadSiteMarkdownRoutes(true);
+  try {
+    assert.match(await (await shown.indexRoute.GET()).text(), /- \[Archives\]\(\/archives\.md\)/);
+    const shownArchives = await shown.archivesRoute.GET();
+    assert.equal(shownArchives.status, 200);
+    assert.match(await shownArchives.text(), /Total posts: 1/);
+    assert.deepEqual(
+      shown.collectionCalls().map(([name]) => name),
+      ["blog"]
+    );
+  } finally {
+    await shown.close();
   }
 });
 
