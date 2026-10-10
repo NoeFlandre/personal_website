@@ -41,7 +41,6 @@ const filterTags = getUniqueTags(posts);
     titleTransition={tag}
     pageDesc={`All the articles with the tag "${tagName}".`}
   >
-    <h1 slot="title" transition:name={tag}>{`Tag:${tag}`}</h1>
     <PostFilterBar tags={filterTags} activeTag={tag} />
     <ul>
       {page.data.map((data) => <Card {...data} />)}
