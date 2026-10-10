@@ -295,3 +295,24 @@ test("markdown and feed routes return their generated content", async () => {
     await close();
   }
 });
+
+test("the post markdown endpoint returns an uncached 404 for an entry without a body", async () => {
+  const { close, postRoute } = await loadMarkdownRoutes();
+  const logged = mock.method(console, "error", () => {});
+
+  try {
+    const response = await postRoute.GET({
+      props: { post: { ...testPost, body: undefined } },
+    });
+
+    assert.equal(response.status, 404);
+    assert.equal(response.headers.get("cache-control"), null);
+    assert.equal(await response.text(), "Not found");
+    assert.equal(logged.mock.callCount(), 1);
+    assert.equal(logged.mock.calls[0].arguments[0], "Post markdown body is not a string:");
+    assert.equal(logged.mock.calls[0].arguments[1], testPost.id);
+  } finally {
+    logged.mock.restore();
+    await close();
+  }
+});
