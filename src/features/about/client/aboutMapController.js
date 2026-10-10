@@ -2,6 +2,8 @@ import { scheduleAbortableTimeout } from "../../../utils/clientLifecycle.js";
 import { getMapRetryDelayMs, shouldRetryMapInit } from "../utils/aboutMap.js";
 import { createAboutMapSession } from "./aboutMapSession.js";
 
+const MAP_INIT_IN_PROGRESS_STATES = new Set(["loading", "ready"]);
+
 export function getAboutMapRoots(documentRef) {
   if (!documentRef) return [];
   return Array.from(documentRef.querySelectorAll("[data-about-map-root]"));
@@ -52,7 +54,7 @@ export function createAboutMapController({
 
   const init = (root) => {
     if (!root) return;
-    if (root.dataset.mapInitState === "ready" || root.dataset.mapInitState === "loading") return;
+    if (MAP_INIT_IN_PROGRESS_STATES.has(root.dataset.mapInitState)) return;
     root.dataset.mapInitState = "loading";
 
     let mounted;

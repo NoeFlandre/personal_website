@@ -2,75 +2,38 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
-async function loadPostFilterWithDevFlag(devFlag, expression = "import.meta.env?.DEV ?? false") {
+async function loadPostFilter(nodeEnv) {
   const { close, modules } = await loadSourceModule(
     { postFilter: "/src/features/blog/utils/postFilter.ts" },
-    {
-      plugins: [
-        {
-          name: "post-filter-development-env",
-          enforce: "pre",
-          transform(code, id) {
-            if (!id.endsWith("/src/features/blog/utils/postFilter.ts")) return undefined;
-            if (!code.includes(expression)) {
-              throw new Error(`expected "${expression}" in postFilter.ts`);
-            }
-            return code.replace(expression, devFlag);
-          },
-        },
-      ],
-    }
+    { nodeEnv }
   );
 
   return { module: modules.postFilter, close };
 }
 
+const futurePost = {
+  pubDatetime: "2099-01-01T00:00:00.000Z",
+  draft: false,
+  unlisted: false,
+  tags: ["Post"],
+};
+
 test("post visibility uses the development environment default when no option is supplied", async () => {
-  const { close, module } = await loadPostFilterWithDevFlag("true");
+  const { close, module } = await loadPostFilter("development");
 
   try {
-    assert.equal(
-      module.isPostVisible({
-        pubDatetime: "2099-01-01T00:00:00.000Z",
-        draft: false,
-        unlisted: false,
-        tags: ["Post"],
-      }),
-      true
-    );
+    assert.equal(module.isPostVisible(futurePost), true);
   } finally {
     await close();
   }
 });
 
 test("post visibility hides future posts in production when no option is supplied", async () => {
-  const { close, module } = await loadPostFilterWithDevFlag("false");
+  const { close, module } = await loadPostFilter("production");
 
   try {
-    assert.equal(
-      module.isPostVisible({
-        pubDatetime: "2099-01-01T00:00:00.000Z",
-        draft: false,
-        unlisted: false,
-        tags: ["Post"],
-      }),
-      false
-    );
+    assert.equal(module.isPostVisible(futurePost), false);
   } finally {
     await close();
   }
-});
-
-test("loading fails when the development flag expression is missing from the source", async () => {
-  let loaded;
-
-  try {
-    loaded = await loadPostFilterWithDevFlag("true", "import.meta.env?.DEV ?? true");
-  } catch (error) {
-    assert.match(error.message, /import\.meta\.env\?\.DEV \?\? true/);
-    return;
-  }
-
-  await loaded.close();
-  assert.fail("expected loading to reject when the flag expression is missing");
 });

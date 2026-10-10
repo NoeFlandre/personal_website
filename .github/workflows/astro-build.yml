@@ -2,9 +2,11 @@ name: Astro Build
 
 on:
   push:
-    branches: [main, astro-erudite-design]
-  pull_request:
     branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
 
 env:
   NODE_VERSION: "22"
@@ -39,6 +41,7 @@ jobs:
         run: npm run check && npm run test:coverage && npm run test:crap:report
 
   mutation:
+    if: github.event_name == 'push' || github.base_ref == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
