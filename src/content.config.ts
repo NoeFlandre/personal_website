@@ -39,8 +39,6 @@ const blog = defineCollection({
         })
         .optional(),
       // Additional fields from existing posts
-      source: z.string().optional(),
-      AIDescription: z.boolean().optional(),
       readingTime: z.string().optional(),
       layoutStyle: z.string().optional(),
     }),

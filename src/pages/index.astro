@@ -19,19 +19,14 @@ const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
 const posts2024AndLater = sortedPosts.filter(({ data }) => data.pubDatetime.getFullYear() >= 2024);
-const homepageFeaturedTitles = [
-  "How to describe a place on Earth using text? Part 1: wikidata",
-  "I am joining the EVERGREEN research team",
-  "Breaking down the maths behind Masked Image Modeling",
+const homepageFeaturedIds = [
+  "describe-place-on-earth-part1-wikidata",
+  "joining_evergreen",
+  "2026/masked-image-modeling",
 ];
-const homepageFeaturedOrder = new Map(homepageFeaturedTitles.map((title, index) => [title, index]));
 const featuredPosts = posts2024AndLater
-  .filter(({ data }) => homepageFeaturedOrder.has(data.title))
-  .sort(
-    (a, b) =>
-      (homepageFeaturedOrder.get(a.data.title) ?? Number.MAX_SAFE_INTEGER) -
-      (homepageFeaturedOrder.get(b.data.title) ?? Number.MAX_SAFE_INTEGER)
-  );
+  .filter(({ id }) => homepageFeaturedIds.includes(id))
+  .sort((a, b) => homepageFeaturedIds.indexOf(a.id) - homepageFeaturedIds.indexOf(b.id));
 const featuredWorkCards = [
   {
     label: "Research",

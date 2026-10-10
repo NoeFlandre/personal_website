@@ -34,19 +34,17 @@ test("homepage describes selected work across the three focus areas", () => {
   assert.match(homepage, /Selected work across research, industry and humanitarian volunteering\./);
 });
 
-test("homepage featured blog posts use the requested order", () => {
+test("homepage featured blog posts are selected by stable post id in the requested order", () => {
   const homepage = read("src/pages/index.astro");
-  const wikidataPosition = homepage.indexOf(
-    '"How to describe a place on Earth using text? Part 1: wikidata"'
-  );
-  const evergreenPosition = homepage.indexOf('"I am joining the EVERGREEN research team"');
-  const maskedImageModelingPosition = homepage.indexOf(
-    '"Breaking down the maths behind Masked Image Modeling"'
-  );
+  const wikidataPosition = homepage.indexOf('"describe-place-on-earth-part1-wikidata"');
+  const evergreenPosition = homepage.indexOf('"joining_evergreen"');
+  const maskedImageModelingPosition = homepage.indexOf('"2026/masked-image-modeling"');
 
   assert.ok(wikidataPosition >= 0);
   assert.ok(wikidataPosition < evergreenPosition);
   assert.ok(evergreenPosition < maskedImageModelingPosition);
+  assert.doesNotMatch(homepage, /homepageFeaturedTitles|data\.title/);
+  assert.doesNotMatch(homepage, /Number\.MAX_SAFE_INTEGER/);
   assert.doesNotMatch(homepage, /"From playing Monopoly to AI Research"/);
 });
 

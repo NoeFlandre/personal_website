@@ -92,8 +92,6 @@ test("content configuration defines the blog loader and schema contract", async 
       "canonicalURL",
       "hideEditPost",
       "timezone",
-      "source",
-      "AIDescription",
       "readingTime",
       "layoutStyle",
     ]);
