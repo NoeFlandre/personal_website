@@ -140,6 +140,55 @@ test("thumbnail generation reuses unchanged previews and refreshes changed sourc
   }
 });
 
+test("thumbnail generation refreshes previews when width or quality change", async () => {
+  const { generateImageThumbnails } = await loadThumbnailGenerator();
+  const tempDir = await mkdtemp(path.join(tmpdir(), "image-thumb-settings-test-"));
+  const publicDir = path.join(tempDir, "public");
+  const contentDir = path.join(tempDir, "content");
+
+  try {
+    await mkdir(path.join(publicDir, "assets/img/about-map"), { recursive: true });
+    await mkdir(contentDir, { recursive: true });
+    await sharp({
+      create: { width: 16, height: 16, channels: 3, background: { r: 20, g: 40, b: 60 } },
+    })
+      .png()
+      .toFile(path.join(publicDir, "image.png"));
+
+    const firstRun = await generateImageThumbnails({
+      publicDir,
+      contentDir,
+      width: 320,
+      quality: 78,
+    });
+    const sameSettingsRun = await generateImageThumbnails({
+      publicDir,
+      contentDir,
+      width: 320,
+      quality: 78,
+    });
+    const qualityRun = await generateImageThumbnails({
+      publicDir,
+      contentDir,
+      width: 320,
+      quality: 60,
+    });
+    const widthRun = await generateImageThumbnails({
+      publicDir,
+      contentDir,
+      width: 160,
+      quality: 60,
+    });
+
+    assert.equal(firstRun.generatedCount, 1);
+    assert.equal(sameSettingsRun.generatedCount, 0);
+    assert.equal(qualityRun.generatedCount, 1);
+    assert.equal(widthRun.generatedCount, 1);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
 test("thumbnail generation removes previews whose sources no longer exist", async () => {
   const { generateImageThumbnails } = await loadThumbnailGenerator();
   const tempDir = await mkdtemp(path.join(tmpdir(), "image-thumb-stale-test-"));
