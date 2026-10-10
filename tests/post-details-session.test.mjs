@@ -201,6 +201,21 @@ test("progress bars keep their semantic structure and are not duplicated", () =>
   controller.abort();
 });
 
+test("a remounted session keeps updating the progress bar it reuses", () => {
+  const harness = createHarness();
+  harness.documentRef.body.scrollTop = 100;
+  const firstController = mount(harness);
+  const progressBar = harness.documentRef.getElementById("myBar");
+  const secondController = mount(harness);
+  firstController.abort();
+
+  harness.documentRef.body.scrollTop = 150;
+  harness.documentRef.emit("scroll");
+  assert.equal(progressBar.style.width, "75%");
+
+  secondController.abort();
+});
+
 test("heading generation skips headings without ids and existing heading links", () => {
   const harness = createHarness();
   const withoutId = new FakeElement("h2");
@@ -453,6 +468,29 @@ test("paragraph YouTube tags become responsive embed elements", () => {
   );
   assert.equal(plainParagraph.querySelector("iframe"), null);
   assert.equal(plainParagraph.textContent, "No video here");
+
+  controller.abort();
+});
+
+test("YouTube embeds use the exact container and iframe attributes", () => {
+  const harness = createHarness();
+  const paragraph = new FakeElement("p");
+  paragraph.appendChild(new FakeTextNode("{% youtube dQw4w9WgXcQ %}"));
+  harness.article.appendChild(paragraph);
+  const controller = mount(harness);
+
+  const container = paragraph.querySelector(".youtube-embed-container");
+  assert.equal(container.tagName, "DIV");
+  const iframe = container.querySelector("iframe");
+  assert.deepEqual(Object.fromEntries(iframe.attributes), {
+    width: "560",
+    height: "315",
+    src: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    title: "YouTube video player",
+    allow:
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+    allowfullscreen: "",
+  });
 
   controller.abort();
 });

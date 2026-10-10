@@ -7,6 +7,9 @@ const workflow = readFileSync(
   "utf8"
 );
 const runCommands = [...workflow.matchAll(/^\s*run:\s*(.+)$/gm)].map((match) => match[1].trim());
+// Body of a key indented two spaces (a trigger under `on:` or a job under `jobs:`).
+const blockAt = (key) =>
+  workflow.match(new RegExp(`^  ${key}:\\n((?:    .*(?:\\n|$)|\\n)*)`, "m"))?.[1] ?? "";
 
 test("CI uses a Node release line with native TypeScript test support", () => {
   const nodeMajor = Number(workflow.match(/^\s+NODE_VERSION: "(\d+)"$/m)?.[1]);
@@ -63,4 +66,30 @@ test("Biome check shares the quality job instead of a duplicate workflow", () =>
     workflow,
     /quality:[\s\S]*?run: npm run check && npm run test:coverage && npm run test:crap:report/
   );
+});
+
+test("pull_request runs on every pull request, not only those targeting main", () => {
+  assert.match(workflow, /^ {2}pull_request:$/m);
+  assert.doesNotMatch(blockAt("pull_request"), /branches/);
+});
+
+test("push runs only on main, which the mutation gate relies on", () => {
+  assert.match(blockAt("push"), /^ {4}branches: \[main\]$/m);
+});
+
+test("fast jobs have no job-level if, so they run on every pull request", () => {
+  for (const job of ["quality", "build", "e2e"]) {
+    assert.doesNotMatch(blockAt(job), /^ {4}if:/m, `${job} must not be gated`);
+  }
+});
+
+test("mutation runs only for pushes or for pull requests into main", () => {
+  assert.match(
+    blockAt("mutation"),
+    /^ {4}if: github\.event_name == 'push' \|\| github\.base_ref == 'main'$/m
+  );
+});
+
+test("workflow token defaults to read-only contents", () => {
+  assert.match(workflow, /^permissions:\n {2}contents: read$/m);
 });
