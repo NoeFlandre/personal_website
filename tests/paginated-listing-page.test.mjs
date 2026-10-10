@@ -14,10 +14,22 @@ test("paginated listing renders the site header and footer inside the skip-link 
   assert.match(listingPage, /<main\s+id="main-content"/);
 });
 
-test("paginated listing links page 1 to the listing instead of the homepage", () => {
+test("paginated listing renders the shared Pagination component", () => {
+  const listingPage = read("src/pages/page/[page].astro");
+
+  assert.match(listingPage, /import Pagination from "\.\.\/\.\.\/components\/Pagination\.astro";/);
+  assert.match(listingPage, /<Pagination \{page\} \/>/);
+});
+
+test("paginated listing has no hand-written page controls and does not link to the homepage", () => {
   const listingPage = read("src/pages/page/[page].astro");
 
   assert.doesNotMatch(listingPage, /"\/"/);
-  assert.match(listingPage, /href=\{`\/page\/\$\{i \+ 1\}`\}/);
-  assert.match(listingPage, /href=\{`\/page\/\$\{currentPage - 1\}`\}/);
+  assert.doesNotMatch(listingPage, /href=\{`\/page\//);
+});
+
+test("paginated listing sizes pages from SITE.postPerIndex", () => {
+  const listingPage = read("src/pages/page/[page].astro");
+
+  assert.match(listingPage, /paginate\(sortedPosts, \{ pageSize: SITE\.postPerIndex \}\)/);
 });

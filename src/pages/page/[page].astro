@@ -5,6 +5,7 @@
 		import FormattedDate from "../../components/FormattedDate.astro";
 		import Footer from "../../components/Footer.astro";
 		import Header from "../../components/Header.astro";
+		import Pagination from "../../components/Pagination.astro";
 		import { SITE } from "../../site-config.js";
 		import Layout from "../../layouts/Layout.astro";
 		import { getPath } from "@/features/blog/utils/getPath";
@@ -13,7 +14,7 @@
 	  const allPosts = await getCollection("blog");
 	  const sortedPosts = getSortedPosts(allPosts);
 
-  return paginate(sortedPosts, { pageSize: 10 });
+  return paginate(sortedPosts, { pageSize: SITE.postPerIndex });
 }
 
 const { page } = Astro.props;
@@ -56,44 +57,7 @@ const { data: posts, currentPage, lastPage } = page;
       }
     </div>
 
-    <div class="flex justify-center mt-10 gap-2">
-      {
-        currentPage > 1 && (
-          <a
-            href={`/page/${currentPage - 1}`}
-            class="px-4 py-2 bg-secondary rounded-md hover:bg-accent"
-          >
-            ← Previous
-          </a>
-        )
-      }
-
-      {
-        Array.from({ length: lastPage }).map((_, i) => (
-          <a
-            href={`/page/${i + 1}`}
-            class={`px-4 py-2 rounded-md ${
-              currentPage === i + 1
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary hover:bg-accent"
-            }`}
-          >
-            {i + 1}
-          </a>
-        ))
-      }
-
-      {
-        currentPage < lastPage && (
-          <a
-            href={`/page/${currentPage + 1}`}
-            class="px-4 py-2 bg-secondary rounded-md hover:bg-accent"
-          >
-            Next →
-          </a>
-        )
-      }
-    </div>
+    <Pagination {page} />
   </main>
   <Footer />
 </Layout>
