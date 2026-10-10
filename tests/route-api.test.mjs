@@ -294,6 +294,13 @@ test("markdown and feed routes return their generated content", async () => {
   }
 });
 
+const stubSite = { title: "Test Site", desc: "Test description", website: "https://example.test" };
+const stubSocials = [
+  { name: "Email", href: "mailto:hello@example.test", active: true },
+  { name: "Hidden", href: "https://hidden.example.test", active: false },
+  { name: "GitHub", href: "https://github.com/example", active: true },
+];
+
 function siteConfigStubPlugin(showArchives) {
   const stubId = "\0site-config-markdown-test-stub";
 
@@ -306,8 +313,8 @@ function siteConfigStubPlugin(showArchives) {
     load(id) {
       if (id !== stubId) return undefined;
 
-      return `export const SITE = ${JSON.stringify({ ...SITE, showArchives })};
-        export const SOCIALS = ${JSON.stringify(SOCIALS)};`;
+      return `export const SITE = ${JSON.stringify({ ...SITE, ...stubSite, showArchives })};
+        export const SOCIALS = ${JSON.stringify(stubSocials)};`;
     },
   };
 }
@@ -320,31 +327,48 @@ async function loadSiteMarkdownRoutes(showArchives) {
     },
     {
       plugins: [
-        astroContentStubPlugin(`export async function getCollection() {
-          return ${JSON.stringify([testPost])};
-        }`),
+        astroContentStubPlugin(`globalThis.__siteMarkdownCollectionCalls = [];
+          export async function getCollection(...args) {
+            globalThis.__siteMarkdownCollectionCalls.push(args);
+            return ${JSON.stringify([testPost])};
+          }`),
         siteConfigStubPlugin(showArchives),
       ],
     }
   );
 
-  return { ...modules, close };
+  return {
+    ...modules,
+    collectionCalls: () => globalThis.__siteMarkdownCollectionCalls,
+    close,
+  };
 }
 
-test("the index markdown endpoint builds its identity and links from site-config", async () => {
+test("the index markdown endpoint renders the whole page from site-config", async () => {
   const { indexRoute, close } = await loadSiteMarkdownRoutes(false);
 
   try {
-    const body = await (await indexRoute.GET()).text();
+    assert.equal(
+      await (await indexRoute.GET()).text(),
+      `# Test Site
 
-    assert.ok(body.startsWith(`# ${SITE.title}\n`));
-    assert.ok(body.includes(`\n${SITE.desc}\n`));
-    for (const social of SOCIALS.filter((entry) => entry.active)) {
-      assert.ok(body.includes(`- [${social.name}](${social.href})`), social.name);
-    }
-    assert.match(body, /\[Email\]\(mailto:noeflandre@gmail\.com\)/);
-    assert.doesNotMatch(body, /noe\.flandre@gmail\.com/);
-    assert.doesNotMatch(body, /\/archives\.md/);
+Test description
+
+## Navigation
+
+- [About](/about.md)
+- [Recent Posts](/posts.md)
+- [RSS Feed](/rss.xml)
+
+## Links
+
+- [Email](mailto:hello@example.test)
+- [GitHub](https://github.com/example)
+
+---
+
+*This is the markdown-only version of https://example.test. Visit [https://example.test](https://example.test) for the full experience.*`
+    );
   } finally {
     await close();
   }
@@ -356,6 +380,7 @@ test("archives markdown and its index link follow the showArchives flag", async 
     const hiddenArchives = await hidden.archivesRoute.GET();
     assert.equal(hiddenArchives.status, 404);
     assert.equal(await hiddenArchives.text(), "Not found");
+    assert.equal(hidden.collectionCalls().length, 0);
   } finally {
     await hidden.close();
   }
@@ -366,7 +391,32 @@ test("archives markdown and its index link follow the showArchives flag", async 
     const shownArchives = await shown.archivesRoute.GET();
     assert.equal(shownArchives.status, 200);
     assert.match(await shownArchives.text(), /Total posts: 1/);
+    assert.deepEqual(
+      shown.collectionCalls().map(([name]) => name),
+      ["blog"]
+    );
   } finally {
     await shown.close();
+  }
+});
+
+test("the post markdown endpoint returns an uncached 404 for an entry without a body", async () => {
+  const { close, postRoute } = await loadMarkdownRoutes();
+  const logged = mock.method(console, "error", () => {});
+
+  try {
+    const response = await postRoute.GET({
+      props: { post: { ...testPost, body: undefined } },
+    });
+
+    assert.equal(response.status, 404);
+    assert.equal(response.headers.get("cache-control"), null);
+    assert.equal(await response.text(), "Not found");
+    assert.equal(logged.mock.callCount(), 1);
+    assert.equal(logged.mock.calls[0].arguments[0], "Post markdown body is not a string:");
+    assert.equal(logged.mock.calls[0].arguments[1], testPost.id);
+  } finally {
+    logged.mock.restore();
+    await close();
   }
 });

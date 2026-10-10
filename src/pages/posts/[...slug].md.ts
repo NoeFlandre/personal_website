@@ -19,6 +19,10 @@ export const GET: APIRoute = async ({ props }) => {
 
   // Read the raw markdown content
   const rawContent = post.body;
+  if (typeof rawContent !== "string") {
+    console.error("Post markdown body is not a string:", post.id);
+    return new Response("Not found", { status: 404 });
+  }
 
   return markdownResponse(rawContent);
 };
