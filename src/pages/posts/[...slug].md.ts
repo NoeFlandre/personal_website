@@ -1,26 +1,18 @@
 import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import { isPostRoutable } from "@/features/blog/utils/postFilter";
-import { getPostStaticPathParams } from "@/features/blog/utils/staticPaths";
+import { getPostStaticPaths } from "@/features/blog/utils/postStaticPaths";
 import { markdownResponse } from "../../utils/markdownResponse.ts";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => isPostRoutable(data));
-
-  return posts.map((post) => ({
-    params: getPostStaticPathParams(post),
-    props: { post },
-  }));
+  return getPostStaticPaths(({ data }) => isPostRoutable(data));
 }
 
-export const GET: APIRoute = async ({ props }) => {
-  const { post } = props as { post: CollectionEntry<"blog"> };
-
+export const GET: APIRoute<{ post: CollectionEntry<"blog"> }> = async ({ props }) => {
   // Read the raw markdown content
-  const rawContent = post.body;
+  const rawContent = props.post.body;
   if (typeof rawContent !== "string") {
-    console.error("Post markdown body is not a string:", post.id);
+    console.error("Post markdown body is not a string:", props.post.id);
     return new Response("Not found", { status: 404 });
   }
 

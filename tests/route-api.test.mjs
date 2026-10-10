@@ -111,7 +111,9 @@ async function loadDynamicImageRoutes() {
         astroContentStubPlugin(`globalThis.__dynamicImageCollectionCalls = [];
           export async function getCollection(...args) {
             globalThis.__dynamicImageCollectionCalls.push(args);
-            return ${JSON.stringify(dynamicImagePosts)};
+            const [, filter] = args;
+            const posts = ${JSON.stringify(dynamicImagePosts)};
+            return filter ? posts.filter(filter) : posts;
           }`),
         {
           name: "site-config-test-stub",
@@ -138,7 +140,9 @@ async function loadDynamicImageRoutes() {
           load(id) {
             if (id !== "\0og-image-test-stub") return undefined;
 
-            return `export async function generateOgImageForPost() {
+            return `globalThis.__dynamicOgImagePosts = [];
+          export async function generateOgImageForPost(post) {
+            globalThis.__dynamicOgImagePosts.push(post);
             return new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
           }`;
           },
@@ -150,21 +154,22 @@ async function loadDynamicImageRoutes() {
   return {
     ...modules,
     collectionCalls: () => globalThis.__dynamicImageCollectionCalls,
+    ogImagePosts: () => globalThis.__dynamicOgImagePosts,
     siteConfig: () => globalThis.__dynamicSiteConfig,
     close,
   };
 }
 
 test("dynamic image routes enumerate posts and render PNG responses", async () => {
-  const { close, collectionCalls, indexRoute, ogRoute, siteConfig } =
+  const { close, collectionCalls, indexRoute, ogRoute, ogImagePosts, siteConfig } =
     await loadDynamicImageRoutes();
-  const props = { data: { title: "Quality route test", author: "Noé Flandre" } };
+  const props = { post: testPost };
 
   try {
     const expectedPaths = [
       {
         params: { slug: "quality-route-test" },
-        props: testPost,
+        props: { post: testPost },
       },
     ];
     assert.deepEqual(await indexRoute.getStaticPaths(), expectedPaths);
@@ -182,6 +187,7 @@ test("dynamic image routes enumerate posts and render PNG responses", async () =
       assert.equal(response.headers.get("content-type"), "image/png");
       assert.deepEqual([...new Uint8Array(bytes).slice(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
     }
+    assert.deepEqual(ogImagePosts(), [testPost, testPost]);
 
     const dynamicSiteConfig = siteConfig();
     const previousDynamicOgImage = dynamicSiteConfig.dynamicOgImage;
