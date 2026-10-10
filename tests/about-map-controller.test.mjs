@@ -148,6 +148,21 @@ test("controller retries failed mounts, clears retry timers, and runs the retry 
   assert.equal(exhausted.timers.timers.size, 0);
 });
 
+test("controller marks a root as loading while its map mounts", () => {
+  const { controller, leaflet, root } = createHarness();
+  const createMap = leaflet.map;
+  const statesDuringMount = [];
+  leaflet.map = (...args) => {
+    statesDuringMount.push(root.dataset.mapInitState);
+    return createMap(...args);
+  };
+
+  controller.start();
+
+  assert.deepEqual(statesDuringMount, ["loading"]);
+  assert.equal(root.dataset.mapInitState, "ready");
+});
+
 test("a map mount that throws leaves the root idle instead of loading", () => {
   const { controller, root } = createHarness();
   root.querySelector = () => {

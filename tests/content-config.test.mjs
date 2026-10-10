@@ -21,8 +21,8 @@ function schemaNode(kind, details = {}) {
     or(other) {
       return schemaNode("or", { left: this, right: other });
     },
-    refine(check) {
-      return schemaNode("refine", { inner: this, check });
+    refine(check, options) {
+      return schemaNode("refine", { inner: this, check, options });
     },
   };
 }
@@ -127,6 +127,7 @@ test("content configuration only accepts post timezones that Intl can resolve", 
     assert.equal(isAccepted("Mars/Olympus"), false);
     assert.equal(isAccepted("America/Los_Angelse"), false);
     assert.equal(isAccepted(""), true);
+    assert.deepEqual(timezone.inner.options, { message: "Invalid IANA time zone" });
   } finally {
     await close();
   }
