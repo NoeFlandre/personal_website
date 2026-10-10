@@ -2,10 +2,17 @@ import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
 export function checkCrapReport(report, maxCrap) {
+  if (!Number.isFinite(maxCrap)) {
+    throw new Error(`CRAP threshold must be a finite number, received ${maxCrap}`);
+  }
+
   const scores = Object.entries(report).flatMap(([file, functions]) =>
     Object.entries(functions).flatMap(([functionName, details]) => {
       const crap = details?.statements?.crap;
-      return typeof crap === "number" ? [{ file, functionName, crap }] : [];
+      if (!Number.isFinite(crap)) {
+        throw new Error(`${file}:${functionName} has no numeric statements.crap`);
+      }
+      return [{ file, functionName, crap }];
     })
   );
 
