@@ -69,6 +69,7 @@ test("the about markdown endpoint logs a read failure before returning 404", asy
     assert.equal(response.status, 404);
     assert.equal(await response.text(), "Not found");
     assert.equal(logged.mock.callCount(), 1);
+    assert.equal(logged.mock.calls[0].arguments[0], "Failed to read about markdown source:");
     assert.equal(logged.mock.calls[0].arguments.at(-1), failure);
   } finally {
     logged.mock.restore();
@@ -85,6 +86,7 @@ test("the about markdown endpoint rejects an undecoded source buffer", async () 
     assert.equal(response.status, 404);
     assert.equal(await response.text(), "Not found");
     assert.equal(logged.mock.callCount(), 1);
+    assert.equal(logged.mock.calls[0].arguments[0], "About markdown source is not a string:");
   } finally {
     logged.mock.restore();
   }
