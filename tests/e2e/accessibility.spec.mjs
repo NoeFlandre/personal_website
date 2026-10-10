@@ -25,7 +25,15 @@ async function prepareTheme(page, testInfo) {
   }, theme);
 }
 
+async function waitForCssTransitions(page) {
+  // Axe reads computed colors, so scan only after running color transitions finish.
+  await page.waitForFunction(() =>
+    document.getAnimations().every((animation) => animation.playState !== "running")
+  );
+}
+
 async function expectAccessible(page, label) {
+  await waitForCssTransitions(page);
   const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
   const violationSummary = results.violations
     .map(

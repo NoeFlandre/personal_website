@@ -11,6 +11,10 @@ export async function getStaticPaths() {
 export const GET: APIRoute<{ post: CollectionEntry<"blog"> }> = async ({ props }) => {
   // Read the raw markdown content
   const rawContent = props.post.body;
+  if (typeof rawContent !== "string") {
+    console.error("Post markdown body is not a string:", props.post.id);
+    return new Response("Not found", { status: 404 });
+  }
 
   return markdownResponse(rawContent);
 };
