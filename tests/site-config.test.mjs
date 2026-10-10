@@ -1,18 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import {
-  NAV_LINKS,
-  SHARE_LINKS,
-  SITE,
-  SITE_DESCRIPTION,
-  SITE_TITLE,
-  SOCIALS,
-} from "../src/site-config.js";
+import * as siteConfig from "../src/site-config.js";
 
-test("site-config exposes the site title and description aliases", () => {
-  assert.equal(SITE_TITLE, SITE.title);
-  assert.equal(SITE_DESCRIPTION, SITE.desc);
+const { SHARE_LINKS, SITE, SOCIALS } = siteConfig;
+
+test("site-config does not export unused title, description, or nav aliases", () => {
+  for (const name of ["SITE_TITLE", "SITE_DESCRIPTION", "NAV_LINKS"]) {
+    assert.equal(Object.hasOwn(siteConfig, name), false, `${name} should not be exported`);
+  }
 });
 
 test("site-config exposes expected social and share link collections", () => {
@@ -21,7 +17,7 @@ test("site-config exposes expected social and share link collections", () => {
   assert.ok(SOCIALS.every((entry) => typeof entry.href === "string" && entry.href.length > 0));
 });
 
-test("site-config preserves navigation, social, and share contracts", () => {
+test("site-config preserves social, share, and site contracts", () => {
   const expected = {
     SITE: {
       website: "https://noeflandre.com/",
@@ -45,10 +41,6 @@ test("site-config preserves navigation, social, and share contracts", () => {
       lang: "en",
       timezone: "America/Los_Angeles",
     },
-    NAV_LINKS: [
-      { href: "/", label: "Blog" },
-      { href: "/about", label: "About" },
-    ],
     SOCIALS: [
       {
         name: "HuggingFace",
@@ -165,5 +157,5 @@ test("site-config preserves navigation, social, and share contracts", () => {
       },
     ],
   };
-  assert.deepEqual({ SITE, NAV_LINKS, SOCIALS, SHARE_LINKS }, expected);
+  assert.deepEqual({ SITE, SOCIALS, SHARE_LINKS }, expected);
 });
