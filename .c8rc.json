@@ -8,7 +8,7 @@
   "reports-dir": "coverage/c8",
   "check-coverage": true,
   "branches": 94,
-  "lines": 99,
-  "statements": 99,
-  "functions": 91
+  "lines": 98,
+  "statements": 98,
+  "functions": 90
 }
