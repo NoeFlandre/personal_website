@@ -10,23 +10,22 @@ import LinkButton from "@/components/LinkButton.astro";
 import Socials from "@/components/Socials.astro";
 import StructuredData from "@/components/StructuredData.astro";
 import { AIRBUS_GEO_EXPLORE_URL } from "@/features/about/data/links.ts";
-import getSortedPosts from "@/features/blog/utils/getSortedPosts";
+import selectHomepageFeatured from "@/features/blog/utils/selectHomepageFeatured";
 import Layout from "@/layouts/Layout.astro";
 import { SOCIALS } from "@/site-config.js";
 import { getImageThumbnailPath } from "@/utils/imageThumbnailPath.mjs";
 
 const posts = await getCollection("blog");
 
-const sortedPosts = getSortedPosts(posts);
-const posts2024AndLater = sortedPosts.filter(({ data }) => data.pubDatetime.getFullYear() >= 2024);
 const homepageFeaturedIds = [
   "describe-place-on-earth-part1-wikidata",
   "joining_evergreen",
   "2026/masked-image-modeling",
 ];
-const featuredPosts = posts2024AndLater
-  .filter(({ id }) => homepageFeaturedIds.includes(id))
-  .sort((a, b) => homepageFeaturedIds.indexOf(a.id) - homepageFeaturedIds.indexOf(b.id));
+const featuredPosts = selectHomepageFeatured(posts, {
+  ids: homepageFeaturedIds,
+  minYear: 2024,
+});
 const featuredWorkCards = [
   {
     label: "Research",

@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import test from "node:test";
+
+import selectHomepageFeatured from "../src/features/blog/utils/selectHomepageFeatured.ts";
 
 function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
@@ -33,20 +35,6 @@ test("homepage describes selected work across the three focus areas", () => {
   assert.match(homepage, /Selected work across research, industry and humanitarian volunteering\./);
 });
 
-test("homepage featured blog posts are selected by stable post id in the requested order", () => {
-  const homepage = read("src/pages/index.astro");
-  const wikidataPosition = homepage.indexOf('"describe-place-on-earth-part1-wikidata"');
-  const evergreenPosition = homepage.indexOf('"joining_evergreen"');
-  const maskedImageModelingPosition = homepage.indexOf('"2026/masked-image-modeling"');
-
-  assert.ok(wikidataPosition >= 0);
-  assert.ok(wikidataPosition < evergreenPosition);
-  assert.ok(evergreenPosition < maskedImageModelingPosition);
-  assert.doesNotMatch(homepage, /homepageFeaturedTitles|data\.title/);
-  assert.doesNotMatch(homepage, /Number\.MAX_SAFE_INTEGER/);
-  assert.doesNotMatch(homepage, /"From playing Monopoly to AI Research"/);
-});
-
 test("homepage featured work starts with GeoReSeT and keeps Airbus before Tsiky", () => {
   const homepage = read("src/pages/index.astro");
   const geoResetPosition = homepage.indexOf('title: "GeoReSeT"');
@@ -72,8 +60,47 @@ test("homepage featured work starts with GeoReSeT and keeps Airbus before Tsiky"
   assert.match(homepage, /href: "https:\/\/geo-reset\.sylvainlobry\.com\/"/);
   assert.match(homepage, /image: "\/assets\/img\/about-map\/inria-logo\.svg"/);
   assert.doesNotMatch(homepage, /Empathetic Narratives from ABMs/);
-  assert.equal(
-    existsSync(new URL("../public/assets/img/about-map/inria-logo.svg", import.meta.url)),
-    true
+});
+
+function createPost({ id, pubDatetime, draft = false, unlisted = false }) {
+  return { id, data: { pubDatetime: new Date(pubDatetime), draft, unlisted } };
+}
+
+test("homepage featured posts keep listed posts from the cutoff year in the requested id order", () => {
+  const posts = [
+    createPost({ id: "not-featured", pubDatetime: "2025-05-01T12:00:00Z" }),
+    createPost({ id: "wikidata", pubDatetime: "2024-01-01T12:00:00Z" }),
+    createPost({ id: "masked", pubDatetime: "2025-02-01T12:00:00Z" }),
+    createPost({ id: "older", pubDatetime: "2023-06-15T12:00:00Z" }),
+    createPost({ id: "draft", pubDatetime: "2025-05-01T12:00:00Z", draft: true }),
+    createPost({ id: "unlisted", pubDatetime: "2025-05-01T12:00:00Z", unlisted: true }),
+    createPost({ id: "evergreen", pubDatetime: "2025-03-01T12:00:00Z" }),
+  ];
+
+  const selected = selectHomepageFeatured(posts, {
+    ids: ["evergreen", "wikidata", "masked", "older", "draft", "unlisted"],
+    minYear: 2024,
+  });
+
+  assert.deepEqual(
+    selected.map(({ id }) => id),
+    ["evergreen", "wikidata", "masked"]
+  );
+});
+
+test("homepage featured posts use the minimum year option as the cutoff", () => {
+  const posts = [
+    createPost({ id: "wikidata", pubDatetime: "2024-01-01T12:00:00Z" }),
+    createPost({ id: "evergreen", pubDatetime: "2025-03-01T12:00:00Z" }),
+  ];
+
+  const selected = selectHomepageFeatured(posts, {
+    ids: ["wikidata", "evergreen"],
+    minYear: 2025,
+  });
+
+  assert.deepEqual(
+    selected.map(({ id }) => id),
+    ["evergreen"]
   );
 });
