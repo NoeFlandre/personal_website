@@ -169,6 +169,68 @@ test("thumbnail generation removes previews whose sources no longer exist", asyn
   }
 });
 
+test("thumbnail sources strip query and hash suffixes through one shared helper", async () => {
+  const { stripQueryAndHash } = await loadThumbnailPath();
+
+  assert.equal(stripQueryAndHash("/assets/img/a.png?v=1#top"), "/assets/img/a.png");
+  assert.equal(stripQueryAndHash("/assets/img/a.png#top"), "/assets/img/a.png");
+  assert.equal(stripQueryAndHash("/assets/img/a.png"), "/assets/img/a.png");
+  assert.doesNotMatch(read("scripts/generate-image-thumbnails.mjs"), /split\(\/\[\?#\]\//);
+});
+
+test("about portrait and thumbnail seed share one exported path", async () => {
+  const { ABOUT_PORTRAIT_PATH, getImageThumbnailPath } = await loadThumbnailPath();
+  const about = read("src/pages/about.mdx");
+  const generator = read("scripts/generate-image-thumbnails.mjs");
+
+  assert.equal(ABOUT_PORTRAIT_PATH, "/image.png");
+  assert.equal(
+    getImageThumbnailPath(ABOUT_PORTRAIT_PATH),
+    "/generated/image-thumbnails/image.webp"
+  );
+  assert.match(about, /getImageThumbnailPath\(ABOUT_PORTRAIT_PATH\)/);
+  assert.doesNotMatch(generator, /"\/image\.png"/);
+});
+
+test("thumbnail generation includes about map images from the public directory", async () => {
+  const { generateImageThumbnails } = await loadThumbnailGenerator();
+  const tempDir = await mkdtemp(path.join(tmpdir(), "image-thumb-map-test-"));
+  const publicDir = path.join(tempDir, "public");
+  const contentDir = path.join(tempDir, "content");
+  const mapOutputPath = path.join(
+    publicDir,
+    "generated/image-thumbnails/assets--img--about-map--lac.webp"
+  );
+
+  try {
+    await mkdir(path.join(publicDir, "assets/img/about-map"), { recursive: true });
+    await mkdir(contentDir, { recursive: true });
+    await sharp({
+      create: { width: 16, height: 16, channels: 3, background: { r: 20, g: 40, b: 60 } },
+    })
+      .png()
+      .toFile(path.join(publicDir, "image.png"));
+    await sharp({
+      create: { width: 16, height: 16, channels: 3, background: { r: 60, g: 40, b: 20 } },
+    })
+      .jpeg()
+      .toFile(path.join(publicDir, "assets/img/about-map/lac.jpg"));
+
+    const result = await generateImageThumbnails({ publicDir, contentDir });
+
+    assert.equal(result.generatedCount, 2);
+    assert.equal(existsSync(mapOutputPath), true);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("thumbnail generator writes the about map directory literal once", () => {
+  const generator = read("scripts/generate-image-thumbnails.mjs");
+
+  assert.equal(generator.match(/assets\/img\/about-map/g)?.length, 1);
+});
+
 test("preview consumers use generated images without changing article heroes", () => {
   const card = read("src/components/Card.astro");
   const home = read("src/pages/index.astro");

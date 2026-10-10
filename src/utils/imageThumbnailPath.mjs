@@ -1,5 +1,16 @@
 export const IMAGE_THUMBNAIL_DIRECTORY = "generated/image-thumbnails";
+export const ABOUT_PORTRAIT_PATH = "/image.png";
 const THUMBNAIL_ROOT = `/${IMAGE_THUMBNAIL_DIRECTORY}`;
+
+/**
+ * Removes a query string or hash from a source path.
+ *
+ * @param {string} sourcePath Path such as "/assets/img/a.png?v=1".
+ * @returns {string} The path without its query string or hash.
+ */
+export function stripQueryAndHash(sourcePath) {
+  return sourcePath.split(/[?#]/, 1)[0];
+}
 
 /**
  * Splits a root-relative image path into its directory segments and a `.webp` file name.
@@ -10,7 +21,7 @@ const THUMBNAIL_ROOT = `/${IMAGE_THUMBNAIL_DIRECTORY}`;
 function getThumbnailParts(sourcePath) {
   if (!sourcePath || !sourcePath.startsWith("/")) return null;
 
-  const cleanPath = sourcePath.split(/[?#]/, 1)[0];
+  const cleanPath = stripQueryAndHash(sourcePath);
   const segments = cleanPath.split("/").filter(Boolean);
   const fileName = segments.pop();
 
