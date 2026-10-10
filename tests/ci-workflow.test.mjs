@@ -11,10 +11,31 @@ const runCommands = [...workflow.matchAll(/^\s*run:\s*(.+)$/gm)].map((match) => 
 const blockAt = (key) =>
   workflow.match(new RegExp(`^  ${key}:\\n((?:    .*(?:\\n|$)|\\n)*)`, "m"))?.[1] ?? "";
 
-test("CI uses a Node release line with native TypeScript test support", () => {
-  const nodeMajor = Number(workflow.match(/^\s+NODE_VERSION: "(\d+)"$/m)?.[1]);
+function meetsNodeMinimum(text) {
+  const [, major, minor] = text.match(/^\s+NODE_VERSION: "(\d+)(?:\.(\d+))?"$/m) ?? [];
+  const nodeMajor = Number(major);
 
-  assert.ok(nodeMajor >= 22, "Direct TypeScript test imports require Node 22.18 or newer");
+  if (nodeMajor !== 22) {
+    return nodeMajor > 22;
+  }
+  // A bare "22" pin resolves to the newest 22.x release, which is past 22.18.
+  return minor === undefined || Number(minor) >= 18;
+}
+
+test("CI uses a Node release line with native TypeScript test support", () => {
+  assert.ok(
+    meetsNodeMinimum(workflow),
+    "Direct TypeScript test imports require Node 22.18 or newer"
+  );
+});
+
+test("Node minimum accepts minor pins and enforces the 22.18 floor", () => {
+  const pin = (version) => `  NODE_VERSION: "${version}"`;
+
+  assert.equal(meetsNodeMinimum(pin("22.18")), true);
+  assert.equal(meetsNodeMinimum(pin("22.17")), false);
+  assert.equal(meetsNodeMinimum(pin("21.9")), false);
+  assert.equal(meetsNodeMinimum(pin("24")), true);
 });
 
 test("Astro CI builds once and reuses the artifact for browser tests", () => {
