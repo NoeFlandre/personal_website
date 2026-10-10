@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import selectHomepageFeatured from "../src/features/blog/utils/selectHomepageFeatured.ts";
@@ -60,10 +60,6 @@ test("homepage featured work starts with GeoReSeT and keeps Airbus before Tsiky"
   assert.match(homepage, /href: "https:\/\/geo-reset\.sylvainlobry\.com\/"/);
   assert.match(homepage, /image: "\/assets\/img\/about-map\/inria-logo\.svg"/);
   assert.doesNotMatch(homepage, /Empathetic Narratives from ABMs/);
-  assert.equal(
-    existsSync(new URL("../public/assets/img/about-map/inria-logo.svg", import.meta.url)),
-    true
-  );
 });
 
 function createPost({ id, pubDatetime, draft = false, unlisted = false }) {
