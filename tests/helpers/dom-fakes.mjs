@@ -223,6 +223,7 @@ export class FakeElement extends TrackedEventTarget {
         if (part === "[data-next-url]") return this.getAttribute("data-next-url") !== null;
         if (part === ".copy-code") return this.classList.contains("copy-code");
         if (part === ".heading-link") return this.classList.contains("heading-link");
+        if (part === ".progress-bar") return this.classList.contains("progress-bar");
         if (part === ".youtube-embed-container") {
           return this.classList.contains("youtube-embed-container");
         }
