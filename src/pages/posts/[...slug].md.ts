@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import type { APIRoute } from "astro";
 import { isPostRoutable } from "@/features/blog/utils/postFilter";
 import { getPostStaticPathParams } from "@/features/blog/utils/staticPaths";
+import { markdownResponse } from "../../utils/markdownResponse.ts";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => isPostRoutable(data));
@@ -18,13 +19,10 @@ export const GET: APIRoute = async ({ props }) => {
 
   // Read the raw markdown content
   const rawContent = post.body;
+  if (typeof rawContent !== "string") {
+    console.error("Post markdown body is not a string:", post.id);
+    return new Response("Not found", { status: 404 });
+  }
 
-  // Return the markdown content with proper headers
-  return new Response(rawContent, {
-    status: 200,
-    headers: {
-      "Content-Type": "text/markdown; charset=utf-8",
-      "Cache-Control": "public, max-age=3600",
-    },
-  });
+  return markdownResponse(rawContent);
 };

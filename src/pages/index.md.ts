@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { SITE } from "@/site-config.js";
+import { markdownResponse } from "../utils/markdownResponse.ts";
 
 export const GET: APIRoute = async () => {
   const markdownContent = `# Noé Flandre (@NoeFlandre)
@@ -23,11 +24,5 @@ AI Research Engineer — Geospatial AI & Foundation models
 
 *This is the markdown-only version of ${SITE.website}. Visit [${SITE.website}](${SITE.website}) for the full experience.*`;
 
-  return new Response(markdownContent, {
-    status: 200,
-    headers: {
-      "Content-Type": "text/markdown; charset=utf-8",
-      "Cache-Control": "public, max-age=3600",
-    },
-  });
+  return markdownResponse(markdownContent);
 };
