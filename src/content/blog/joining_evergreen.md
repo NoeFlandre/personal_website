@@ -4,7 +4,7 @@ description: "Next month, I will be joining INRIA in Montpellier, within the EVE
 pubDatetime: 2026-04-04T11:00:00Z
 heroImage: /evergreen_logo.png
 tags: ["Post"]
-featured: true
+featured: false
 ---
 
 Next month, I will be joining INRIA in Montpellier, within the [EVERGREEN research team](https://team.inria.fr/evergreen/). I am very much excited!

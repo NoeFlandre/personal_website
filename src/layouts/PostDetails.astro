@@ -37,6 +37,8 @@ const {
   tags,
   hideEditPost,
   heroImage,
+  heroImageAlt,
+  heroImageCaption,
   layoutStyle,
 } = post.data;
 
@@ -114,7 +116,7 @@ const wordCount = countWords(post.body ?? "");
           {heroImage && (
             <img
               src={heroImage}
-              alt=""
+              alt={heroImageAlt ?? ""}
               class="w-full sm:w-1/2 float-left mr-6 sm:mr-8 mb-4 sm:mb-6 rounded-lg object-contain shadow-lg"
               loading="lazy"
             />
@@ -125,14 +127,25 @@ const wordCount = countWords(post.body ?? "");
       ) : (
         <>
           {
-            heroImage && (
-              <img
-                src={heroImage}
-                alt=""
-                class="mb-8 max-h-[60vh] mx-auto h-auto w-full max-w-[640px] rounded-md object-contain !border-0"
-                loading="lazy"
-              />
-            )
+            heroImage &&
+              (heroImageCaption ? (
+                <figure class="mx-auto mb-8 w-full max-w-[640px]">
+                  <img
+                    src={heroImage}
+                    alt={heroImageAlt ?? ""}
+                    class="max-h-[60vh] mx-auto h-auto w-full rounded-md object-contain !border-0"
+                    loading="lazy"
+                  />
+                  <figcaption class="mt-2 text-center">{heroImageCaption}</figcaption>
+                </figure>
+              ) : (
+                <img
+                  src={heroImage}
+                  alt={heroImageAlt ?? ""}
+                  class="mb-8 max-h-[60vh] mx-auto h-auto w-full max-w-[640px] rounded-md object-contain !border-0"
+                  loading="lazy"
+                />
+              ))
           }
           <Content />
         </>

@@ -290,6 +290,7 @@ test("preview consumers use generated images without changing article heroes", (
   const gitignore = read(".gitignore");
 
   assert.match(card, /getImageThumbnailPath/);
+  assert.match(card, /alt=\{heroImageAlt \?\? title\}/);
   assert.match(card, /loading="lazy"/);
   assert.match(card, /decoding="async"/);
   assert.match(home, /getImageThumbnailPath/);
@@ -297,6 +298,8 @@ test("preview consumers use generated images without changing article heroes", (
   assert.match(about, /getImageThumbnailPath/);
   assert.match(map, /getImageThumbnailPath/);
   assert.match(postDetails, /src=\{heroImage\}/);
+  assert.match(postDetails, /alt=\{heroImageAlt \?\? ""\}/);
+  assert.match(postDetails, /<figcaption[\s\S]*heroImageCaption[\s\S]*<\/figcaption>/);
   assert.doesNotMatch(postDetails, /getImageThumbnailPath/);
   assert.equal(typeof packageJson.scripts["generate:image-thumbnails"], "string");
   assert.match(packageJson.scripts.prebuild, /generate:image-thumbnails/);

@@ -88,6 +88,8 @@ test("content configuration defines the blog loader and schema contract", async 
       "tags",
       "ogImage",
       "heroImage",
+      "heroImageAlt",
+      "heroImageCaption",
       "description",
       "canonicalURL",
       "hideEditPost",
@@ -98,6 +100,10 @@ test("content configuration defines the blog loader and schema contract", async 
     assert.equal(schema.shape.author.value, "Noé Flandre");
     assert.equal(schema.shape.draft.value, false);
     assert.equal(schema.shape.unlisted.value, false);
+    assert.equal(schema.shape.heroImageAlt.kind, "optional");
+    assert.equal(schema.shape.heroImageAlt.inner.kind, "string");
+    assert.equal(schema.shape.heroImageCaption.kind, "optional");
+    assert.equal(schema.shape.heroImageCaption.inner.kind, "string");
     assert.deepEqual(schema.shape.tags.value, ["Post"]);
     assert.equal(schema.shape.tags.inner.value, 1);
     assert.deepEqual(schema.shape.tags.inner.inner.inner.values, [
