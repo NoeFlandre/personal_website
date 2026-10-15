@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-
+import { getPath } from "../src/features/blog/utils/getPath.ts";
 import selectHomepageFeatured from "../src/features/blog/utils/selectHomepageFeatured.ts";
 
 function read(path) {
@@ -17,6 +17,27 @@ test("homepage does not render retired work-card titles", () => {
   assert.doesNotMatch(homepage, /"An AI survival guide"/);
   assert.match(editorPickPost, /featured: true/);
   assert.match(survivalGuide, /featured: false/);
+});
+
+test("homepage features exactly three posts and replaces EVERGREEN with the career post", () => {
+  const homepage = read("src/pages/index.astro");
+  const evergreen = read("src/content/blog/joining_evergreen.md");
+  const careerPost = read("src/content/blog/2026/looking-for-my-next-career-opportunity.md");
+  const featuredIdsBlock = homepage.match(/const homepageFeaturedIds = \[([\s\S]*?)\];/);
+
+  assert.ok(featuredIdsBlock);
+  const featuredIds = [...featuredIdsBlock[1].matchAll(/"([^"]+)"/g)].map(([, id]) => id);
+  assert.deepEqual(featuredIds, [
+    "describe-place-on-earth-part1-wikidata",
+    "2026/looking-for-my-next-career-opportunity",
+    "2026/masked-image-modeling",
+  ]);
+  assert.match(careerPost, /featured: true/);
+  assert.match(evergreen, /featured: false/);
+  assert.equal(
+    getPath("joining_evergreen", "src/content/blog/joining_evergreen.md"),
+    "/posts/joining_evergreen"
+  );
 });
 
 test("homepage uses the current professional tagline", () => {

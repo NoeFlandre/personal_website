@@ -28,6 +28,8 @@ const blog = defineCollection({
       tags: z.array(z.enum(BLOG_TAGS)).length(1).default(["Post"]),
       ogImage: image().or(z.string()).optional(),
       heroImage: z.string().optional(),
+      heroImageAlt: z.string().optional(),
+      heroImageCaption: z.string().optional(),
       description: z.string(),
       canonicalURL: z.string().optional(),
       hideEditPost: z.boolean().optional(),
