@@ -2,6 +2,24 @@
   "use strict";
 
   var root = document.documentElement;
+
+  /* ---- Fresh page loads start at the top ----
+     Some embedded viewers carry the previous page's scroll position over,
+     which drops you at the bottom of a shorter page. Only for plain link
+     navigations without a #section: back/forward keeps its position. */
+  var navEntry = window.performance && performance.getEntriesByType ? performance.getEntriesByType("navigation")[0] : null;
+  if (!location.hash && (!navEntry || navEntry.type === "navigate")) {
+    var toTop = function () {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    };
+    toTop();
+    document.addEventListener("DOMContentLoaded", toTop);
+    window.addEventListener("load", function () {
+      toTop();
+      window.requestAnimationFrame(toTop);
+    });
+  }
+
   var nav = document.querySelector(".nav");
   if (!nav) return;
 
