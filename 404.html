@@ -10,7 +10,6 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
   <link rel="alternate" type="application/rss+xml" title="Noé Flandre" href="https://noeflandre.com/rss.xml">
-  <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400&family=Climate+Crisis&display=swap" rel="stylesheet">
@@ -29,8 +28,6 @@
   <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></g></symbol>
   <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h8.5L19 7v14.5H6z"/><path d="M14 2.5V7h5M9 12h7M9 15.5h7M9 19h4"/></g></symbol>
   <symbol id="i-rss" viewBox="0 0 24 24"><circle cx="5.5" cy="18.5" r="2"/><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></g></symbol>
-  <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></symbol>
-  <symbol id="i-moon" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></g></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></g></symbol>
   <symbol id="i-link" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></g></symbol>
   </svg>
@@ -46,10 +43,6 @@
         </span>
       </a>
       <div class="nav-bar-tools">
-        <button class="theme-toggle theme-toggle--bar" type="button" aria-label="Switch to light theme">
-          <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
-          <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
-        </button>
         <button class="menu-button" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu">
           <svg viewBox="0 0 41 32" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path class="bar-top" d="M0 1h41"/><path class="bar-mid" d="M0 16h41"/><path class="bar-bot" d="M0 31h41"/></svg>
         </button>
@@ -57,7 +50,7 @@
       <nav class="nav-menu" id="nav-menu" aria-label="Main">
         <div class="nav-pair">
           <a class="nav-link" data-target="about" href="/index.html#about">About</a>
-          <a class="nav-link" data-target="work" href="/index.html#work">Work</a>
+          <a class="nav-link" data-target="cv" href="#cv">CV</a>
         </div>
         <a class="nav-logo wordmark" href="/index.html#about" aria-label="Noé Flandre, home">
           <svg viewBox="0 0 160 46" aria-hidden="true"><text x="80" y="42" font-size="56" text-anchor="middle">noé</text></svg>
@@ -67,10 +60,6 @@
             <a class="nav-link" data-target="blog" href="/index.html#blog">Blog</a>
             <a class="nav-link" data-target="contact" href="/index.html#contact">Contact</a>
           </div>
-          <button class="theme-toggle" type="button" aria-label="Switch to light theme">
-            <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
-            <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
-          </button>
         </div>
       </nav>
     </div>
@@ -109,7 +98,7 @@
             <div class="footer-col"><p class="heading-4">Explore</p></div>
             <div class="footer-col">
               <a href="/index.html#about">About</a>
-              <a href="/index.html#work">Work</a>
+              <a href="#cv">CV</a>
               <a href="/index.html#blog">Blog</a>
               <a href="/index.html#contact">Contact</a>
             </div>

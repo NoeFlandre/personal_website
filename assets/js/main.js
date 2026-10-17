@@ -29,25 +29,6 @@
   var progress = nav.querySelector(".progress");
   var article = document.querySelector("[data-progress]");
 
-  /* ---- Theme toggle (dark by default, choice remembered) ---- */
-  function setTheme(theme) {
-    if (theme === "light") root.dataset.theme = "light";
-    else delete root.dataset.theme;
-    try {
-      localStorage.setItem("theme", theme);
-    } catch (e) {}
-    document.querySelectorAll(".theme-toggle").forEach(function (b) {
-      b.setAttribute("aria-label", theme === "light" ? "Switch to dark theme" : "Switch to light theme");
-    });
-  }
-
-  document.querySelectorAll(".theme-toggle").forEach(function (b) {
-    b.addEventListener("click", function () {
-      setTheme(root.dataset.theme === "light" ? "dark" : "light");
-    });
-  });
-  setTheme(root.dataset.theme === "light" ? "light" : "dark");
-
   /* ---- Show / hide the nav based on scroll direction ---- */
   var lastY = window.scrollY;
 
@@ -147,6 +128,31 @@
       if (menuButton) menuButton.focus();
     }
   });
+
+  /* ---- CV jump menu follows the group in view ---- */
+  var cvLinks = Array.prototype.slice.call(document.querySelectorAll(".cv-nav ul a"));
+  if (cvLinks.length && "IntersectionObserver" in window) {
+    var cvSeen = {};
+    var cvObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (en) {
+          cvSeen[en.target.id] = en.isIntersecting;
+        });
+        var current = null;
+        cvLinks.forEach(function (a) {
+          if (!current && cvSeen[a.getAttribute("href").slice(1)]) current = a;
+        });
+        cvLinks.forEach(function (a) {
+          a.classList.toggle("is-current", a === current);
+        });
+      },
+      { rootMargin: "-30% 0px -55% 0px" }
+    );
+    cvLinks.forEach(function (a) {
+      var target = document.getElementById(a.getAttribute("href").slice(1));
+      if (target) cvObserver.observe(target);
+    });
+  }
 
   /* ---- Copy buttons ---- */
   document.querySelectorAll("[data-copy]").forEach(function (btn) {
