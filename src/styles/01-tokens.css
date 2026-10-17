@@ -1,0 +1,41 @@
+:root {
+  /* Palette */
+  --ink: #01242e;     /* page base, and text on coloured bands */
+  --sky: #8cc2dd;
+  --blue: #4d8bf0;
+  --peri: #93a8f4;
+  --ice: #c6e2ef;
+  --fog: #c2d3db;     /* text on ink */
+  --mist: #b9cdd6;    /* footer */
+  --frost: #9ff0ff;   /* closing bar */
+
+  --surface: var(--ink);
+  --text: var(--fog);
+  --rule: rgb(194 211 219 / 0.25);
+
+  /* Accent used inside each dark content section */
+  --accent-about: var(--blue);
+  --accent-cv: var(--sky);
+  --accent-blog: var(--ice);
+  --accent-contact: var(--peri);
+
+  /* Type */
+  --font-body: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-menu: "Menu Sans", "Inter", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  /* Layout */
+  --nav-h: 100px;
+  --nav-bg: var(--blue);
+  --gutter: 32px;
+  --max: 1280px;
+
+  color-scheme: dark;
+}
+
+@media screen and (max-width: 767px) {
+  :root {
+    --nav-h: 64px;
+    --gutter: 16px;
+  }
+}

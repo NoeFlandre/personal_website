@@ -1,0 +1,247 @@
+{
+  "pdf": "https://noeflandre.com/assets/docs/noe-flandre-cv.pdf",
+  "me": "Noe Y. Flandre",
+  "groups": [
+    {
+      "id": "publications",
+      "label": "Publications",
+      "kind": "publication",
+      "items": [
+        {
+          "year": "2026",
+          "title": "Beyond Runtime Evaluation: Dynamic Benchmark Generation for Design-Time Verification of Agentic AI Workflows",
+          "authors": [
+            "Noe Y. Flandre",
+            "Philippe J. Giabbanelli"
+          ],
+          "venue": "Hawaii International Conference on System Sciences",
+          "note": "Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027)."
+        },
+        {
+          "year": "2026",
+          "title": "A Three-Arm Trial to Evaluate the Impact of Training in Prompt Engineering on Learning Outcomes Among Engineering Students",
+          "authors": [
+            "Noe Y. Flandre",
+            "Philippe J. Giabbanelli"
+          ],
+          "venue": "Hawaii International Conference on System Sciences",
+          "note": "Accepted for HICSS-60. It will be presented during the conference (5–8 January 2027)."
+        },
+        {
+          "year": "2026",
+          "title": "Composing Verifiable Conceptual Models via Building Blocks: Towards Design-Time Verification of Agentic AI Workflows",
+          "url": "https://arxiv.org/abs/2606.21565",
+          "authors": [
+            "Noe Y. Flandre",
+            "Alexander Nwala",
+            "Philippe J. Giabbanelli"
+          ],
+          "venue": "WSC 2026"
+        },
+        {
+          "year": "2026",
+          "title": "Distilling the Complexity of Agent-Based Simulations Into Textual Explanations via Large Language Models",
+          "url": "https://doi.org/10.3390/bdcc10040121",
+          "authors": [
+            "Noe Y. Flandre",
+            "Philippe J. Giabbanelli"
+          ],
+          "venue": "Big Data and Cognitive Computing"
+        },
+        {
+          "year": "2025",
+          "title": "Promoting empathy in decision-making by turning agent-based models into stories using large-language models",
+          "url": "https://www.researchgate.net/publication/395240074_Promoting_empathy_in_decision-making_by_turning_agent-based_models_into_stories_using_large-language_models",
+          "authors": [
+            "Daumas C.",
+            "Philippe J. Giabbanelli",
+            "Noe Y. Flandre"
+          ],
+          "venue": "Journal of Simulation",
+          "note": "Selected as the Editor's Pick"
+        },
+        {
+          "year": "2024",
+          "title": "Can large language models learn conceptual modeling by looking at slide decks and pass graduate examinations? an empirical study",
+          "url": "https://link.springer.com/chapter/10.1007/978-3-031-75599-6_15",
+          "authors": [
+            "Noe Y. Flandre",
+            "Philippe J. Giabbanelli"
+          ],
+          "venue": "ER 2024 (EmpER'24)"
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "label": "Experience",
+      "items": [
+        {
+          "when": "Apr 2026 — Present",
+          "where": "Montpellier, France",
+          "title": "AI Research Engineer — Inria",
+          "url": "https://geo-reset.sylvainlobry.com/",
+          "text": "Conducting research on LLM-based geoparsing to link unstructured text to geographic locations and footprints.",
+          "more": "Working on the [GEO-ReSeT](https://geo-reset.sylvainlobry.com/) project. Supervisors: [Diego Marcos](https://scholar.google.com/citations?user=IUqydU0AAAAJ&hl=en), [Roberto Interdonato](https://scholar.google.com/citations?user=GWACYGoAAAAJ&hl=it). Team: EVERGREEN (Earth obserVation and machine lEarning foR aGRo-Environmental challENges)."
+        },
+        {
+          "when": "Dec 2025 — Apr 2026",
+          "where": "India",
+          "title": "Independent Researcher",
+          "text": "Agentic AI workflows and LLM applications.",
+          "more": "Following graduation, I pursued independent research focusing on agentic AI workflows and the application of LLMs to both agent-based models and conceptual modeling ([example project](https://arxiv.org/abs/2606.21565))."
+        },
+        {
+          "when": "Jun 2025 — Nov 2025",
+          "where": "Toulouse, France",
+          "title": "AI Engineer Intern — Airbus Defence and Space",
+          "url": "https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/",
+          "text": "Fine-tuning of Vision-Language Models on Satellite Images.",
+          "more": "Under the supervision of [Fahd Benatia](https://www.linkedin.com/in/fahdbenatia/), I conducted research on the underlying AI model of [Airbus Geo Explore](https://space-solutions.airbus.com/resources/news/various/airbus-geo-explore-early-testing-programme/). I conducted a literature review of state-of-the-art fine-tuning techniques for VLMs in remote sensing, I built a benchmark suite to compare models and training strategies, and implemented end-to-end fine-tuning pipelines on Google Cloud Platform."
+        },
+        {
+          "when": "Aug 2024",
+          "where": "Suffolk, VA, USA",
+          "title": "Research Intern (LLMs & Simulation) — VMASC",
+          "text": "Applied LLMs to simulation and decision-making.",
+          "more": "Advised by [Philippe J. Giabbanelli](https://scholar.google.com/citations?user=7YilOHoAAAAJ&hl=en), my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, leverages advanced prompt engineering with GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations."
+        },
+        {
+          "when": "May 2024 — Jul 2024",
+          "where": "Oxford, OH, USA",
+          "title": "Research Intern (LLMs) — Miami University",
+          "text": "LLMs for conceptual modeling and multimodal evaluation.",
+          "more": "I investigated how LLMs can be integrated with simulation and conceptual modeling. [Philippe Giabbanelli](https://scholar.google.com/citations?user=7YilOHoAAAAJ&hl=en) was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, applying a Design of Experiments methodology to merge complex causal maps using LLMs, and utilizing advanced prompt engineering and style transfer to translate agent-based models into empathetic stories."
+        },
+        {
+          "when": "Jan 2024 — May 2024",
+          "where": "Alès, France",
+          "title": "AI Research Engineer Intern — EuroMov",
+          "text": "Generative AI applied to artistic movement analysis.",
+          "more": "Supervised by [Gérard Dray](https://scholar.google.com/citations?user=RMhmwNQAAAAJ&hl=fr), my research stood at the intersection of AI and art by generating digital artwork from human movement data. I processed raw sensor spreadsheets from an artist's movements and used a remote GPU container to run StableDiffusion with ControlNet and specialized models. I developed an iterative workflow that combined image generation with MATLAB scripts for depth-based image composition, accepting uncertainty to create novel visual compositions and study the expressive potential of diffusion models."
+        },
+        {
+          "when": "Nov 2023 — Dec 2023",
+          "where": "Thuir, France",
+          "title": "Data Analyst Intern — Centre Hospitalier de Thuir",
+          "text": "BI dashboards to modernize hospital data reporting.",
+          "more": "I modernized hospital data reporting under the supervision of [Clément Naudy](https://www.linkedin.com/in/cl%C3%A9ment-naudy-7270b114a/), by replacing manual export processes with real-time QlikView dashboards connected to administrative and medical ERPs. I wrote SQL queries and QlikView load scripts to extract, transform, and model hospital data, building dashboards to track key indicators such as medical activity or absenteeism. Finally, I authored technical documentation to ensure project sustainability."
+        },
+        {
+          "when": "May 2023 — Jun 2023",
+          "where": "Alès, France",
+          "title": "Market Analyst Intern — Haï Mask",
+          "text": "Market study for a connected sports mask project.",
+          "more": "Supervised by [Maxime Menardo](https://www.linkedin.com/in/maxime-menardo-ab437a159/), I conducted a 5-week market study that included a PESTEL analysis, competitive mapping, and target audience profiling. I surveyed 22 high-level athletes to validate product features and test price sensitivity, ultimately building a 4P marketing plan, a CRM strategy, and a go-to-market action plan. I also designed a multi-platform communication strategy with promotional content mockups and analyzed pro sports club budgets to identify B2B prospects."
+        }
+      ]
+    },
+    {
+      "id": "education",
+      "label": "Education",
+      "items": [
+        {
+          "when": "2022 — 2025",
+          "where": "Alès, France",
+          "title": "IMT Mines Alès — MEng (Computer Science / AI)",
+          "text": "Class representative.",
+          "coursework": [
+            {
+              "label": "AI & Machine Learning",
+              "items": "Advanced Machine Learning, Deep Learning, Symbolic AI, Heuristic Optimization, Multi-Criteria Decision Analysis, Mathematics for Machine Learning, Uncertainty Theory"
+            },
+            {
+              "label": "Statistics & Mathematics",
+              "items": "Advanced Statistics & Probability, Probabilities, Statistics, Calculus & Numerical Analysis"
+            },
+            {
+              "label": "Software Engineering & CS",
+              "items": "Software Design, Algorithm Complexity & Recursion, C Programming, Algorithms & Programming, Formal Specification, Web Technologies, Computer Networks, Databases"
+            },
+            {
+              "label": "Data & Analytics",
+              "items": "Data Collection, Validation, Visualization & Reporting, Signal Processing, Finite Elements, Operational Research"
+            },
+            {
+              "label": "Engineering Sciences",
+              "items": "Mechanics of Continuous Media, Strength of Materials, Thermodynamics, Fluid Mechanics, Electrical Energy"
+            },
+            {
+              "label": "Business & Management",
+              "items": "Project Management, Business Model, Market Research & Marketing, Macroeconomics, Finance, Business Law, Business Management, Engineering Ethics, Competitive Intelligence"
+            }
+          ]
+        },
+        {
+          "when": "Jan 2025 — May 2025",
+          "where": "Mumbai, India",
+          "title": "IIT Bombay — Exchange Semester",
+          "text": "Human-Centered AI — Prof. [Arpit Agarwal](https://www.linkedin.com/in/arpitagarwal729/)\nAdvanced Image Processing — Prof. [Ajit Rajwade](https://www.cse.iitb.ac.in/~ajitvr/)\nMedical Image Processing — Prof. [Suyash P. Awate](https://www.cse.iitb.ac.in/~suyash/)"
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "label": "Projects",
+      "items": [
+        {
+          "when": "Dec 2025",
+          "title": "NanoCLIP: Lightweight Vision-Language Model",
+          "url": "https://github.com/NoeFlandre/nanoclip",
+          "text": "Implemented and trained a CLIP architecture from scratch (PyTorch)."
+        },
+        {
+          "when": "Apr 2025",
+          "title": "DeepSeek Models — Jailbreak Robustness Evaluation",
+          "url": "https://github.com/NoeFlandre/JailBreak-DeepSeek",
+          "text": "Engineered local/API-based jailbreaks, assessment with Claude API."
+        },
+        {
+          "when": "Mar 2025",
+          "title": "GPT-2 Training From Scratch (2xH100, PyTorch DDP)",
+          "url": "https://github.com/NoeFlandre/GPT2-From-Scratch",
+          "text": "Trained a virgin GPT-2 model on FineWeb-Edu 10B evaluated on HellaSwag."
+        }
+      ]
+    },
+    {
+      "id": "awards",
+      "label": "Awards",
+      "items": [
+        {
+          "when": "Mar 2024",
+          "where": "Palaiseau, France",
+          "title": "Ariane Group Hackathon (Third Prize)",
+          "text": "Optimized Ariane 6 boosters delivery planning (CO2 emissions, time, and cost). Developed a web app with Streamlit and Flask, and managed booster logistics data with MongoDB."
+        },
+        {
+          "when": "Oct 2023",
+          "where": "Montpellier, France",
+          "title": "Altemed Hackathon (First Prize)",
+          "url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7119954103476072448/",
+          "text": "Developed a real-time supervision dashboard and map, using Power BI to visualize data for predictive maintenance of housing equipment."
+        },
+        {
+          "when": "Feb 2023",
+          "where": "Paris, France",
+          "title": "Best Speaker — French Debating Association",
+          "url": "https://www.linkedin.com/posts/no%C3%A9flandre_such-an-amazing-evening-it-was-yesterday-activity-7030221869802770432-b3Af",
+          "text": "Best Speaker Award: English debate between IMT Mines Alès and IESEG."
+        }
+      ]
+    },
+    {
+      "id": "volunteering",
+      "label": "Volunteering",
+      "items": [
+        {
+          "when": "2022 — 2023",
+          "where": "Omuangete (near Opuwo), Namibia",
+          "title": "Classroom Construction Project Management — Tsiky Zanaka",
+          "url": "https://tsikyzanaka.org/2025/02/09/projet-2023/",
+          "text": "Helped organizing and building a 11,500 euros project, collected funds throughout the year, and contributed to a six-week on-site mission (June 30 to August 9, 2023) with student volunteers."
+        }
+      ]
+    }
+  ]
+}
