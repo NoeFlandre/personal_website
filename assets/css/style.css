@@ -592,8 +592,6 @@ figure {
 }
 
 .about-media {
-  position: sticky;
-  top: 132px;
   align-self: start;
 }
 
@@ -1518,10 +1516,6 @@ details > div {
     display: flex;
     flex-direction: column;
     gap: 24px;
-  }
-
-  .about-media {
-    position: static;
   }
 
   .about-grid .portrait {
