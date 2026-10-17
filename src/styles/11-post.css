@@ -37,6 +37,7 @@
   max-width: 720px;
   font-size: 17px;
   line-height: 30px;
+  overflow-wrap: break-word;
 }
 
 .prose a {
@@ -50,18 +51,172 @@
 }
 
 .prose h2,
-.prose h3 {
-  margin-top: 12px;
-  font-size: 24px;
-  line-height: 32px;
+.prose h3,
+.prose h4,
+.prose h5 {
+  margin-top: 16px;
   font-weight: 600;
   letter-spacing: -0.02em;
+  scroll-margin-top: 24px;
+}
+
+.prose h2 {
+  font-size: 26px;
+  line-height: 34px;
+}
+
+.prose h3 {
+  font-size: 21px;
+  line-height: 30px;
+}
+
+.prose h4,
+.prose h5 {
+  font-size: 18px;
+  line-height: 28px;
 }
 
 .prose ul,
 .prose ol {
   margin: 0;
   padding-left: 24px;
+}
+
+.prose li + li,
+.prose li > ul,
+.prose li > ol {
+  margin-top: 6px;
+}
+
+.prose li > p + p {
+  margin-top: 8px;
+}
+
+.prose strong {
+  font-weight: 600;
+}
+
+.prose hr {
+  width: 100%;
+  height: 0;
+  margin: 12px 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.prose :not(pre) > code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgb(194 211 219 / 0.12);
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+}
+
+.prose pre code {
+  font-family: var(--font-mono);
+}
+
+/* tables scroll sideways rather than break the page */
+.table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.prose th,
+.prose td {
+  padding: 10px 14px 10px 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose th {
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table-caption {
+  margin-top: -8px;
+  opacity: 0.75;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* maths: display equations scroll sideways on narrow screens */
+.math-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
+}
+
+.prose .katex {
+  font-size: 1.1em;
+}
+
+.prose .katex-display {
+  margin: 0;
+}
+
+/* YouTube: a poster that turns into the player on click */
+.video {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  background: #000;
+  overflow: hidden;
+}
+
+.prose a.video {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a.video img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+a.video:hover img {
+  opacity: 1;
+}
+
+.video-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--accent);
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  transform: translate(-50%, -50%);
+}
+
+.video-play-icon {
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid currentColor;
 }
 
 .prose blockquote {
@@ -79,14 +234,28 @@
 }
 
 .figure {
+  align-self: center;
+  width: 100%;
+  max-width: var(--figure-max, 100%);
   margin: 8px 0 12px;
 }
 
+/* never wider than the file, so small screenshots stay sharp */
 .figure img {
-  width: 100%;
+  display: block;
+  max-width: 100%;
   height: auto;
-  max-height: 70vh;
-  object-fit: cover;
+  max-height: 75vh;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+/* diagrams have a transparent background meant for a light page */
+.figure img[src$=".svg"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  background: #fff;
 }
 
 .figure figcaption {
@@ -123,6 +292,23 @@
 
 .share a:hover {
   color: var(--text);
+}
+
+.post-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 720px;
+  margin-top: 16px;
+}
+
+.post-pager .post-next {
+  margin-top: 0;
+}
+
+.post-next--older {
+  grid-column: 2;
+  text-align: right;
 }
 
 .post-next {
@@ -170,5 +356,17 @@
 
   .post-next {
     padding: 16px;
+  }
+
+  .post-pager {
+    grid-template-columns: 1fr;
+  }
+
+  .post-next--older {
+    grid-column: auto;
+  }
+
+  .prose table {
+    font-size: 14px;
   }
 }

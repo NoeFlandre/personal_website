@@ -53,24 +53,32 @@ export async function loadAssets(dir) {
       return JSON.parse(read(rel).toString("utf8"));
     },
 
-    // Responsive photo: files named <name>-<width>.<avif|webp|jpg>.
+    // A picture by name: either <name>.svg, or responsive raster files named
+    // <name>-<width>.<avif|webp|jpg|png> with one jpg or png as the fallback.
     image(name) {
+      if (sources.has(`img/${name}.svg`)) {
+        const size = svgSize(read(`img/${name}.svg`).toString("utf8"));
+        return { ...size, sources: [], fallback: this.url(`img/${name}.svg`) };
+      }
+      const pattern = new RegExp(`^img/${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}-(\\d+)\\.(avif|webp|jpg|png)$`);
       const variants = [...sources.keys()]
-        .map((rel) => ({ rel, m: new RegExp(`^img/${name}-(\\d+)\\.(avif|webp|jpg)$`).exec(rel) }))
+        .map((rel) => ({ rel, m: pattern.exec(rel) }))
         .filter((v) => v.m)
         .map(({ rel, m }) => ({ rel, width: Number(m[1]), type: m[2] }))
         .sort((a, b) => a.width - b.width);
-      const fallback = variants.find((v) => v.type === "jpg");
-      if (!fallback) throw new Error(`Image "${name}" needs a <name>-<width>.jpg fallback`);
-      const size = jpegSize(read(fallback.rel));
+      const fallback = variants.find((v) => v.type === "jpg" || v.type === "png");
+      if (!fallback) throw new Error(`Image "${name}" not found (needs img/${name}.svg or img/${name}-<width>.jpg|png)`);
+      const size = fallback.type === "jpg" ? jpegSize(read(fallback.rel)) : pngSize(read(fallback.rel));
+      const largest = variants.at(-1).width;
       const srcset = (type) =>
         variants
           .filter((v) => v.type === type)
           .map((v) => `${this.url(v.rel)} ${v.width}w`)
           .join(", ");
       return {
-        width: size.width,
-        height: size.height,
+        // Report the size of the largest file, so small screenshots are not upscaled.
+        width: largest,
+        height: Math.round((size.height * largest) / size.width),
         sources: ["avif", "webp"].map((type) => ({ type: `image/${type}`, srcset: srcset(type) })).filter((s) => s.srcset),
         fallback: this.url(fallback.rel),
       };
@@ -114,6 +122,21 @@ export function minifyCss(css) {
     .replace(/:\s+/g, ":")
     .replace(/;}/g, "}")
     .trim();
+}
+
+export function pngSize(buf) {
+  if (buf.readUInt32BE(12) !== 0x49484452) throw new Error("Not a PNG");
+  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+}
+
+export function svgSize(svg) {
+  const root = /<svg\b[^>]*>/.exec(svg)?.[0] ?? "";
+  const attr = (name) => Number.parseFloat(new RegExp(`\\s${name}="([\\d.]+)(px)?"`).exec(root)?.[1]);
+  const box = /viewBox="([^"]+)"/.exec(root)?.[1].trim().split(/[\s,]+/).map(Number);
+  const width = attr("width") || box?.[2];
+  const height = attr("height") || box?.[3];
+  if (!width || !height) throw new Error("SVG has no size");
+  return { width: Math.round(width), height: Math.round(height) };
 }
 
 // Width and height from a baseline or progressive JPEG.

@@ -55,6 +55,28 @@ export function createUi({ site, assets, isHome }) {
       })}></picture>`;
     },
 
+    // Absolute URL of a raster version of an image, for social cards (no SVG).
+    socialImage(name) {
+      const img = assets.image(name);
+      return img.fallback.endsWith(".svg") ? null : site.url + img.fallback;
+    },
+
+    // The lamp and block drawings of the Blog band.
+    blogArt() {
+      return html`<div class="hero-art hero-art--blog-top" aria-hidden="true">${ui.illustration("blog-lamp.svg", { width: 288, height: 300 })}</div>
+        <div class="hero-art hero-art--blog" aria-hidden="true">${ui.illustration("blog-block.svg", { width: 288, height: 290 })}</div>`;
+    },
+
+    // One post in a list: date, reading time and tag, title, description.
+    postItem(post, { headingTag = "h3" } = {}) {
+      const tag = post.tags[0];
+      return html`<article class="post-item">
+                  <p class="meta"><time datetime="${post.date}">${post.dateLabel}</time> · ${post.readingTime} min read${tag ? html` · <a class="tag" href="${tag.url}">#${tag.slug}</a>` : ""}</p>
+                  ${raw(`<${headingTag} class="heading-3">`)}<a href="${post.url}">${post.title}</a>${raw(`</${headingTag}>`)}
+                  <p class="text-m">${post.description}</p>
+                </article>`;
+    },
+
     sectionTitle({ text, number }) {
       return html`<div class="section-title">
             <div class="section-title-text">${text}</div>

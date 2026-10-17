@@ -4,6 +4,7 @@ import { initTabs } from "./tabs.js";
 import { initCarousel } from "./carousel.js";
 import { initCopyButtons } from "./copy-button.js";
 import { initPrefetch } from "./prefetch.js";
+import { initVideos } from "./video.js";
 
 resetScrollOnFreshLoad();
 
@@ -13,4 +14,5 @@ if (nav) initNav(nav);
 document.querySelectorAll("[data-tabs]").forEach(initTabs);
 document.querySelectorAll("[data-carousel]").forEach(initCarousel);
 initCopyButtons(document);
+initVideos(document);
 initPrefetch();

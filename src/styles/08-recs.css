@@ -1,24 +1,9 @@
-/* Recommendations: one large quote at a time. */
+/* Recommendations (a CV tab): one quote at a time, controls below. */
 .recs {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px;
-  padding-top: 56px;
-  border-top: 1px solid var(--rule);
-}
-
-.recs-head {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-}
-
-.recs-label {
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--text);
-  font-size: 22px;
-  line-height: 24px;
-  font-weight: 500;
+  gap: 32px;
+  padding-top: 28px;
 }
 
 .recs-nav {
@@ -66,7 +51,6 @@
 }
 
 .recs-stage {
-  grid-column: span 2;
   display: grid;
   min-width: 0;
 }
@@ -126,33 +110,10 @@
   margin-top: 48px;
 }
 
-@media screen and (max-width: 991px) {
-  .recs {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-  }
-
-  .recs-head {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .recs-label {
-    padding-bottom: 0;
-    border-bottom: 0;
-  }
-}
-
 @media screen and (max-width: 767px) {
   .recs {
-    padding-top: 40px;
-  }
-
-  .recs-label {
-    font-size: 17px;
+    gap: 24px;
+    padding-top: 20px;
   }
 
   .recs-nav {

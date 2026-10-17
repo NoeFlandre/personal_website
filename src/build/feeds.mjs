@@ -1,4 +1,4 @@
-// RSS feed, sitemap and robots.txt.
+// RSS feed, sitemap, robots.txt and redirect pages.
 
 import { escape } from "./html.mjs";
 
@@ -12,7 +12,7 @@ export function renderRss({ site, posts }) {
         `      <link>${escape(link)}</link>`,
         `      <guid isPermaLink="true">${escape(link)}</guid>`,
         `      <description>${escape(p.description)}</description>`,
-        `      <pubDate>${new Date(`${p.date}T07:00:00Z`).toUTCString()}</pubDate>`,
+        `      <pubDate>${new Date(p.date).toUTCString()}</pubDate>`,
         "    </item>",
       ].join("\n");
     })
@@ -42,4 +42,22 @@ ${urls}
 
 export function renderRobots({ site }) {
   return `User-agent: *\nAllow: /\n\nSitemap: ${site.url}/sitemap.xml\n`;
+}
+
+// A page that sends visitors (and search engines) to another URL, for old
+// addresses a static host cannot redirect, such as /about -> /#about.
+export function renderRedirect({ site, to }) {
+  const target = escape(to);
+  return `<!DOCTYPE html>
+<html lang="${escape(site.lang)}">
+<head>
+<meta charset="utf-8">
+<title>Redirecting…</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="${escape(site.url)}${target}">
+<meta http-equiv="refresh" content="0; url=${target}">
+</head>
+<body><a href="${target}">${escape(site.url)}${target}</a></body>
+</html>
+`;
 }

@@ -42,3 +42,14 @@ test("bundleScripts rejects duplicate top-level names", async () => {
   });
   await assert.rejects(bundleScripts(join(dir, "main.js")), /"helper" is declared in both/);
 });
+
+test("image sizes from SVG and PNG headers", async () => {
+  const { svgSize, pngSize } = await import("../src/build/assets.mjs");
+  assert.deepEqual(svgSize('<svg xmlns="x" viewBox="0 0 960 540">'), { width: 960, height: 540 });
+  assert.deepEqual(svgSize('<svg width="120px" height="80" viewBox="0 0 10 10">'), { width: 120, height: 80 });
+  const png = Buffer.alloc(24);
+  png.writeUInt32BE(0x49484452, 12);
+  png.writeUInt32BE(640, 16);
+  png.writeUInt32BE(480, 20);
+  assert.deepEqual(pngSize(png), { width: 640, height: 480 });
+});

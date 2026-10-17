@@ -1,5 +1,5 @@
 {
-  "pdf": "https://noeflandre.com/assets/docs/noe-flandre-cv.pdf",
+  "pdf": "/assets/docs/noe-flandre-cv.pdf",
   "me": "Noe Y. Flandre",
   "groups": [
     {
@@ -240,6 +240,40 @@
           "title": "Classroom Construction Project Management — Tsiky Zanaka",
           "url": "https://tsikyzanaka.org/2025/02/09/projet-2023/",
           "text": "Helped organizing and building a 11,500 euros project, collected funds throughout the year, and contributed to a six-week on-site mission (June 30 to August 9, 2023) with student volunteers."
+        }
+      ]
+    },
+    {
+      "id": "recommendations",
+      "label": "Recommendations",
+      "kind": "recommendation",
+      "items": [
+        {
+          "name": "Philippe Giabbanelli",
+          "url": "https://scholar.google.com/citations?user=7YilOHoAAAAJ&hl=en",
+          "role": "(Full) Research Professor, VMASC, Old Dominion University",
+          "relation": "Direct supervisor during two summer internships",
+          "date": "August 12, 2024",
+          "lang": "en",
+          "quote": "I was Noe's sole supervisor during his two summer internships in 2024. He did a truly impressive amount of work and he was able to quickly learn the ropes of being a researcher in an international center. I am confident that several publications at reputable venues will eventually arise from his commendable efforts."
+        },
+        {
+          "name": "Johann Desloires",
+          "url": "https://www.linkedin.com/in/johann-desloires/",
+          "role": "Geospatial Data Scientist | EO & ML | End-to-End Applications",
+          "relation": "Worked with Noé on the same team",
+          "date": "August 19, 2026",
+          "lang": "en",
+          "quote": "I had the pleasure of meeting Noé during his internship at Airbus Defence and Space and hearing about his work on vision-language models for remote sensing. While I was not his direct supervisor, I was impressed by the quality of his final presentation, his technical understanding, and his ability to clearly communicate his work. I wish Noé all the best for the next steps of his career and would be happy to recommend him."
+        },
+        {
+          "name": "Gerard Dray",
+          "url": "https://scholar.google.com/citations?user=RMhmwNQAAAAJ&hl=fr",
+          "role": "Professor, IMT Mines Ales",
+          "relation": "Research initiation project supervisor",
+          "date": "July 8, 2024",
+          "lang": "en",
+          "quote": "I highly recommend Noe Flandre for any professional opportunity in his field of expertise. Having worked with him during a research initiation project, I observed his rigor, professionalism, and ability to successfully manage complex projects."
         }
       ]
     }

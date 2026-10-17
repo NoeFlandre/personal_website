@@ -1,7 +1,6 @@
 // Home page: About, CV, Blog and Contact chapters.
 
 import { html, raw } from "../build/html.mjs";
-import { formatDate } from "../build/content.mjs";
 
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -36,30 +35,6 @@ function renderAbout(ui, section, about) {
             ${links.map((l) => html`<li><a href="${l.url}" aria-label="${l.label}" title="${l.label}">${ui.icon(l.icon)}</a></li>`)}
           </ul>`;
 
-  const recs = about.recommendations;
-  const carousel = html`<section class="recs" id="recommendations" data-carousel aria-roledescription="carousel" aria-labelledby="recommendations-title">
-              <div class="recs-head">
-                <h3 class="recs-label" id="recommendations-title">Recommendations</h3>
-                <div class="recs-nav">
-                  <button class="recs-btn" type="button" data-step="-1" aria-label="Previous recommendation">←</button>
-                  <p class="recs-count" aria-live="polite"><span data-current>01</span> / ${pad(recs.length)}</p>
-                  <button class="recs-btn" type="button" data-step="1" aria-label="Next recommendation">→</button>
-                </div>
-              </div>
-              <div class="recs-stage">
-                ${recs.map(
-                  (r, i) => html`<figure class="rec${i === 0 ? " is-active" : ""}" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${recs.length}"${raw(i ? ' aria-hidden="true"' : "")}>
-                  <blockquote class="rec-quote" lang="${r.lang}">“${r.quote}”</blockquote>
-                  <figcaption class="rec-by">
-                    <a href="${r.url}">${r.name}</a>
-                    <span class="meta">${r.role}</span>
-                    <span class="meta">${r.relation} · ${r.date}</span>
-                  </figcaption>
-                </figure>`
-                )}
-              </div>
-            </section>`;
-
   return ui.chapter({
     section,
     number: "01",
@@ -85,7 +60,6 @@ function renderAbout(ui, section, about) {
                 ${about.bio.map((p) => html`<p class="heading-3">${ui.md(p, { linkClass: "link-accent" })}</p>`)}
               </div>
             </div>
-            ${carousel}
           </div>`,
     },
   });
@@ -133,14 +107,38 @@ function renderCv(ui, section, intro, cv) {
                   </li>`;
   };
 
+  // Quotes, one at a time.
+  const recommendations = (g) => {
+    const recs = g.items;
+    return html`<div class="recs" data-carousel aria-roledescription="carousel" aria-label="${g.label}">
+                  <div class="recs-stage">
+                    ${recs.map(
+                      (r, i) => html`<figure class="rec${i === 0 ? " is-active" : ""}" role="group" aria-roledescription="slide" aria-label="${i + 1} of ${recs.length}"${raw(i ? ' aria-hidden="true"' : "")}>
+                      <blockquote class="rec-quote" lang="${r.lang}">“${r.quote}”</blockquote>
+                      <figcaption class="rec-by">
+                        <a href="${r.url}">${r.name}</a>
+                        <span class="meta">${r.role}</span>
+                        <span class="meta">${r.relation} · ${r.date}</span>
+                      </figcaption>
+                    </figure>`
+                    )}
+                  </div>
+                  <div class="recs-nav">
+                    <button class="recs-btn" type="button" data-step="-1" aria-label="Previous recommendation">←</button>
+                    <p class="recs-count" aria-live="polite"><span data-current>01</span> / ${pad(recs.length)}</p>
+                    <button class="recs-btn" type="button" data-step="1" aria-label="Next recommendation">→</button>
+                  </div>
+                </div>`;
+  };
+
   const panels = groups.map((g, i) => {
     const prev = groups[i - 1];
     const next = groups[i + 1];
     return html`<section class="cv-group" id="${id(g)}" aria-labelledby="${id(g)}-title">
                 <h3 class="cv-heading" id="${id(g)}-title"><span>${g.label}</span><span class="cv-heading-count">${pad(g.items.length)}</span></h3>
-                <ol class="cv-list">
+                ${g.kind === "recommendation" ? recommendations(g) : html`<ol class="cv-list">
                   ${g.items.map((item) => entry(item, g.kind))}
-                </ol>
+                </ol>`}
                 <p class="cv-pager">${prev ? html`<a class="link-arrow" href="#${id(prev)}">← ${prev.label}</a>` : ""}${
       next ? html`<a class="link-arrow cv-pager-next" href="#${id(next)}">${next.label} →</a>` : ""
     }</p>
@@ -162,13 +160,10 @@ function renderCv(ui, section, intro, cv) {
 }
 
 function renderBlog(ui, section, blog, posts) {
-  const items = blog.featured.map((f) => {
-    if (f.post) {
-      const p = posts.find((post) => post.id === f.post);
-      if (!p) throw new Error(`home.json: featured post "${f.post}" not found`);
-      return { title: p.title, url: p.url, date: p.date, readingTime: p.readingTime, description: p.description };
-    }
-    return { ...f, external: true };
+  const featured = blog.featured.map((id) => {
+    const post = posts.find((p) => p.id === id);
+    if (!post) throw new Error(`home.json: featured post "${id}" not found`);
+    return post;
   });
 
   return ui.chapter({
@@ -177,24 +172,17 @@ function renderBlog(ui, section, blog, posts) {
     hero: {
       heading: blog.headline,
       half: true,
-      art: html`<div class="hero-art hero-art--blog-top" aria-hidden="true">${ui.illustration("blog-lamp.svg", { width: 288, height: 300 })}</div>
-        <div class="hero-art hero-art--blog" aria-hidden="true">${ui.illustration("blog-block.svg", { width: 288, height: 290 })}</div>`,
+      art: ui.blogArt(),
     },
     content: {
       label: "Featured blog posts",
       body: ui.contentGrid({
         number: "03",
         main: html`<div class="post-list">
-                ${items.map(
-                  (p) => html`<article class="post-item">
-                  <p class="meta"><time datetime="${p.date}">${formatDate(p.date)}</time> · ${p.readingTime} min read${p.external ? " · noeflandre.com ↗" : ""}</p>
-                  <h3 class="heading-3"><a href="${p.url}">${p.title}</a></h3>
-                  <p class="text-m">${p.description}</p>
-                </article>`
-                )}
+                ${featured.map((p) => ui.postItem(p))}
               </div>
               <p class="link-row">
-                <a class="link-arrow" href="${blog.allPosts}">All posts →</a>
+                <a class="link-arrow" href="/posts">All ${posts.length} posts →</a>
                 <a class="link-arrow" href="/rss.xml">RSS feed</a>
               </p>`,
       }),

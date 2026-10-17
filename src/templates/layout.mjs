@@ -40,9 +40,11 @@ ${html`<html lang="${site.lang}">
       : ""
   }
   <link rel="icon" href="${ctx.favicon}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="alternate" type="application/rss+xml" title="${site.name}" href="/rss.xml">
   <link rel="preload" href="${ctx.font}" as="font" type="font/woff2" crossorigin>
-  <style>${raw(ctx.css)}</style>
+  <style>${raw(ctx.css)}</style>${(page.stylesheets ?? []).map((href) => html`
+  <link rel="stylesheet" href="${href}">`)}
   <script type="speculationrules">${raw(SPECULATION_RULES)}</script>
   <script src="${ctx.script}" defer></script>
 </head>

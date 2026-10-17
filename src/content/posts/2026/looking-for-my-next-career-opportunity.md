@@ -1,14 +1,12 @@
 ---
-title: I am looking for my next career opportunity!
-description: My contract at INRIA will be ending at the beginning of 2027, and I am starting to look for my next opportunity.
-date: 2026-10-15
-tags: [post]
-next:
-  title: "RoPE: How to find the pair index that rotates N times"
-  url: https://noeflandre.com/posts/2026/rope-pair-index-rotations
+title: "I am looking for my next career opportunity!"
+description: "My contract at INRIA will be ending at the beginning of 2027, and I am starting to look for my next opportunity."
+date: 2026-10-15T00:00:00-07:00
+tags: [Post]
+hero: hero
+heroAlt: "A person in a dark jacket stands among red stone arches and geometric patterned panels."
+heroCaption: "Fatehpur Sikri, January 2026."
 ---
-
-![A person in a dark jacket stands among red stone arches and geometric patterned panels.](fatehpur-sikri "Fatehpur Sikri, January 2026.")
 
 I am currently an AI Research Engineer at INRIA. My work focuses on linking text with geographic footprints (e.g polygons). The project I am involved in targets text describing any features having a remote sensing signature (e.g landuse).
 
@@ -20,4 +18,4 @@ My contract at INRIA will be ending at the beginning of 2027, and I am starting 
 
 Feel free to reach out :)
 
-Resume: [noe-flandre-cv](https://noeflandre.com/assets/docs/noe-flandre-cv.pdf)
+Resume: [noe-flandre-cv](/assets/docs/noe-flandre-cv.pdf)
