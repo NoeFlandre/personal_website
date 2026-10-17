@@ -63,7 +63,7 @@ export function createUi({ site, assets, isHome }) {
 
     // The lamp and block drawings of the Blog band.
     blogArt() {
-      return html`<div class="hero-art hero-art--blog-top" aria-hidden="true">${ui.illustration("blog-lamp.svg", { width: 288, height: 300 })}</div>
+      return html`<div class="hero-art hero-art--blog-top" aria-hidden="true">${ui.illustration("blog-lamp.svg", { width: 288, height: 336 })}</div>
         <div class="hero-art hero-art--blog" aria-hidden="true">${ui.illustration("blog-block.svg", { width: 288, height: 290 })}</div>`;
     },
 
