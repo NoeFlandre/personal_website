@@ -110,7 +110,7 @@ export function renderPost(ctx, ui, post, { site }) {
     ogType: "article",
     published: post.date,
     image: post.hero ? ui.socialImage(`posts/${post.id}/${post.hero}`) : null,
-    stylesheets: prose.includes('class="katex') ? [ctx.mathStylesheet()] : [],
+    css: prose.includes('class="katex') ? ctx.mathCss() : "",
     current: { id: section.id, aria: "page" },
     progress: true,
     body,

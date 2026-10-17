@@ -1,9 +1,12 @@
 // Maths, rendered to HTML by KaTeX at build time: readers download no
-// JavaScript for it, only KaTeX's stylesheet and the fonts a page uses.
+// JavaScript for it, only KaTeX's styles and the fonts a page uses.
 //
 //   tex("x^2", false)          -> HTML
-//   const css = await loadMathStyles();
-//   css.emit(assets)           -> "/assets/katex/katex.<hash>.css" (fonts emitted alongside)
+//   const styles = await loadMathStyles();
+//   styles.css(assets)         -> KaTeX's CSS, to inline in pages with maths (fonts emitted as assets)
+//
+// The CSS is inlined rather than linked: it also hides the MathML copy kept
+// for screen readers, so a page must never render without it.
 
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -19,17 +22,15 @@ export async function loadMathStyles() {
   const css = await readFile(join(dist, "katex-swap.min.css"), "utf8");
   const names = [...new Set([...css.matchAll(/url\(fonts\/([\w-]+)\.woff2\)/g)].map((m) => m[1]))];
   const fonts = new Map(await Promise.all(names.map(async (n) => [n, await readFile(join(dist, "fonts", `${n}.woff2`))])));
-  let url;
+  let inline;
 
   return {
-    emit(assets) {
-      if (url) return url;
-      const rewritten = css.replace(
+    css(assets) {
+      inline ??= css.replace(
         /src:url\(fonts\/([\w-]+)\.woff2\) format\("woff2"\)(?:,url\([^)]+\) format\("[^"]+"\))*/g,
-        (_, name) => `src:url(${assets.emitHashed("assets/katex", `${name}.woff2`, fonts.get(name))}) format("woff2")`
+        (_, name) => `src:url("${assets.emitHashed("assets/katex", `${name}.woff2`, fonts.get(name))}") format("woff2")`
       );
-      url = assets.emitHashed("assets/katex", "katex.css", rewritten);
-      return url;
+      return inline;
     },
   };
 }

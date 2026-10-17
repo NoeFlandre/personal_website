@@ -31,7 +31,7 @@ export async function build({ root = process.cwd(), outDir = "dist", write = tru
     script: assets.emitHashed("assets", "site.js", await bundleScripts(join(src, "scripts", "main.js"))),
     font: assets.url("fonts/inter.woff2"),
     favicon: assets.url("img/favicon.svg"),
-    mathStylesheet: () => math.emit(assets),
+    mathCss: () => math.css(assets),
   };
 
   const files = new Map();

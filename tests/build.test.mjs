@@ -72,13 +72,14 @@ test("every internal link and asset resolves", () => {
   }
 });
 
-test("maths is rendered at build time, and only pages with maths load its stylesheet", () => {
+test("maths is rendered at build time, and only pages with maths carry its styles", () => {
   const withMath = text("posts/2026/attention-pooling/index.html");
   assert.match(withMath, /class="katex"/);
-  assert.match(withMath, /<link rel="stylesheet" href="\/assets\/katex\/katex\.\w+\.css">/);
-  assert.doesNotMatch(text("posts/monopoly/index.html"), /class="katex|katex\.\w+\.css/);
-  const css = [...files].find(([p]) => /^assets\/katex\/katex\.\w+\.css$/.test(p));
-  for (const [, url] of String(css[1]).matchAll(/url\(([^)]+)\)/g)) assert.ok(files.has(url.slice(1)), url);
+  // KaTeX's CSS sits in the page's own <style>: it hides the MathML copy, so it must never fail to load.
+  const style = /<style>([\s\S]*?)<\/style>/.exec(withMath)[1];
+  assert.match(style, /\.katex \.katex-mathml\{/);
+  for (const [, url] of style.matchAll(/url\("(\/assets\/katex\/[^"]+)"\)/g)) assert.ok(files.has(url.slice(1)), url);
+  assert.doesNotMatch(text("posts/monopoly/index.html"), /class="katex|katex-mathml|KaTeX_/);
 });
 
 test("each page ships only the icons it uses", () => {
