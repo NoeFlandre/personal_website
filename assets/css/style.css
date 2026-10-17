@@ -603,55 +603,134 @@ figure {
   object-position: center 22%;
 }
 
-.quotes {
+/* Recommendations: one large quote at a time */
+.recs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px;
-  margin-top: 24px;
+  padding-top: 56px;
+  border-top: 1px solid var(--rule);
 }
 
-.quotes .quote {
-  margin: 0;
-  padding: 0 0 0 16px;
-  border: 0;
-  border-left: 2px solid var(--accent);
-  gap: 10px;
+.recs-head {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.quotes blockquote {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  overflow: hidden;
-  font-size: 14px;
-  line-height: 23px;
+.recs-label {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--text);
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 500;
 }
 
-.quotes .quote.is-open blockquote {
-  display: block;
+.recs-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-.quote-more {
-  align-self: flex-start;
-  padding: 0;
-  border: 0;
-  background: none;
+.recs-count {
+  min-width: 72px;
+  text-align: center;
+  font-size: 15px;
+  line-height: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+.recs-count [data-rec-current] {
   color: var(--accent);
-  font: inherit;
-  font-size: 13px;
-  line-height: 20px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
+  font-weight: 700;
 }
 
-.quote-more:hover {
+.recs-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: transparent;
   color: var(--text);
+  font: inherit;
+  font-size: 18px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
-.quotes figcaption .meta {
-  font-size: 12px;
-  line-height: 18px;
+.recs-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.recs-btn:active {
+  background: rgb(194 211 219 / 0.08);
+}
+
+.recs-stage {
+  grid-column: span 2;
+  display: grid;
+  min-width: 0;
+}
+
+.rec {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin: 0;
+}
+
+.rec-quote {
+  margin: 0;
+  font-size: 22px;
+  line-height: 34px;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+.rec-by {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rec-by a {
+  align-self: flex-start;
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.rec-by a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* With JS: stack the quotes in one cell so the block keeps the height of the longest */
+.recs.is-carousel .rec {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;
+}
+
+.recs.is-carousel .rec.is-active {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s;
+}
+
+.recs:not(.is-carousel) .recs-nav {
+  display: none;
+}
+
+.recs:not(.is-carousel) .rec + .rec {
+  margin-top: 48px;
 }
 
 /* CV and recommendations */
@@ -773,13 +852,11 @@ figure {
   line-height: 20px;
 }
 
-.entry .heading-4 a,
-.quote figcaption a {
+.entry .heading-4 a {
   text-decoration: none;
 }
 
-.entry .heading-4 a:hover,
-.quote figcaption a:hover {
+.entry .heading-4 a:hover {
   color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -860,30 +937,6 @@ details > div {
 
 .coursework dd {
   margin: 0;
-}
-
-.quote {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--rule);
-}
-
-.quote blockquote {
-  margin: 0;
-  font-size: 15px;
-  line-height: 26px;
-}
-
-.quote figcaption {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.quote figcaption > a {
-  font-weight: 700;
 }
 
 .email-row {
@@ -1327,6 +1380,24 @@ details > div {
     grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
   }
 
+  .recs {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .recs-head {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .recs-label {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
   .about-grid .portrait {
     margin: 0;
   }
@@ -1335,14 +1406,6 @@ details > div {
     grid-column: auto;
   }
 
-  .quotes {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .quotes blockquote {
-    -webkit-line-clamp: 3;
-  }
 
   .cv-nav {
     position: static;
@@ -1496,6 +1559,33 @@ details > div {
     display: flex;
     flex-direction: column;
     gap: 24px;
+  }
+
+  .recs {
+    padding-top: 40px;
+  }
+
+  .recs-label {
+    font-size: 16px;
+  }
+
+  .recs-nav {
+    gap: 8px;
+  }
+
+  .recs-count {
+    min-width: 56px;
+    font-size: 13px;
+  }
+
+  .recs-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .rec-quote {
+    font-size: 17px;
+    line-height: 28px;
   }
 
   .about-grid .portrait {

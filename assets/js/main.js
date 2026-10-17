@@ -180,28 +180,45 @@
     selectTab(fromHash > 0 ? fromHash : 0);
   }
 
-  /* ---- Recommendations: "Read more" only on clamped quotes ---- */
-  document.querySelectorAll(".quotes .quote").forEach(function (fig) {
-    var quote = fig.querySelector("blockquote");
-    if (!quote) return;
-    var btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "quote-more";
-    btn.textContent = "Read more";
-    btn.setAttribute("aria-expanded", "false");
-    btn.addEventListener("click", function () {
-      var open = fig.classList.toggle("is-open");
-      btn.textContent = open ? "Show less" : "Read more";
-      btn.setAttribute("aria-expanded", String(open));
+  /* ---- Recommendations: one quote at a time ---- */
+  var recs = document.querySelector(".recs");
+  if (recs) {
+    var slides = Array.prototype.slice.call(recs.querySelectorAll(".rec"));
+    var counter = recs.querySelector("[data-rec-current]");
+    var index = 0;
+    var show = function (i) {
+      index = (i + slides.length) % slides.length;
+      slides.forEach(function (sl, j) {
+        var on = j === index;
+        sl.classList.toggle("is-active", on);
+        if (on) sl.removeAttribute("aria-hidden");
+        else sl.setAttribute("aria-hidden", "true");
+      });
+      if (counter) counter.textContent = String(index + 1).padStart(2, "0");
+    };
+    recs.classList.add("is-carousel");
+    recs.querySelectorAll("[data-rec-step]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        show(index + Number(b.getAttribute("data-rec-step")));
+      });
     });
-    quote.insertAdjacentElement("afterend", btn);
-    function sync() {
-      if (fig.classList.contains("is-open")) return;
-      btn.hidden = quote.scrollHeight <= quote.clientHeight + 2;
-    }
-    sync();
-    window.addEventListener("resize", sync);
-  });
+    recs.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") show(index + 1);
+      else if (e.key === "ArrowLeft") show(index - 1);
+    });
+    var startX = null;
+    var stage = recs.querySelector(".recs-stage");
+    stage.addEventListener("touchstart", function (e) {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      if (startX === null) return;
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) show(index + (dx < 0 ? 1 : -1));
+      startX = null;
+    });
+    show(0);
+  }
 
   /* ---- Copy buttons ---- */
   document.querySelectorAll("[data-copy]").forEach(function (btn) {

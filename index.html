@@ -120,20 +120,39 @@
                 <p class="heading-3">Feel free to <a class="link-accent" href="#contact">reach out</a>!</p>
               </div>
             </div>
-            <section class="cv-group recs" id="recommendations" aria-labelledby="recommendations-title">
-              <h3 class="cv-title" id="recommendations-title">Recommendations</h3>
-              <div class="quotes">
-                <figure class="quote">
-                  <blockquote class="text-m" lang="en">“I was Noe&#x27;s sole supervisor during his two summer internships in 2024. He did a truly impressive amount of work and he was able to quickly learn the ropes of being a researcher in an international center. I am confident that several publications at reputable venues will eventually arise from his commendable efforts.”</blockquote>
-                  <figcaption><a href="https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en">Philippe Giabbanelli</a><span class="meta">(Full) Research Professor, VMASC, Old Dominion University</span><span class="meta">Direct supervisor during two summer internships · August 12, 2024</span></figcaption>
+            <section class="recs" id="recommendations" aria-roledescription="carousel" aria-labelledby="recommendations-title">
+              <div class="recs-head">
+                <h3 class="recs-label" id="recommendations-title">Recommendations</h3>
+                <div class="recs-nav">
+                  <button class="recs-btn" type="button" data-rec-step="-1" aria-label="Previous recommendation">←</button>
+                  <p class="recs-count" aria-live="polite"><span data-rec-current>01</span> / 03</p>
+                  <button class="recs-btn" type="button" data-rec-step="1" aria-label="Next recommendation">→</button>
+                </div>
+              </div>
+              <div class="recs-stage">
+                <figure class="rec is-active" id="rec-1" role="group" aria-roledescription="slide" aria-label="1 of 3">
+                  <blockquote class="rec-quote" lang="en">“I was Noe&#x27;s sole supervisor during his two summer internships in 2024. He did a truly impressive amount of work and he was able to quickly learn the ropes of being a researcher in an international center. I am confident that several publications at reputable venues will eventually arise from his commendable efforts.”</blockquote>
+                  <figcaption class="rec-by">
+                    <a href="https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en">Philippe Giabbanelli</a>
+                    <span class="meta">(Full) Research Professor, VMASC, Old Dominion University</span>
+                    <span class="meta">Direct supervisor during two summer internships · August 12, 2024</span>
+                  </figcaption>
                 </figure>
-                <figure class="quote">
-                  <blockquote class="text-m" lang="en">“I had the pleasure of meeting Noé during his internship at Airbus Defence and Space and hearing about his work on vision-language models for remote sensing. While I was not his direct supervisor, I was impressed by the quality of his final presentation, his technical understanding, and his ability to clearly communicate his work. I wish Noé all the best for the next steps of his career and would be happy to recommend him.”</blockquote>
-                  <figcaption><a href="https://www.linkedin.com/in/johann-desloires/">Johann Desloires</a><span class="meta">Geospatial Data Scientist | EO &amp; ML | End-to-End Applications</span><span class="meta">Worked with Noé on the same team · August 19, 2026</span></figcaption>
+                <figure class="rec" id="rec-2" role="group" aria-roledescription="slide" aria-label="2 of 3" aria-hidden="true">
+                  <blockquote class="rec-quote" lang="en">“I had the pleasure of meeting Noé during his internship at Airbus Defence and Space and hearing about his work on vision-language models for remote sensing. While I was not his direct supervisor, I was impressed by the quality of his final presentation, his technical understanding, and his ability to clearly communicate his work. I wish Noé all the best for the next steps of his career and would be happy to recommend him.”</blockquote>
+                  <figcaption class="rec-by">
+                    <a href="https://www.linkedin.com/in/johann-desloires/">Johann Desloires</a>
+                    <span class="meta">Geospatial Data Scientist | EO &amp; ML | End-to-End Applications</span>
+                    <span class="meta">Worked with Noé on the same team · August 19, 2026</span>
+                  </figcaption>
                 </figure>
-                <figure class="quote">
-                  <blockquote class="text-m" lang="en">“I highly recommend Noe Flandre for any professional opportunity in his field of expertise. Having worked with him during a research initiation project, I observed his rigor, professionalism, and ability to successfully manage complex projects.”</blockquote>
-                  <figcaption><a href="https://scholar.google.com/citations?user=RMhmwNQAAAAJ&amp;hl=fr">Gerard Dray</a><span class="meta">Professor, IMT Mines Ales</span><span class="meta">Research initiation project supervisor · July 8, 2024</span></figcaption>
+                <figure class="rec" id="rec-3" role="group" aria-roledescription="slide" aria-label="3 of 3" aria-hidden="true">
+                  <blockquote class="rec-quote" lang="en">“I highly recommend Noe Flandre for any professional opportunity in his field of expertise. Having worked with him during a research initiation project, I observed his rigor, professionalism, and ability to successfully manage complex projects.”</blockquote>
+                  <figcaption class="rec-by">
+                    <a href="https://scholar.google.com/citations?user=RMhmwNQAAAAJ&amp;hl=fr">Gerard Dray</a>
+                    <span class="meta">Professor, IMT Mines Ales</span>
+                    <span class="meta">Research initiation project supervisor · July 8, 2024</span>
+                  </figcaption>
                 </figure>
               </div>
             </section>
