@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 220" width="360" height="220" fill="#470e25">
+  <!-- Dome -->
+  <path d="M8 220v-80a82 82 0 0 1 164 0v80z"/>
+  <circle cx="90" cy="134" r="20" fill="#ff451a"/>
+  <circle cx="96" cy="138" r="8"/>
+  <rect x="50" y="186" width="80" height="8" rx="4" fill="#ff451a"/>
+  <!-- Step block -->
+  <path d="M184 220V100h96V44h72v176z"/>
+  <circle cx="316" cy="88" r="18" fill="#ff451a"/>
+  <circle cx="321" cy="91" r="7"/>
+  <rect x="204" y="156" width="60" height="8" rx="4" fill="#ff451a"/>
+</svg>

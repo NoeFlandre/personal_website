@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 300" width="288" height="300" fill="#470e25">
+  <!-- Hanging lamp: cord and an upturned bowl with one eye -->
+  <rect x="136" y="0" width="16" height="152"/>
+  <path d="M0 150h288a144 144 0 0 1-288 0z"/>
+  <rect x="0" y="172" width="288" height="8" fill="#8d66f0"/>
+  <circle cx="144" cy="226" r="30" fill="#8d66f0"/>
+  <circle cx="151" cy="233" r="12"/>
+</svg>

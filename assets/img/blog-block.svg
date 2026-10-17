@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 290" width="288" height="290" fill="#470e25">
+  <!-- Rounded block: one eye and a slot mouth -->
+  <path d="M0 290V64A64 64 0 0 1 64 0h160a64 64 0 0 1 64 64v226z"/>
+  <circle cx="98" cy="92" r="30" fill="#8d66f0"/>
+  <circle cx="106" cy="98" r="12"/>
+  <rect x="60" y="172" width="120" height="10" rx="5" fill="#8d66f0"/>
+</svg>
