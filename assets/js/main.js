@@ -154,6 +154,29 @@
     });
   }
 
+  /* ---- Recommendations: "Read more" only on clamped quotes ---- */
+  document.querySelectorAll(".quotes .quote").forEach(function (fig) {
+    var quote = fig.querySelector("blockquote");
+    if (!quote) return;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "quote-more";
+    btn.textContent = "Read more";
+    btn.setAttribute("aria-expanded", "false");
+    btn.addEventListener("click", function () {
+      var open = fig.classList.toggle("is-open");
+      btn.textContent = open ? "Show less" : "Read more";
+      btn.setAttribute("aria-expanded", String(open));
+    });
+    quote.insertAdjacentElement("afterend", btn);
+    function sync() {
+      if (fig.classList.contains("is-open")) return;
+      btn.hidden = quote.scrollHeight <= quote.clientHeight + 2;
+    }
+    sync();
+    window.addEventListener("resize", sync);
+  });
+
   /* ---- Copy buttons ---- */
   document.querySelectorAll("[data-copy]").forEach(function (btn) {
     var label = btn.querySelector("span");

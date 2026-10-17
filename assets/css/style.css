@@ -580,7 +580,15 @@ figure {
 
 /* About: portrait beside the bio, facts row, recommendations below */
 .about-grid {
-  row-gap: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+.about-top {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
 }
 
 .about-media {
@@ -617,22 +625,55 @@ figure {
   font-weight: 700;
 }
 
-.recs {
-  grid-column: 1 / -1;
-}
-
 .quotes {
-  columns: 3;
-  column-gap: 40px;
-  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  margin-top: 24px;
 }
 
 .quotes .quote {
-  break-inside: avoid;
-  margin: 0 0 36px;
-  padding: 0 0 0 18px;
+  margin: 0;
+  padding: 0 0 0 16px;
   border: 0;
   border-left: 2px solid var(--accent);
+  gap: 10px;
+}
+
+.quotes blockquote {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 23px;
+}
+
+.quotes .quote.is-open blockquote {
+  display: block;
+}
+
+.quote-more {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.quote-more:hover {
+  color: var(--text);
+}
+
+.quotes figcaption .meta {
+  font-size: 12px;
+  line-height: 18px;
 }
 
 /* CV and recommendations */
@@ -1281,11 +1322,8 @@ details > div {
     display: none;
   }
 
-  .about-grid {
-    display: grid;
+  .about-top {
     grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
-    gap: 32px;
-    row-gap: 56px;
   }
 
   .about-grid .portrait {
@@ -1297,7 +1335,12 @@ details > div {
   }
 
   .quotes {
-    columns: 2;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .quotes blockquote {
+    -webkit-line-clamp: 3;
   }
 
   .cv-nav {
@@ -1445,6 +1488,10 @@ details > div {
   }
 
   .about-grid {
+    gap: 40px;
+  }
+
+  .about-top {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -1460,10 +1507,6 @@ details > div {
     object-position: center 18%;
   }
 
-  .recs {
-    margin-top: 24px;
-  }
-
   .facts {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -1471,10 +1514,6 @@ details > div {
 
   .facts dd {
     margin-top: 2px;
-  }
-
-  .quotes {
-    columns: 1;
   }
 
   .entry {
