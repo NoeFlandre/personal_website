@@ -727,12 +727,20 @@ figure {
   scroll-margin-top: 120px;
 }
 
+.cv-group[hidden] {
+  display: none;
+}
+
+.cv-nav ul a[aria-selected="true"] {
+  font-weight: 700;
+}
+
 .cv-group + .cv-group {
   margin-top: 48px;
 }
 
-.content-block > .cv-group:not(:first-child) {
-  margin-top: 40px;
+.cv-tabbed .cv-group + .cv-group {
+  margin-top: 0;
 }
 
 .cv-title {
@@ -748,10 +756,21 @@ figure {
 
 .entry {
   display: grid;
-  grid-template-columns: 170px minmax(0, 1fr);
-  gap: 6px 24px;
-  padding: 22px 0;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 4px 24px;
+  padding: 14px 0;
   border-bottom: 1px solid var(--rule);
+}
+
+.entry .heading-4 {
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.entry .text-m,
+.entry details > div {
+  font-size: 14px;
+  line-height: 22px;
 }
 
 .entry-when {
@@ -763,8 +782,17 @@ figure {
 .entry-body {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
   min-width: 0;
+}
+
+.entry-body details {
+  margin-top: 2px;
+}
+
+.entry-when {
+  font-size: 12px;
+  line-height: 20px;
 }
 
 .entry .heading-4 a,
@@ -793,15 +821,10 @@ figure {
   font-weight: 700;
 }
 
-.badge {
-  align-self: flex-start;
-  margin-top: 2px;
-  padding: 3px 10px;
-  border: 1px solid var(--accent);
-  border-radius: 6px;
+.note {
   color: var(--accent);
   font-size: 12px;
-  line-height: 20px;
+  line-height: 18px;
 }
 
 details summary {
@@ -1518,8 +1541,8 @@ details > div {
 
   .entry {
     grid-template-columns: 1fr;
-    gap: 6px;
-    padding: 18px 0;
+    gap: 2px;
+    padding: 14px 0;
   }
 
   .entry-when {

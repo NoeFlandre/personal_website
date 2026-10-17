@@ -129,29 +129,55 @@
     }
   });
 
-  /* ---- CV jump menu follows the group in view ---- */
-  var cvLinks = Array.prototype.slice.call(document.querySelectorAll(".cv-nav ul a"));
-  if (cvLinks.length && "IntersectionObserver" in window) {
-    var cvSeen = {};
-    var cvObserver = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (en) {
-          cvSeen[en.target.id] = en.isIntersecting;
-        });
-        var current = null;
-        cvLinks.forEach(function (a) {
-          if (!current && cvSeen[a.getAttribute("href").slice(1)]) current = a;
-        });
-        cvLinks.forEach(function (a) {
-          a.classList.toggle("is-current", a === current);
-        });
-      },
-      { rootMargin: "-30% 0px -55% 0px" }
-    );
-    cvLinks.forEach(function (a) {
-      var target = document.getElementById(a.getAttribute("href").slice(1));
-      if (target) cvObserver.observe(target);
+  /* ---- CV: one group at a time, as tabs ---- */
+  var cvList = document.querySelector(".cv-nav ul");
+  if (cvList) {
+    var cvTabs = Array.prototype.slice.call(cvList.querySelectorAll("a"));
+    var cvPanels = cvTabs.map(function (a) {
+      return document.getElementById(a.getAttribute("href").slice(1));
     });
+    var cvGrid = document.querySelector(".content--cv .content-grid");
+
+    cvList.setAttribute("role", "tablist");
+    cvTabs.forEach(function (a, i) {
+      a.parentElement.setAttribute("role", "presentation");
+      a.setAttribute("role", "tab");
+      a.id = "tab-" + cvPanels[i].id;
+      a.setAttribute("aria-controls", cvPanels[i].id);
+      cvPanels[i].setAttribute("role", "tabpanel");
+      cvPanels[i].setAttribute("aria-labelledby", a.id);
+    });
+    if (cvPanels[0]) cvPanels[0].parentElement.classList.add("cv-tabbed");
+
+    var selectTab = function (i, focus) {
+      cvTabs.forEach(function (a, j) {
+        var on = i === j;
+        a.classList.toggle("is-current", on);
+        a.setAttribute("aria-selected", String(on));
+        a.tabIndex = on ? 0 : -1;
+        cvPanels[j].hidden = !on;
+      });
+      if (focus) cvTabs[i].focus();
+    };
+
+    cvTabs.forEach(function (a, i) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        selectTab(i);
+        // A shorter panel can leave you below it; bring the CV back into view.
+        var top = cvGrid ? cvGrid.getBoundingClientRect().top : 0;
+        if (top < 0) window.scrollBy({ top: top - 40, behavior: "smooth" });
+      });
+      a.addEventListener("keydown", function (e) {
+        var next = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: cvTabs.length - 1 }[e.key];
+        if (next === undefined) return;
+        e.preventDefault();
+        selectTab((next + cvTabs.length) % cvTabs.length, true);
+      });
+    });
+
+    var fromHash = cvPanels.map(function (pnl) { return "#" + pnl.id; }).indexOf(location.hash);
+    selectTab(fromHash > 0 ? fromHash : 0);
   }
 
   /* ---- Recommendations: "Read more" only on clamped quotes ---- */
