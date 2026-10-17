@@ -591,8 +591,8 @@ figure {
 
 .about-grid .portrait {
   margin-top: 32px;
-  width: 100%;
-  max-width: none;
+  width: 220px;
+  max-width: 100%;
   aspect-ratio: 4 / 5;
   object-position: center 22%;
 }
@@ -1283,7 +1283,7 @@ details > div {
 
   .about-grid {
     display: grid;
-    grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
     gap: 32px;
     row-gap: 56px;
   }
@@ -1455,6 +1455,7 @@ details > div {
   }
 
   .about-grid .portrait {
+    width: 100%;
     aspect-ratio: 1 / 1;
     object-position: center 18%;
   }
