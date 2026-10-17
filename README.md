@@ -1,20 +1,33 @@
-# Lorem Ipsum — website template
+# noeflandre.com — redesign preview
 
-A static, single-page site with three legal pages. Plain HTML, CSS and a little JavaScript; no build step.
+A minimal preview of [noeflandre.com](https://noeflandre.com) in the new design, using the site's own navy and blue palette. Plain HTML, CSS and a little JavaScript; no build step.
 
-All text is placeholder copy and all illustrations are original stand-ins. Swap them for your own content.
-
-## Structure
+## Pages
 
 ```
-index.html                 Home: Mission, Beliefs, Blog, Careers, footer
-privacy-policy.html        Legal page template
-terms-and-conditions.html  Legal page template
-cookie-policy.html         Legal page template
-assets/css/style.css       All styles (tokens at the top, breakpoints at 991px and 767px)
-assets/js/main.js          Nav hide-on-scroll, nav colour per section, mobile menu
-assets/img/                SVG illustrations, mark and favicon
+index.html                                         Home: About, Work, Blog, Contact, footer
+posts/looking-for-my-next-career-opportunity.html  One full blog post
+assets/css/style.css                               All styles (tokens at the top, breakpoints at 991px and 767px)
+assets/js/main.js                                  Nav hide-on-scroll, nav colour per section, mobile menu
+assets/img/                                        Illustrations, photos, mark and favicon
 ```
+
+The other two posts in the Blog list link to the live site.
+
+## Palette
+
+| Token     | Value     | Used for                                  |
+|-----------|-----------|-------------------------------------------|
+| `--ink`   | `#01242e` | Page base, text on coloured bands         |
+| `--sky`   | `#8cc2dd` | About band, Work accent                   |
+| `--blue`  | `#4d8bf0` | Work band, About accent                   |
+| `--peri`  | `#93a8f4` | Blog band, Contact accent                 |
+| `--ice`   | `#c6e2ef` | Contact band, Blog accent                 |
+| `--fog`   | `#c2d3db` | Text on ink                               |
+| `--mist`  | `#b9cdd6` | Footer                                    |
+| `--frost` | `#9ff0ff` | Closing bar                               |
+
+`--ink` and `--sky` come straight from the current site; `--blue` is its `#3273dc`, lifted so navy text on it stays readable.
 
 ## Run locally
 
@@ -22,13 +35,3 @@ assets/img/                SVG illustrations, mark and favicon
 python3 -m http.server 8000
 # open http://localhost:8000
 ```
-
-## Deploy
-
-Works as-is on GitHub Pages, Netlify, Vercel or any static host.
-
-## Customise
-
-- Colours and fonts: the `:root` tokens at the top of `assets/css/style.css`.
-- Nav colour per section: the `data-color` attribute on each `[data-chapter]` wrapper in `index.html`.
-- Wordmark: the inline `<svg><text>` in the nav and footer.
