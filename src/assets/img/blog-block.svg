@@ -1,7 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 290" width="288" height="290" fill="#01242e">
-  <!-- Rounded block: one eye and a slot mouth -->
-  <path d="M0 290V64A64 64 0 0 1 64 0h160a64 64 0 0 1 64 64v226z"/>
-  <circle cx="98" cy="92" r="30" fill="#93a8f4"/>
-  <circle cx="106" cy="98" r="12"/>
-  <rect x="60" y="172" width="120" height="10" rx="5" fill="#93a8f4"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 290" width="288" height="290" shape-rendering="crispEdges"><path fill="#01242e" d="M89 26h110v22h-110zM67 48h22v22h-22zM199 48h22v22h-22zM45 70h22v22h-22zM221 70h22v22h-22zM23 92h22v22h-22zM89 92h22v22h-22zM177 92h22v22h-22zM243 92h22v22h-22zM23 114h22v22h-22zM89 114h22v22h-22zM177 114h22v22h-22zM243 114h22v22h-22zM23 136h22v22h-22zM243 136h22v22h-22zM23 158h22v22h-22zM111 158h66v22h-66zM243 158h22v22h-22zM45 180h22v22h-22zM221 180h22v22h-22zM67 202h22v22h-22zM199 202h22v22h-22zM89 224h22v22h-22zM177 224h22v22h-22zM111 246h22v22h-22zM155 246h22v22h-22zM133 268h22v22h-22z"/><path fill="#4d8bf0" d="M89 48h110v22h-110zM67 70h154v22h-154zM45 92h44v22h-44zM111 92h66v22h-66zM199 92h44v22h-44zM45 114h44v22h-44zM111 114h66v22h-66zM199 114h44v22h-44zM45 136h198v22h-198zM45 158h22v22h-22zM89 158h22v22h-22zM177 158h22v22h-22zM221 158h22v22h-22zM67 180h154v22h-154zM89 202h110v22h-110zM111 224h66v22h-66zM133 246h22v22h-22z"/><path fill="#f4a6a0" d="M67 158h22v22h-22zM199 158h22v22h-22z"/></svg>

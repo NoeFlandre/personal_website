@@ -51,16 +51,20 @@
   height: 100%;
 }
 
-/* About: figures bleed off the right edge */
+/* About: figures bleed off the right edge, and shrink to the room left
+   under the headline rather than being cut off at the bottom */
 .hero-art--about {
   display: flex;
   justify-content: flex-end;
-  height: 530px;
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 530px;
   margin-right: -72px;
 }
 
 .hero-art--about img {
   width: auto;
+  max-width: none;
 }
 
 /* CV: repeating band */
@@ -119,7 +123,7 @@
 
   .hero-art--about {
     justify-content: flex-start;
-    height: 443px;
+    max-height: 443px;
     margin-right: 0;
     padding: 0 var(--gutter);
   }
@@ -186,8 +190,8 @@
     content: "";
     position: absolute;
     top: 0;
-    left: 47.22%;
-    width: 5.56%;
+    left: 41.67%;
+    width: 16.67%;
     height: 160px;
     background: var(--ink);
   }

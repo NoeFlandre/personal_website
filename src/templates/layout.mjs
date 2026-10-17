@@ -103,7 +103,7 @@ function renderFooter(ui) {
   return html`<footer class="footer">
     <div class="container">
       <div class="footer-grid">
-        <div>${ui.illustration("mark.svg", { width: 72, height: 46, className: "footer-mark" })}</div>
+        <div>${ui.illustration("mark.svg", { width: 72, height: 48, className: "footer-mark" })}</div>
         <div class="footer-info">
           <div class="footer-row footer-row--signoff">
             <div class="footer-col"><p class="heading-3">${first}<br>${last}</p></div>

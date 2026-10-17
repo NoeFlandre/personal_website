@@ -11,6 +11,7 @@ npm ci           # install marked and katex
 npm run build    # node build.mjs: write dist/
 npm test         # unit tests + build checks (old URLs, links, assets, maths, bundle)
 npm run serve    # serve dist/ on http://localhost:8000
+npm run art      # redraw the pixel-art illustrations (scripts/pixel-art.mjs)
 ```
 
 Node 20 or newer. `vercel.json` deploys it on Vercel: build, no trailing slashes (as before), the old
@@ -36,6 +37,7 @@ src/scripts/           Browser modules, bundled into one deferred script
 src/assets/            Fonts, illustrations, photos, icons, wordmark paths (fingerprinted when published)
 src/static/            Files published as is, at fixed URLs (CV, avatar, favicon.ico, sw.js)
 src/build/             Generator: content, Markdown, maths, HTML escaping, assets, bundling, feeds
+scripts/pixel-art.mjs  The pixel-art characters (sprites as character maps) -> src/assets/img/*.svg
 tests/                 node --test
 dist/                  Output (not committed)
 ```
