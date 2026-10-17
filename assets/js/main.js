@@ -26,8 +26,10 @@
   var menuButton = nav.querySelector(".menu-button");
   var links = Array.prototype.slice.call(nav.querySelectorAll(".nav-link[data-target]"));
   var chapters = Array.prototype.slice.call(document.querySelectorAll("[data-chapter]"));
-  var progress = nav.querySelector(".progress");
-  var article = document.querySelector("[data-progress]");
+  var fill = document.createElement("span");
+  fill.className = "nav-fill";
+  fill.setAttribute("aria-hidden", "true");
+  nav.insertBefore(fill, nav.firstChild);
 
   /* ---- Show / hide the nav based on scroll direction ---- */
   var lastY = window.scrollY;
@@ -47,15 +49,30 @@
     if (Math.abs(delta) > 6 || y < nav.offsetHeight) lastY = y;
   }
 
-  /* ---- Nav colour + current link follow the chapter in view ---- */
+  /* ---- Nav colour, progress fill and current link follow the chapter in view ----
+     Each chapter becomes active when its top crosses 20% of the viewport. While
+     you read it, the strip at the bottom of the nav fills with the next
+     chapter's colour (the footer's after the last), so it reads as a progress
+     bar and hands over seamlessly when the next chapter starts. */
   function onChapter() {
     if (!chapters.length) return;
+    var y = window.scrollY;
     var line = window.innerHeight * 0.2;
-    var active = chapters[0];
-    chapters.forEach(function (ch) {
-      if (ch.getBoundingClientRect().top <= line) active = ch;
+    var maxY = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+    var starts = chapters.map(function (ch, i) {
+      return i === 0 ? 0 : Math.min(ch.getBoundingClientRect().top + y - line, maxY);
     });
+    var i = 0;
+    starts.forEach(function (s0, j) {
+      if (y >= s0) i = j;
+    });
+    var active = chapters[i];
+    var next = chapters[i + 1];
+    var end = next ? starts[i + 1] : maxY;
+    var p = end > starts[i] ? (y - starts[i]) / (end - starts[i]) : 1;
     nav.style.setProperty("--nav-bg", "var(--" + active.getAttribute("data-color") + ")");
+    fill.style.backgroundColor = "var(--" + (next ? next.getAttribute("data-color") : "mist") + ")";
+    fill.style.transform = "scaleX(" + Math.min(Math.max(p, 0), 1) + ")";
     var id = active.getAttribute("data-chapter");
     links.forEach(function (a) {
       var current = a.getAttribute("data-target") === id;
@@ -65,15 +82,6 @@
     });
   }
 
-  /* ---- Reading progress on article pages ---- */
-  function onProgress() {
-    if (!progress || !article) return;
-    var r = article.getBoundingClientRect();
-    var total = r.height - window.innerHeight * 0.6;
-    var done = Math.min(Math.max(-r.top + window.innerHeight * 0.4, 0), total);
-    progress.style.transform = "scaleX(" + (total > 0 ? done / total : 0) + ")";
-  }
-
   var ticking = false;
   function onScroll() {
     if (ticking) return;
@@ -81,7 +89,6 @@
     window.requestAnimationFrame(function () {
       onDirection();
       onChapter();
-      onProgress();
       ticking = false;
     });
   }
@@ -89,11 +96,10 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", function () {
     onChapter();
-    onProgress();
     if (menuButton && getComputedStyle(menuButton).display === "none") setOpen(false);
   });
   onChapter();
-  onProgress();
+  window.addEventListener("load", onChapter);
 
   /* ---- Mobile menu ---- */
   function setOpen(open) {
