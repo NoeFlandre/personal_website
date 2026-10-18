@@ -58,7 +58,7 @@ or `diagram-<width>.<avif|webp|jpg|png>`; `#480` caps its width at 480px.
 - CSS is inlined; one small deferred script; illustrations are inline SVG data URIs.
 - Photos ship as AVIF / WebP / JPEG with `srcset` and fixed sizes (no layout shift).
 - Posts are prerendered on hover via Speculation Rules (prefetch fallback elsewhere).
-- Maths is HTML at build time; only pages with maths load KaTeX's stylesheet and fonts.
+- Maths is HTML at build time; only pages with maths carry KaTeX's styles (inlined) and load its fonts.
 - YouTube videos load the player only when clicked.
 
 ## Palette
@@ -66,13 +66,17 @@ or `diagram-<width>.<avif|webp|jpg|png>`; `#480` caps its width at 480px.
 | Token     | Value     | Used for                          |
 |-----------|-----------|-----------------------------------|
 | `--ink`   | `#01242e` | Page base, text on coloured bands |
-| `--blue`  | `#4d8bf0` | About                             |
-| `--sky`   | `#8cc2dd` | CV                                |
-| `--ice`   | `#c6e2ef` | Blog                              |
-| `--peri`  | `#93a8f4` | Contact                           |
+| `--sky`   | `#8cc2dd` | About band, CV accent             |
+| `--blue`  | `#4d8bf0` | CV band, About accent             |
+| `--peri`  | `#93a8f4` | Blog band, Contact accent         |
+| `--ice`   | `#c6e2ef` | Contact band, Blog accent         |
 | `--fog`   | `#c2d3db` | Text on ink                       |
 | `--mist`  | `#b9cdd6` | Footer                            |
 | `--frost` | `#9ff0ff` | Closing bar                       |
+
+## License
+
+Text and posts: CC BY 4.0. Code: MIT. Details, and the third-party fonts, in `LICENSE`.
 
 ## Fonts
 

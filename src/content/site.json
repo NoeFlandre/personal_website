@@ -7,7 +7,7 @@
   "ogImage": "https://noeflandre.com/noe-avatar.jpg",
   "email": "noeflandre@gmail.com",
   "cv": "/assets/docs/noe-flandre-cv.pdf",
-  "source": "https://github.com/NoeFlandre/personal_website",
+  "source": "https://github.com/NoeFlandre/personal_website/tree/redesign",
   "redirects": { "/about": "/#about" },
   "editBase": "https://github.com/NoeFlandre/personal_website/edit/redesign/src/content/posts/",
   "tagline": "Linking text to places on Earth",
