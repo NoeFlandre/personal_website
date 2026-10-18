@@ -4,6 +4,9 @@ The personal site of Noé Flandre in the new design: About, CV, Blog and Contact
 post of the old site at its old URL. A small static site generator builds it into `dist/`. Its only
 dependencies, `marked` (Markdown) and `katex` (maths), run at build time; readers download neither.
 
+Branches: `redesign` (this one) holds the new site; `main` holds the current Astro site. To serve one or the
+other on Vercel, set the production branch in Settings → Environments → Production → Branch Tracking.
+
 ## Commands
 
 ```sh
