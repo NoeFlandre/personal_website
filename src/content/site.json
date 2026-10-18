@@ -9,7 +9,7 @@
   "cv": "/assets/docs/noe-flandre-cv.pdf",
   "source": "https://github.com/NoeFlandre/personal_website",
   "redirects": { "/about": "/#about" },
-  "editBase": "https://github.com/NoeFlandre/ineffable-intelligence-website/edit/personal-site/src/content/posts/",
+  "editBase": "https://github.com/NoeFlandre/personal_website/edit/redesign/src/content/posts/",
   "tagline": "Linking text to places on Earth",
   "license": "Steal this site ➜ CC BY 4.0 · Code MIT",
   "year": 2026,
