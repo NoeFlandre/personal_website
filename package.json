@@ -1,94 +1,19 @@
 {
-  "name": "noeflandre-astro",
+  "name": "noeflandre-site",
+  "private": true,
   "type": "module",
-  "version": "0.0.1",
+  "description": "Personal website of Noé Flandre. Static; Markdown and maths are rendered at build time.",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "dev": "astro dev",
-    "predev": "npm run generate:image-thumbnails",
-    "build": "astro build",
-    "prebuild": "npm run generate:image-thumbnails",
-    "build:check": "astro check && astro build",
-    "prebuild:check": "npm run generate:image-thumbnails",
-    "generate:image-thumbnails": "node scripts/generate-image-thumbnails.mjs",
-    "preview": "astro preview",
-    "astro": "astro",
-    "sync": "astro sync",
-    "lint": "biome lint astro.config.mjs playwright.config.mjs public/toggle-theme.js scripts src tests",
-    "lint:fix": "biome lint --write astro.config.mjs playwright.config.mjs public/toggle-theme.js scripts src tests",
-    "format": "biome format --write astro.config.mjs playwright.config.mjs public/toggle-theme.js scripts src tests",
-    "check": "biome check astro.config.mjs playwright.config.mjs public/toggle-theme.js scripts src tests",
-    "check:fix": "biome check --write astro.config.mjs playwright.config.mjs public/toggle-theme.js scripts src tests",
-    "test": "node --test --test-concurrency=4 \"tests/**/*.test.mjs\"",
-    "test:coverage": "c8 node --test --test-concurrency=4 \"tests/**/*.test.mjs\"",
-    "test:crap:report": "crap coverage/c8/coverage-final.json --json crap-report/crap-report.json --html crap-report/html && node scripts/check-crap-score.mjs crap-report/crap-report.json 6",
-    "test:crap": "npm run test:coverage && npm run test:crap:report",
-    "test:mutation:source-about-client": "stryker run stryker.source-about-client.config.json",
-    "test:mutation:source-about-map": "stryker run stryker.source-about-map.config.json",
-    "test:mutation:source-career": "stryker run stryker.source-career.config.json",
-    "test:mutation:source-blog": "stryker run stryker.source-blog.config.json",
-    "test:mutation:source-core": "stryker run stryker.source-core.config.json",
-    "test:mutation:source": "npm run test:mutation:source-about-client && npm run test:mutation:source-about-map && npm run test:mutation:source-career && npm run test:mutation:source-blog && npm run test:mutation:source-core",
-    "test:mutation:routes": "stryker run stryker.routes.config.json",
-    "test:mutation:og": "stryker run stryker.og.config.json",
-    "test:mutation:content": "stryker run stryker.content.config.json",
-    "test:mutation": "npm run test:mutation:source && npm run test:mutation:routes && npm run test:mutation:og && npm run test:mutation:content",
-    "test:e2e:browser": "playwright test",
-    "test:e2e": "npm run build:check && npm run test:e2e:browser",
-    "test:quality": "npm run test:coverage && npm run test:crap:report && npm run test:mutation",
-    "prepare": "husky"
+    "build": "node build.mjs",
+    "art": "node scripts/pixel-art.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "serve": "python3 -m http.server 8000 --directory dist"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.6",
-    "@astrojs/mdx": "^4.3.13",
-    "@astrojs/rss": "^4.0.14",
-    "@astrojs/sitemap": "^3.6.0",
-    "@resvg/resvg-js": "^2.6.2",
-    "@tailwindcss/vite": "^4.1.18",
-    "@vercel/analytics": "^1.6.1",
-    "@vercel/speed-insights": "^1.3.1",
-    "@vite-pwa/astro": "^1.2.0",
-    "astro": "^5.16.6",
-    "dayjs": "^1.11.19",
-    "gray-matter": "^4.0.3",
-    "leaflet": "^1.9.4",
-    "lodash.kebabcase": "^4.1.1",
-    "reading-time": "^1.5.0",
-    "rehype-katex": "^7.0.1",
-    "remark-collapse": "^0.1.2",
-    "remark-math": "^6.0.0",
-    "remark-toc": "^9.0.0",
-    "satori": "^0.18.3",
-    "sharp": "^0.34.5",
-    "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
-  },
-  "overrides": {
-    "esbuild": "^0.25.5",
-    "vite": "^6.3.5"
-  },
-  "devDependencies": {
-    "@axe-core/playwright": "^4.13.0",
-    "@biomejs/biome": "^2.3.10",
-    "@playwright/test": "^1.62.1",
-    "@stryker-mutator/core": "^9.6.1",
-    "@tailwindcss/typography": "^0.5.19",
-    "@types/leaflet": "^1.9.22",
-    "@types/lodash.kebabcase": "^4.1.9",
-    "c8": "^10.1.3",
-    "commitizen": "^4.3.1",
-    "crap-score": "^1.2.1",
-    "cz-conventional-changelog": "^3.3.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "lint-staged": {
-    "*.{js,mjs,ts,tsx,json}": [
-      "biome check --write --files-ignore-unknown=true"
-    ]
+    "katex": "0.19.0",
+    "marked": "18.1.1"
   }
 }

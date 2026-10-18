@@ -1,0 +1,30 @@
+{
+  "about": {
+    "headline": "Hi, I'm Noé. I link text to places on Earth.",
+    "portrait": {
+      "image": "portrait",
+      "alt": "Portrait of Noé Flandre"
+    },
+    "bio": [
+      "I am an AI Research Engineer at Inria. I focus on LLM-based geoparsing to link unstructured text to geographic footprints.",
+      "I am building side projects, which you can find on my [GitHub](https://github.com/NoeFlandre), and conducting research.",
+      "I am looking for opportunities to gain expertise in AI while contributing to its development in an open, thoughtful and responsible way.",
+      "Feel free to [reach out](#contact)!"
+    ]
+  },
+  "cv": {
+    "headline": "Papers, experience, education and more."
+  },
+  "blog": {
+    "headline": "Notes from the lab.",
+    "featured": [
+      "2026/looking-for-my-next-career-opportunity",
+      "2026/masked-image-modeling",
+      "describe-place-on-earth-part1-wikidata"
+    ]
+  },
+  "contact": {
+    "headline": "Feel free to reach out.",
+    "intro": "I am looking for my next opportunity, ideally a PhD in AI, and I am open to Research Engineer roles too."
+  }
+}

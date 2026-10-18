@@ -1,0 +1,152 @@
+/* Blog: featured posts list. */
+.post-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 28px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.post-item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.post-item .heading-3 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.post-item .heading-3 a {
+  text-decoration: none;
+}
+
+/* the whole entry is clickable */
+.post-item .heading-3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.post-item:hover .heading-3 a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+
+.post-item .text-m {
+  margin-bottom: 0;
+}
+
+@media screen and (max-width: 767px) {
+  .post-item .heading-3 {
+    padding-bottom: 0;
+    font-size: 20px;
+    line-height: 28px;
+  }
+}
+
+/* the tag stays its own link above the clickable entry */
+.post-item .meta .tag {
+  position: relative;
+  z-index: 1;
+}
+
+/* /posts and /tags: posts grouped by year, a tag filter on the side. */
+.tag-filter {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.tag-filter a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 24px;
+  text-decoration: none;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.tag-filter a:hover {
+  opacity: 1;
+}
+
+.tag-filter a[aria-current] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+  opacity: 1;
+}
+
+.post-year + .post-year {
+  margin-top: 56px;
+}
+
+.post-year-title {
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 30px;
+  line-height: 40px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.tag-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.tag-list li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.tag-list a {
+  text-decoration: none;
+}
+
+.tag-list a:hover {
+  color: var(--accent);
+}
+
+@media screen and (max-width: 991px) {
+  .tag-filter {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px 24px;
+    margin: 0 0 32px;
+  }
+
+  .tag-filter a {
+    gap: 8px;
+    padding: 8px 0;
+  }
+}

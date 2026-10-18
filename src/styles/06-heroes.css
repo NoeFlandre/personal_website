@@ -1,0 +1,231 @@
+/* Coloured hero bands and their drawings. */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: clip;
+  height: 80vh;
+  height: 80svh;
+  min-height: 560px;
+  padding-top: 32px;
+  scroll-margin-top: calc(var(--nav-h) - 32px);
+}
+
+.hero--about {
+  height: calc(100vh - 40px);
+  height: calc(100svh - 40px);
+  min-height: 720px;
+  padding-top: 120px;
+  background: var(--sky);
+}
+
+.hero--cv { background: var(--blue); }
+.hero--blog { background: var(--peri); }
+.hero--contact { background: var(--ice); }
+
+.hero--post {
+  min-height: 640px;
+  padding-top: 120px;
+}
+
+.hero-sub {
+  margin-top: 14px;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+.hero-sub a {
+  text-underline-offset: 3px;
+}
+
+.hero-art {
+  flex: none;
+  margin-bottom: -1px;
+}
+
+.hero-art img {
+  width: 100%;
+  height: 100%;
+}
+
+/* About: figures bleed off the right edge, and shrink to the room left
+   under the headline rather than being cut off at the bottom */
+.hero-art--about {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 530px;
+  margin-right: -72px;
+}
+
+.hero-art--about img {
+  width: auto;
+  max-width: none;
+}
+
+/* CV: repeating band */
+.hero-art--cv {
+  height: 220px;
+  background: url("/assets/img/band-cv.svg") repeat-x left bottom / 25% auto;
+}
+
+/* Blog: hanging figure + standing figure */
+.hero-art--blog-top {
+  position: absolute;
+  top: 0;
+  right: 29px;
+  width: 288px;
+  height: 360px;
+}
+
+.hero-art--blog-top img {
+  width: 100%;
+  height: auto;
+}
+
+.hero-art--blog {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 1152px;
+  height: 360px;
+  margin: 0 auto -1px;
+}
+
+.hero-art--blog img {
+  width: 288px;
+  height: auto;
+}
+
+.hero--post .hero-art--blog {
+  height: 290px;
+}
+
+/* Contact: tumbling pile */
+.hero-art--contact {
+  height: 540px;
+}
+
+.hero-art--contact img {
+  object-fit: cover;
+  object-position: center bottom;
+}
+
+@media screen and (max-width: 991px) {
+  .hero--about {
+    height: calc(90vh - 40px);
+    height: calc(90svh - 40px);
+  }
+
+  .hero-art--about {
+    justify-content: flex-start;
+    max-height: 443px;
+    margin-right: 0;
+    padding: 0 var(--gutter);
+  }
+
+  .hero-art--about img {
+    width: auto;
+    max-width: none;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hero {
+    height: 80vh;
+    height: 80svh;
+    min-height: 520px;
+  }
+
+  .hero--about {
+    height: calc(90vh - 76px);
+    height: calc(90svh - 76px);
+    min-height: 640px;
+    padding-top: 84px;
+  }
+
+  .hero--post {
+    padding-top: 84px;
+  }
+
+  .hero-sub {
+    margin-top: 0;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .hero-art--about {
+    flex: 1 1 auto;
+    align-items: flex-end;
+    height: auto;
+    min-height: 0;
+  }
+
+  .hero-art--about img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: left bottom;
+  }
+
+  .hero-art--cv {
+    height: 240px;
+    background-size: 50% auto;
+  }
+
+  .hero-art--blog-top {
+    right: 16px;
+    width: 40vw;
+    height: auto;
+    padding-top: 150px;
+  }
+
+  /* extend the lamp cord up to the top edge */
+  .hero-art--blog-top::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 41.67%;
+    width: 16.67%;
+    height: 160px;
+    background: var(--ink);
+  }
+
+  .hero-art--blog,
+  .hero--post .hero-art--blog {
+    height: auto;
+    padding: 0 16px;
+  }
+
+  .hero-art--blog img {
+    width: 40vw;
+  }
+
+  .hero-art--contact {
+    height: 300px;
+  }
+}
+
+/* Short landscape phones: let the bands size to their content */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .hero,
+  .hero--about {
+    height: auto;
+    min-height: 0;
+  }
+
+  .hero-art--about,
+  .hero-art--blog,
+  .hero-art--contact {
+    height: 240px;
+  }
+
+  .hero-art--blog-top {
+    display: none;
+  }
+}

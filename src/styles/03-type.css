@@ -1,0 +1,134 @@
+/* Type scale, links and buttons shared by every section. */
+.heading-1 {
+  max-width: 860px;
+  margin: 20px 0 10px;
+  color: var(--ink);
+  font-size: 64px;
+  line-height: 66px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.heading-1.is-half {
+  max-width: 760px;
+}
+
+.heading-3 {
+  font-size: 30px;
+  line-height: 40px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+.heading-4 {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.text-m {
+  margin-bottom: 10px;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.kicker {
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meta {
+  color: var(--text);
+  opacity: 0.75;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.link-accent {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+
+.link-accent:hover {
+  color: var(--text);
+}
+
+.link-arrow {
+  color: var(--accent);
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.link-arrow:hover {
+  color: var(--text);
+}
+
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 20px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn .icon {
+  width: 14px;
+  height: 14px;
+}
+
+@media screen and (max-width: 991px) {
+  .heading-1 {
+    max-width: none;
+    font-size: 48px;
+    line-height: 52px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .heading-1 {
+    margin: 0 0 12px;
+    font-size: 32px;
+    line-height: 36px;
+    letter-spacing: -0.03em;
+  }
+
+  .heading-1.is-half {
+    max-width: 54%;
+  }
+
+  .heading-3 {
+    padding-bottom: 8px;
+    font-size: 21px;
+    line-height: 31px;
+  }
+}

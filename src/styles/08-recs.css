@@ -1,0 +1,137 @@
+/* Recommendations (a CV tab): one quote at a time, controls below. */
+.recs {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-top: 28px;
+}
+
+.recs-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.recs-count {
+  min-width: 72px;
+  font-size: 15px;
+  line-height: 24px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.recs-count [data-current] {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.recs-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.recs-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.recs-btn:active {
+  background: rgb(194 211 219 / 0.08);
+}
+
+.recs-stage {
+  display: grid;
+  min-width: 0;
+}
+
+.rec {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.rec-quote {
+  font-size: 24px;
+  line-height: 36px;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+}
+
+.rec-by {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rec-by a {
+  align-self: flex-start;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rec-by a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* With JS: stack the quotes in one cell so the block keeps the height of the longest */
+.recs.is-carousel .rec {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;
+}
+
+.recs.is-carousel .rec.is-active {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s;
+}
+
+.recs:not(.is-carousel) .recs-nav {
+  display: none;
+}
+
+.recs:not(.is-carousel) .rec + .rec {
+  margin-top: 48px;
+}
+
+@media screen and (max-width: 767px) {
+  .recs {
+    gap: 24px;
+    padding-top: 20px;
+  }
+
+  .recs-nav {
+    gap: 8px;
+  }
+
+  .recs-count {
+    min-width: 56px;
+    font-size: 14px;
+  }
+
+  .recs-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .rec-quote {
+    font-size: 18px;
+    line-height: 28px;
+  }
+}

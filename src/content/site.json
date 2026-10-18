@@ -1,0 +1,87 @@
+{
+  "name": "Noé Flandre",
+  "role": "AI Research Engineer",
+  "lang": "en",
+  "description": "Noé Flandre, AI Research Engineer.",
+  "url": "https://noeflandre.com",
+  "ogImage": "https://noeflandre.com/noe-avatar.jpg",
+  "email": "noeflandre@gmail.com",
+  "cv": "/assets/docs/noe-flandre-cv.pdf",
+  "source": "https://github.com/NoeFlandre/personal_website",
+  "redirects": { "/about": "/#about" },
+  "editBase": "https://github.com/NoeFlandre/ineffable-intelligence-website/edit/personal-site/src/content/posts/",
+  "tagline": "Linking text to places on Earth",
+  "license": "Steal this site ➜ CC BY 4.0 · Code MIT",
+  "year": 2026,
+  "sections": [
+    {
+      "id": "about",
+      "label": "About",
+      "navColor": "blue"
+    },
+    {
+      "id": "cv",
+      "label": "CV",
+      "navColor": "sky"
+    },
+    {
+      "id": "blog",
+      "label": "Blog",
+      "navColor": "ice"
+    },
+    {
+      "id": "contact",
+      "label": "Contact",
+      "navColor": "peri"
+    }
+  ],
+  "links": {
+    "huggingface": {
+      "label": "Hugging Face",
+      "url": "https://huggingface.co/NoeFlandre"
+    },
+    "github": {
+      "label": "GitHub",
+      "url": "https://github.com/NoeFlandre"
+    },
+    "googlescholar": {
+      "label": "Google Scholar",
+      "url": "https://scholar.google.com/citations?user=NOvshPMAAAAJ&hl=en"
+    },
+    "orcid": {
+      "label": "ORCID",
+      "url": "https://orcid.org/0009-0002-0237-3727"
+    },
+    "x": {
+      "label": "X",
+      "footerLabel": "X (Formerly Twitter)",
+      "url": "https://x.com/NoeFlandre"
+    },
+    "linkedin": {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/no%C3%A9flandre/"
+    },
+    "youtube": {
+      "label": "YouTube",
+      "url": "https://www.youtube.com/@NoeFlandre"
+    }
+  },
+  "heroLinks": [
+    "huggingface",
+    "github",
+    "googlescholar",
+    "orcid",
+    "x",
+    "linkedin",
+    "youtube"
+  ],
+  "footerLinks": [
+    "github",
+    "huggingface",
+    "googlescholar",
+    "orcid",
+    "linkedin",
+    "x",
+    "youtube"
+  ]
+}

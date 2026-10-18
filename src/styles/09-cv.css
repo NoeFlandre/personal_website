@@ -1,0 +1,271 @@
+/* CV: an index of the six parts on the left, one part shown at a time. */
+.cv-index {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.cv-index ul {
+  align-self: stretch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cv-index li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 24px;
+  text-decoration: none;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.cv-index-count {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cv-index li a:hover {
+  opacity: 1;
+}
+
+.cv-index li a.is-current {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+  opacity: 1;
+}
+
+.cv-group {
+  display: flex;
+  flex-direction: column;
+  scroll-margin-top: 120px;
+}
+
+.cv-group[hidden] {
+  display: none;
+}
+
+.cv-group + .cv-group {
+  margin-top: 72px;
+}
+
+.is-tabbed > .cv-group + .cv-group {
+  margin-top: 0;
+}
+
+.cv-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--accent);
+  font-size: 30px;
+  line-height: 40px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.cv-heading-count {
+  color: var(--accent);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cv-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.entry-when {
+  color: var(--accent);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.entry-title {
+  font-size: 19px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.entry-title a {
+  text-decoration: none;
+}
+
+.entry-title a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.entry-text {
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.entry-text a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+.entry-text strong {
+  font-weight: 600;
+}
+
+.note {
+  color: var(--accent);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* "More" and "Coursework" open in place, as a pill like the Copy button */
+.entry-more {
+  margin-top: 6px;
+}
+
+.entry-more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 20px;
+  list-style: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.entry-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.entry-more summary::before {
+  content: "+";
+  width: 10px;
+  text-align: center;
+}
+
+.entry-more[open] summary::before {
+  content: "−";
+}
+
+.entry-more summary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.entry-more > div,
+.entry-more > dl {
+  margin-top: 12px;
+}
+
+.coursework {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 8px 20px;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.coursework dt {
+  font-weight: 600;
+}
+
+.coursework dd {
+  margin: 0;
+}
+
+.cv-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 24px;
+}
+
+.cv-pager-next {
+  margin-left: auto;
+}
+
+@media screen and (max-width: 991px) {
+  .cv-index {
+    margin: 0;
+  }
+
+  .cv-index ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cv-index li a {
+    gap: 6px;
+    padding: 6px 0;
+    border-bottom: 2px solid transparent;
+    font-size: 16px;
+  }
+
+  .cv-index-count {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .cv-heading {
+    padding-bottom: 14px;
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .cv-heading-count {
+    font-size: 18px;
+  }
+
+  .entry {
+    padding: 18px 0;
+  }
+
+  .entry-title {
+    font-size: 17px;
+    line-height: 25px;
+  }
+
+  .entry-text {
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .coursework {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .coursework dd {
+    margin-bottom: 10px;
+  }
+}

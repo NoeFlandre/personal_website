@@ -1,0 +1,129 @@
+/* Section scaffolding: title rows, the dark content area and its grid. */
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid currentColor;
+  color: var(--ink);
+}
+
+.section-title-text,
+.section-title-no {
+  font-size: 22px;
+  line-height: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.section-title-text a {
+  text-decoration: none;
+}
+
+.section-title-text a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.section-title-no {
+  display: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: currentColor;
+  align-self: center;
+}
+
+.marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 0 7px 7px 0;
+  background: currentColor;
+}
+
+.content {
+  position: relative;
+  background: var(--surface);
+}
+
+.content > .container {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.content .section-title {
+  color: var(--accent);
+}
+
+.content--about { --accent: var(--accent-about); }
+.content--cv { --accent: var(--accent-cv); }
+.content--blog { --accent: var(--accent-blog); }
+.content--contact { --accent: var(--accent-contact); }
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  padding: 64px 0 128px;
+}
+
+.number-block {
+  margin-bottom: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--text);
+  font-size: 22px;
+  line-height: 24px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.content-block {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.end-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 24px;
+  color: var(--accent);
+}
+
+@media screen and (max-width: 991px) {
+  .section-title .dot {
+    display: none;
+  }
+
+  .section-title-no {
+    display: block;
+  }
+
+  .content-grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .number-block {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .section-title-text,
+  .section-title-no {
+    font-size: 18px;
+  }
+
+  .content-grid {
+    padding: 40px 0 96px;
+  }
+}
