@@ -149,6 +149,17 @@ test("the About map renders its current controls without legacy text blocks", as
   await expect(map.locator(".about-map__subtitle")).toHaveCount(0);
 });
 
+test("Leaflet attribution links are distinguishable without relying on color", async ({ page }) => {
+  await page.goto("/about");
+
+  const leafletAttributionLink = page.locator(
+    '.about-map .leaflet-control-attribution a[href$="leafletjs.com"]'
+  );
+
+  await expect(leafletAttributionLink).toBeVisible();
+  await expect(leafletAttributionLink).toHaveCSS("text-decoration-line", "underline");
+});
+
 test("the About map filters and cards respond to keyboard input", async ({ page }) => {
   await page.goto("/about");
 
