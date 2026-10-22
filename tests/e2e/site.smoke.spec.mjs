@@ -71,7 +71,7 @@ test("the homepage lists the selected featured posts in the configured order", a
 
   await expect(page.locator("#featured h3")).toHaveText([
     "How to describe a place on Earth using text? Part 1: wikidata",
-    "I am joining the EVERGREEN research team",
+    "I am looking for my next career opportunity!",
     "Breaking down the maths behind Masked Image Modeling",
   ]);
 });
