@@ -58,7 +58,13 @@ export function moveMapToSelection({
   }, 900);
 }
 
-export function getMarkerOffsets(mapPlaces, proximity = 2.5) {
+// Pixel offsets only separate markers that sit on (almost) the same spot.
+// They are fixed in screen pixels, so grouping distinct cities would push
+// markers far from their real location at low zoom levels.
+const CO_LOCATED_PROXIMITY_DEG = 0.05;
+const CO_LOCATED_MARKER_SPACING_PX = 20;
+
+export function getMarkerOffsets(mapPlaces, proximity = CO_LOCATED_PROXIMITY_DEG) {
   const groups = [];
 
   mapPlaces.forEach((place) => {
@@ -79,7 +85,10 @@ export function getMarkerOffsets(mapPlaces, proximity = 2.5) {
     groups
       .filter((group) => group.length > 1)
       .flatMap((group) =>
-        group.map((place, index) => [place.id, [(index - (group.length - 1) / 2) * 36, 0]])
+        group.map((place, index) => [
+          place.id,
+          [(index - (group.length - 1) / 2) * CO_LOCATED_MARKER_SPACING_PX, 0],
+        ])
       )
   );
 }

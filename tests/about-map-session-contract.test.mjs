@@ -423,16 +423,32 @@ test("map mount element discovery parses every required root child", () => {
   });
 });
 
-test("nearby map places receive deterministic visual offsets", () => {
+test("co-located map places receive compact deterministic visual offsets", () => {
   const offsets = getMarkerOffsets([
-    { id: "first", lat: 44, lng: 4 },
-    { id: "second", lat: 44.1, lng: 4.1 },
+    { id: "first", lat: 44.1249, lng: 4.0808 },
+    { id: "second", lat: 44.12, lng: 4.085 },
+    { id: "third", lat: 44.1249, lng: 4.0808 },
     { id: "remote", lat: 0, lng: 0 },
   ]);
 
-  assert.deepEqual(offsets.get("first"), [-18, 0]);
-  assert.deepEqual(offsets.get("second"), [18, 0]);
+  assert.deepEqual(offsets.get("first"), [-20, 0]);
+  assert.deepEqual(offsets.get("second"), [0, 0]);
+  assert.deepEqual(offsets.get("third"), [20, 0]);
   assert.equal(offsets.has("remote"), false);
+});
+
+test("distinct nearby cities keep their true marker positions", () => {
+  // Regression: a 2.5 degree grouping chained distinct cities together and
+  // shifted markers by fixed pixels, so at world zoom they landed in the ocean.
+  const offsets = getMarkerOffsets([
+    { id: "toulouse", lat: 43.6047, lng: 1.4442 },
+    { id: "perpignan", lat: 42.6333, lng: 2.75 },
+    { id: "barcelona", lat: 41.3851, lng: 2.1734 },
+    { id: "dayton", lat: 39.6256, lng: -84.3627 },
+    { id: "oxford-oh", lat: 39.5101, lng: -84.7397 },
+  ]);
+
+  assert.equal(offsets.size, 0);
 });
 
 test("marker grouping uses transitive proximity and includes the exact boundary", () => {
@@ -444,9 +460,9 @@ test("marker grouping uses transitive proximity and includes the exact boundary"
     ],
     1.1
   );
-  assert.deepEqual(chainedOffsets.get("first"), [-36, 0]);
+  assert.deepEqual(chainedOffsets.get("first"), [-20, 0]);
   assert.deepEqual(chainedOffsets.get("second"), [0, 0]);
-  assert.deepEqual(chainedOffsets.get("third"), [36, 0]);
+  assert.deepEqual(chainedOffsets.get("third"), [20, 0]);
 
   const boundaryOffsets = getMarkerOffsets(
     [
@@ -455,8 +471,8 @@ test("marker grouping uses transitive proximity and includes the exact boundary"
     ],
     1
   );
-  assert.deepEqual(boundaryOffsets.get("boundary-first"), [-18, 0]);
-  assert.deepEqual(boundaryOffsets.get("boundary-second"), [18, 0]);
+  assert.deepEqual(boundaryOffsets.get("boundary-first"), [-10, 0]);
+  assert.deepEqual(boundaryOffsets.get("boundary-second"), [10, 0]);
 });
 
 test("Leaflet initialization preserves map, controls, tile, and view options", () => {
