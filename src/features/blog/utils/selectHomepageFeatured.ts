@@ -12,8 +12,7 @@ const selectHomepageFeatured = (
 ) => {
   return getSortedPosts(posts)
     .filter(({ data }) => data.pubDatetime.getFullYear() >= minYear)
-    .filter(({ id }) => ids.includes(id))
-    .sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+    .filter(({ id }) => ids.includes(id));
 };
 
 export default selectHomepageFeatured;

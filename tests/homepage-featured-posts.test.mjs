@@ -87,7 +87,7 @@ function createPost({ id, pubDatetime, draft = false, unlisted = false }) {
   return { id, data: { pubDatetime: new Date(pubDatetime), draft, unlisted } };
 }
 
-test("homepage featured posts keep listed posts from the cutoff year in the requested id order", () => {
+test("homepage featured posts keep listed posts from the cutoff year sorted newest first", () => {
   const posts = [
     createPost({ id: "not-featured", pubDatetime: "2025-05-01T12:00:00Z" }),
     createPost({ id: "wikidata", pubDatetime: "2024-01-01T12:00:00Z" }),
@@ -105,7 +105,7 @@ test("homepage featured posts keep listed posts from the cutoff year in the requ
 
   assert.deepEqual(
     selected.map(({ id }) => id),
-    ["evergreen", "wikidata", "masked"]
+    ["evergreen", "masked", "wikidata"]
   );
 });
 
