@@ -2,7 +2,7 @@ export const SITE = {
   website: "https://noeflandre.com/",
   author: "Noé Flandre",
   profile: "https://noeflandre.com/about",
-  desc: "AI Research Engineer — Geospatial AI & Foundation models",
+  desc: "AI Research Engineer",
   title: "Noé Flandre",
   ogImage: "noe-avatar.jpg",
   lightAndDarkMode: true,
