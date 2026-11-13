@@ -1,7 +1,6 @@
 ---
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
-import aboutOutlineUrl from "@/features/about/client/aboutOutline.js?url";
 import { SITE } from "@/site-config.js";
 import Layout from "./Layout.astro";
 
@@ -20,7 +19,6 @@ const { frontmatter } = Astro.props;
   <main
     id="main-content"
     class="mx-auto mt-8 w-full max-w-3xl px-4 pb-12"
-    data-about-outline-root
   >
     <section id="about" class="about-content prose mb-28 max-w-3xl prose-img:border-0">
       <h1 class="text-2xl tracking-wider sm:text-3xl">{frontmatter.title}</h1>
@@ -29,10 +27,6 @@ const { frontmatter } = Astro.props;
   </main>
   <Footer />
 </Layout>
-
-<script is:inline type="module" data-astro-rerun define:vars={{ aboutOutlineUrl }}>
-  import(aboutOutlineUrl).then(({ initAboutOutline }) => initAboutOutline());
-</script>
 
 <style>
   .about-content :where(section) {
