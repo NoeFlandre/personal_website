@@ -199,6 +199,14 @@ test("About layout reruns its dedicated client module", () => {
   assert.match(aboutLayout, /data-about-outline-root/);
 });
 
+test("About layout shows no Jump To Section control", () => {
+  const aboutLayout = read("src/layouts/AboutLayout.astro");
+
+  assert.doesNotMatch(aboutLayout, /Jump To Section/);
+  assert.doesNotMatch(aboutLayout, /about-outline-mobile/);
+  assert.doesNotMatch(aboutLayout, /data-outline-link/);
+});
+
 test("initPostDetails ignores a missing document or article", () => {
   const document = new LifecycleDocument();
 
