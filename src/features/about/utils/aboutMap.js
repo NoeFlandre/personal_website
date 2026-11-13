@@ -1,10 +1,10 @@
-export const PLACE_TYPE_ORDER = {
+const PLACE_TYPE_ORDER = {
   work: 0,
   study: 1,
   travel: 2,
 };
 
-export const PLACE_TYPE_LABELS = {
+const PLACE_TYPE_LABELS = {
   work: "Worked",
   study: "Studied",
   travel: "Traveled",
