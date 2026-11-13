@@ -40,47 +40,22 @@ test("homepage features exactly three posts and replaces EVERGREEN with the care
   );
 });
 
-test("homepage uses the current professional tagline", () => {
+test("homepage uses the short professional tagline", () => {
   const homepage = read("src/pages/index.astro");
   const markdownHomepage = read("src/pages/index.md.ts");
-  const tagline = "AI Research Engineer — Geospatial AI & Foundation models";
 
-  assert.match(homepage, new RegExp(tagline));
+  assert.match(homepage, /<p>\s*AI Research Engineer\s*<\/p>/);
+  assert.doesNotMatch(homepage, /Geospatial AI & Foundation models/);
   assert.doesNotMatch(homepage, /AI Research Engineer, vibe-learning/);
   assert.doesNotMatch(markdownHomepage, /Daily meal : curating datasets/);
 });
 
-test("homepage describes selected work across the three focus areas", () => {
+test("homepage has no Featured Work section", () => {
   const homepage = read("src/pages/index.astro");
 
-  assert.match(homepage, /Selected work across research, industry and humanitarian volunteering\./);
-});
-
-test("homepage featured work starts with GeoReSeT and keeps Airbus before Tsiky", () => {
-  const homepage = read("src/pages/index.astro");
-  const geoResetPosition = homepage.indexOf('title: "GeoReSeT"');
-  const airbusPosition = homepage.indexOf('title: "Airbus Defence and Space"');
-  const tsikyPosition = homepage.indexOf('title: "Tsiky Zanaka Classroom Project"');
-
-  assert.ok(geoResetPosition >= 0);
-  assert.ok(geoResetPosition < airbusPosition);
-  assert.ok(airbusPosition < tsikyPosition);
-  assert.match(homepage, /label: "Research"/);
-  assert.match(homepage, /label: "Industry Research"/);
-  assert.ok(
-    homepage.includes(
-      "Vision-language models and fine-tuning on satellite imagery for Airbus Geo Explore."
-    )
-  );
-  assert.ok(
-    homepage.includes(
-      "Multimodal geospatial foundation models connecting text, maps and remote-sensing imagery."
-    )
-  );
-  assert.ok(homepage.includes("Helped in building a classroom in Namibia"));
-  assert.match(homepage, /href: "https:\/\/geo-reset\.sylvainlobry\.com\/"/);
-  assert.match(homepage, /image: "\/assets\/img\/about-map\/inria-logo\.svg"/);
-  assert.doesNotMatch(homepage, /Empathetic Narratives from ABMs/);
+  assert.doesNotMatch(homepage, /id="featured-work"/);
+  assert.doesNotMatch(homepage, /Featured Work/);
+  assert.doesNotMatch(homepage, /featuredWorkCards/);
 });
 
 function createPost({ id, pubDatetime, draft = false, unlisted = false }) {

@@ -282,7 +282,6 @@ test("thumbnail generator writes the about map directory literal once", () => {
 
 test("preview consumers use generated images without changing article heroes", () => {
   const card = read("src/components/Card.astro");
-  const home = read("src/pages/index.astro");
   const about = read("src/pages/about.mdx");
   const map = read("src/features/about/components/AboutTravelMap.astro");
   const postDetails = read("src/layouts/PostDetails.astro");
@@ -293,8 +292,6 @@ test("preview consumers use generated images without changing article heroes", (
   assert.match(card, /alt=\{heroImageAlt \?\? title\}/);
   assert.match(card, /loading="lazy"/);
   assert.match(card, /decoding="async"/);
-  assert.match(home, /getImageThumbnailPath/);
-  assert.match(home, /loading=\{index === 0 \? "eager" : "lazy"\}/);
   assert.match(about, /getImageThumbnailPath/);
   assert.match(map, /getImageThumbnailPath/);
   assert.match(postDetails, /src=\{heroImage\}/);
