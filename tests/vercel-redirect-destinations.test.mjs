@@ -28,7 +28,8 @@ function resolvesToRoute(destination) {
     return pageExists(destination.slice(0, param));
   }
   if (destination.startsWith("/posts/")) {
-    return postUrls.has(destination);
+    // "/posts/<slug>.md" is the raw-markdown endpoint for the same post, generated from the same posts.
+    return postUrls.has(destination.replace(/\.md$/, ""));
   }
   return pageExists(`${destination}.astro`) || pageExists(`${destination}/index.astro`);
 }

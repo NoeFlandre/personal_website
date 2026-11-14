@@ -33,7 +33,7 @@ test("the mobile homepage menu navigates to the posts archive without overflow",
 test("a post route mounts its browser enhancements and supports copy feedback", async ({
   page,
 }) => {
-  await page.goto("/posts/georeasoner");
+  await page.goto("/posts/2026/georeasoner");
 
   await expect(page.locator("#article")).toBeVisible();
   await expect(page.locator(".progress-container[data-post-progress]")).toBeAttached();
@@ -54,7 +54,7 @@ test("the mobile article stays inside the viewport and the theme control toggles
   page,
 }) => {
   await page.setViewportSize(mobileViewport);
-  await page.goto("/posts/georeasoner");
+  await page.goto("/posts/2026/georeasoner");
 
   await assertNoHorizontalOverflow(page);
 

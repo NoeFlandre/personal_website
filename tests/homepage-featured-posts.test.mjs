@@ -10,8 +10,8 @@ function read(path) {
 
 test("homepage does not render retired work-card titles", () => {
   const homepage = read("src/pages/index.astro");
-  const survivalGuide = read("src/content/blog/survival_guide_in_ai.md");
-  const editorPickPost = read("src/content/blog/editor-pick-empathy-simulation.md");
+  const survivalGuide = read("src/content/blog/2026/survival_guide_in_ai.md");
+  const editorPickPost = read("src/content/blog/2026/editor-pick-empathy-simulation.md");
 
   assert.doesNotMatch(homepage, /"A small milestone for our empathy and simulation paper"/);
   assert.doesNotMatch(homepage, /"An AI survival guide"/);
@@ -21,22 +21,22 @@ test("homepage does not render retired work-card titles", () => {
 
 test("homepage features exactly three posts and replaces EVERGREEN with the career post", () => {
   const homepage = read("src/pages/index.astro");
-  const evergreen = read("src/content/blog/joining_evergreen.md");
+  const evergreen = read("src/content/blog/2026/joining_evergreen.md");
   const careerPost = read("src/content/blog/2026/looking-for-my-next-career-opportunity.md");
   const featuredIdsBlock = homepage.match(/const homepageFeaturedIds = \[([\s\S]*?)\];/);
 
   assert.ok(featuredIdsBlock);
   const featuredIds = [...featuredIdsBlock[1].matchAll(/"([^"]+)"/g)].map(([, id]) => id);
   assert.deepEqual(featuredIds, [
-    "describe-place-on-earth-part1-wikidata",
+    "2026/describe-place-on-earth-part1-wikidata",
     "2026/looking-for-my-next-career-opportunity",
     "2026/masked-image-modeling",
   ]);
   assert.match(careerPost, /featured: true/);
   assert.match(evergreen, /featured: false/);
   assert.equal(
-    getPath("joining_evergreen", "src/content/blog/joining_evergreen.md"),
-    "/posts/joining_evergreen"
+    getPath("2026/joining_evergreen", "src/content/blog/2026/joining_evergreen.md"),
+    "/posts/2026/joining_evergreen"
   );
 });
 

@@ -6,7 +6,7 @@ const SCHOLAR_URL = "https://scholar.google.com/citations?user=7YilOHoAAAAJ&hl=e
 const sourceFiles = [
   "../src/components/TestimonialsCarousel.astro",
   "../src/features/about/data/careerTimelineData.ts",
-  "../src/content/blog/joining_evergreen.md",
+  "../src/content/blog/2026/joining_evergreen.md",
 ].map((path) => readFileSync(new URL(path, import.meta.url), "utf8"));
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const scholarPattern = escapeRegExp(SCHOLAR_URL);

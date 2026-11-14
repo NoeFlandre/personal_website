@@ -43,6 +43,146 @@
       "permanent": true
     },
     {
+      "source": "/posts/design-of-experiments",
+      "destination": "/posts/2026/design-of-experiments",
+      "permanent": true
+    },
+    {
+      "source": "/posts/design-of-experiments.md",
+      "destination": "/posts/2026/design-of-experiments.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/osm-data-analysis",
+      "destination": "/posts/2026/osm-data-analysis",
+      "permanent": true
+    },
+    {
+      "source": "/posts/osm-data-analysis.md",
+      "destination": "/posts/2026/osm-data-analysis.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/monopoly",
+      "destination": "/posts/2026/monopoly",
+      "permanent": true
+    },
+    {
+      "source": "/posts/monopoly.md",
+      "destination": "/posts/2026/monopoly.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/describe-place-on-earth-part1-wikidata",
+      "destination": "/posts/2026/describe-place-on-earth-part1-wikidata",
+      "permanent": true
+    },
+    {
+      "source": "/posts/describe-place-on-earth-part1-wikidata.md",
+      "destination": "/posts/2026/describe-place-on-earth-part1-wikidata.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/distilling_abms",
+      "destination": "/posts/2026/distilling_abms",
+      "permanent": true
+    },
+    {
+      "source": "/posts/distilling_abms.md",
+      "destination": "/posts/2026/distilling_abms.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/editor-pick-empathy-simulation",
+      "destination": "/posts/2026/editor-pick-empathy-simulation",
+      "permanent": true
+    },
+    {
+      "source": "/posts/editor-pick-empathy-simulation.md",
+      "destination": "/posts/2026/editor-pick-empathy-simulation.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/first-review",
+      "destination": "/posts/2026/first-review",
+      "permanent": true
+    },
+    {
+      "source": "/posts/first-review.md",
+      "destination": "/posts/2026/first-review.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/georeasoner",
+      "destination": "/posts/2026/georeasoner",
+      "permanent": true
+    },
+    {
+      "source": "/posts/georeasoner.md",
+      "destination": "/posts/2026/georeasoner.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/giving-agents-hands",
+      "destination": "/posts/2026/giving-agents-hands",
+      "permanent": true
+    },
+    {
+      "source": "/posts/giving-agents-hands.md",
+      "destination": "/posts/2026/giving-agents-hands.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/how2bench",
+      "destination": "/posts/2026/how2bench",
+      "permanent": true
+    },
+    {
+      "source": "/posts/how2bench.md",
+      "destination": "/posts/2026/how2bench.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/hugging-face-language-tags",
+      "destination": "/posts/2026/hugging-face-language-tags",
+      "permanent": true
+    },
+    {
+      "source": "/posts/hugging-face-language-tags.md",
+      "destination": "/posts/2026/hugging-face-language-tags.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/joining_evergreen",
+      "destination": "/posts/2026/joining_evergreen",
+      "permanent": true
+    },
+    {
+      "source": "/posts/joining_evergreen.md",
+      "destination": "/posts/2026/joining_evergreen.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/starting-youtube-channel",
+      "destination": "/posts/2026/starting-youtube-channel",
+      "permanent": true
+    },
+    {
+      "source": "/posts/starting-youtube-channel.md",
+      "destination": "/posts/2026/starting-youtube-channel.md",
+      "permanent": true
+    },
+    {
+      "source": "/posts/survival_guide_in_ai",
+      "destination": "/posts/2026/survival_guide_in_ai",
+      "permanent": true
+    },
+    {
+      "source": "/posts/survival_guide_in_ai.md",
+      "destination": "/posts/2026/survival_guide_in_ai.md",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
