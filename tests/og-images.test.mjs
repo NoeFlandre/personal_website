@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createOgFrame, createOgRenderOptions } from "../src/features/blog/og/templates/frame.js";
-import { SITE } from "../src/site-config.js";
 import { loadSourceModule } from "./helpers/vite-source-modules.mjs";
 
 const post = {
@@ -48,7 +47,6 @@ async function loadTemplateModules() {
   const { close, modules } = await loadSourceModule(
     {
       postTemplate: "/src/features/blog/og/templates/post.js",
-      siteTemplate: "/src/features/blog/og/templates/site.js",
       frame: "/src/features/blog/og/templates/frame.js",
     },
     {
@@ -84,7 +82,6 @@ async function loadTemplateModules() {
 
   return {
     postTemplate: modules.postTemplate.default,
-    siteTemplate: modules.siteTemplate.default,
     renderOgFrame: modules.frame.renderOgFrame,
     close,
   };
@@ -102,7 +99,6 @@ async function loadImageGenerator() {
           resolveId(id) {
             if (id === "@resvg/resvg-js") return "\0resvg-og-test";
             if (id.endsWith("templates/post.js")) return "\0post-og-test";
-            if (id.endsWith("templates/site.js")) return "\0site-og-test";
             return undefined;
           },
           load(id) {
@@ -133,9 +129,6 @@ async function loadImageGenerator() {
               return "post-svg:" + value.data.title + suffix;
             };`;
             }
-            if (id === "\0site-og-test") {
-              return `export default async () => "site-svg";`;
-            }
             return undefined;
           },
         },
@@ -146,8 +139,8 @@ async function loadImageGenerator() {
   return { module: modules.generator, close };
 }
 
-test("post and site OG templates preserve their content and rendering contract", async () => {
-  const { close, postTemplate, siteTemplate } = await loadTemplateModules();
+test("post OG template preserves its content and rendering contract", async () => {
+  const { close, postTemplate } = await loadTemplateModules();
 
   try {
     const postResult = JSON.parse(await postTemplate(post));
@@ -164,22 +157,6 @@ test("post and site OG templates preserve their content and rendering contract",
         .children[2].props.children,
       "Mutation author"
     );
-
-    const siteResult = JSON.parse(await siteTemplate());
-    assert.equal(siteResult.options.width, 1200);
-    assert.equal(siteResult.options.height, 630);
-    assert.equal(siteResult.options.embedFont, true);
-    assert.equal(
-      siteResult.tree.props.children[1].props.children.props.children[0].props.children[0].props
-        .children,
-      SITE.title
-    );
-    assert.equal(
-      siteResult.tree.props.children[1].props.children.props.children[0].props.children[1].props
-        .children,
-      SITE.desc
-    );
-    assert.equal(siteResult.options.fonts[0].name, "Atkinson");
 
     assert.deepEqual(postResult.tree, {
       type: "div",
@@ -297,121 +274,6 @@ test("post and site OG templates preserve their content and rendering contract",
         ],
       },
     });
-
-    assert.deepEqual(siteResult.tree, {
-      type: "div",
-      props: {
-        style: {
-          background: "#fefbfb",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        },
-        children: [
-          {
-            type: "div",
-            props: {
-              style: {
-                position: "absolute",
-                top: "-1px",
-                right: "-1px",
-                border: "4px solid #000",
-                background: "#ecebeb",
-                opacity: "0.9",
-                borderRadius: "4px",
-                display: "flex",
-                justifyContent: "center",
-                margin: "2.5rem",
-                width: "88%",
-                height: "80%",
-              },
-            },
-          },
-          {
-            type: "div",
-            props: {
-              style: {
-                border: "4px solid #000",
-                background: "#fefbfb",
-                borderRadius: "4px",
-                display: "flex",
-                justifyContent: "center",
-                margin: "2rem",
-                width: "88%",
-                height: "80%",
-              },
-              children: {
-                type: "div",
-                props: {
-                  style: {
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    margin: "20px",
-                    width: "90%",
-                    height: "90%",
-                  },
-                  children: [
-                    {
-                      type: "div",
-                      props: {
-                        style: {
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "90%",
-                          maxHeight: "90%",
-                          overflow: "hidden",
-                          textAlign: "center",
-                        },
-                        children: [
-                          {
-                            type: "p",
-                            props: {
-                              style: { fontSize: 72, fontWeight: "bold" },
-                              children: SITE.title,
-                            },
-                          },
-                          {
-                            type: "p",
-                            props: {
-                              style: { fontSize: 28 },
-                              children: SITE.desc,
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      type: "div",
-                      props: {
-                        style: {
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          width: "100%",
-                          marginBottom: "8px",
-                          fontSize: 28,
-                        },
-                        children: {
-                          type: "span",
-                          props: {
-                            style: { overflow: "hidden", fontWeight: "bold" },
-                            children: "noeflandre.com",
-                          },
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        ],
-      },
-    });
   } finally {
     await close();
   }
@@ -434,13 +296,12 @@ test("renderOgFrame wraps its children in the shared frame and renders with the 
   }
 });
 
-test("OG image generation converts both SVG templates to PNG bytes", async () => {
+test("OG post image generation converts its SVG template to PNG bytes", async () => {
   const { close, module } = await loadImageGenerator();
 
   try {
     const expected = [137, 80, 78, 71, 13, 10, 26, 10];
     assert.deepEqual([...(await module.generateOgImageForPost(post))], expected);
-    assert.deepEqual([...(await module.generateOgImageForSite())], expected);
   } finally {
     await close();
   }
