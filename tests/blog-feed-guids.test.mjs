@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   getLegacyFeedGuid,
+  getLegacyFeedItemXml,
   LEGACY_POST_PATHS,
 } from "../src/features/blog/utils/legacyPostPaths.ts";
 
@@ -35,6 +36,14 @@ test("every moved post maps a year-folder URL back to its original root URL", ()
 test("the feed sends the legacy guid for moved posts only", () => {
   const feed = readFileSync(fromRoot("src/pages/rss.xml.ts"), "utf8");
 
-  assert.match(feed, /getLegacyFeedGuid\(link\)/);
+  assert.match(feed, /getLegacyFeedItemXml\(link\)/);
   assert.match(feed, /customData:/);
+});
+
+test("the feed item for a moved post carries the legacy guid as XML, and other posts carry none", () => {
+  assert.equal(
+    getLegacyFeedItemXml("/posts/2026/distilling_abms"),
+    '<guid isPermaLink="true">https://noeflandre.com/posts/distilling_abms/</guid>'
+  );
+  assert.equal(getLegacyFeedItemXml("/posts/2026/attention-pooling"), undefined);
 });

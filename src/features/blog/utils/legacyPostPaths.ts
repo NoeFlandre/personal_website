@@ -32,3 +32,9 @@ export function getLegacyFeedGuid(postPath: string): string | undefined {
   const previousPath = LEGACY_POST_PATHS.get(postPath);
   return previousPath === undefined ? undefined : new URL(`${previousPath}/`, SITE.website).href;
 }
+
+/** Feed item XML that overrides the guid of a moved post, or undefined for other posts. */
+export function getLegacyFeedItemXml(postPath: string): string | undefined {
+  const guid = getLegacyFeedGuid(postPath);
+  return guid === undefined ? undefined : `<guid isPermaLink="true">${guid}</guid>`;
+}
