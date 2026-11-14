@@ -93,7 +93,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "Haï Mask",
     location: "Alès, Occitanie, France",
     description: "Market study for a connected sports mask project",
-    body: `Supervised by ${authorLink("https://www.linkedin.com/in/maxime-menardo-ab437a159/", "Maxime Menardo")}, I conducted a 5-week market study that included a PESTEL analysis, competitive mapping, and target audience profiling. I surveyed 22 high-level athletes to validate product features and test price sensitivity, ultimately building a 4P marketing plan, a CRM strategy, and a go-to-market action plan. I also designed a multi-platform communication strategy with promotional content mockups and analyzed pro sports club budgets to identify B2B prospects.`,
+    body: `Supervised by ${authorLink("https://www.linkedin.com/in/maxime-menardo-ab437a159/", "Maxime Menardo")}, I conducted a 5-week market study for Haï Mask, a connected mask for athletes.`,
   },
 ];
 
