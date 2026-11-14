@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "write": "node scripts/write.mjs",
     "dev": "astro dev",
     "predev": "npm run generate:image-thumbnails",
     "build": "astro build",

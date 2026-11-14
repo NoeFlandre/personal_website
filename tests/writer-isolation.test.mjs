@@ -40,3 +40,9 @@ test("site source, public assets, and Astro config never reference the local wri
     }
   }
 });
+
+test("npm run write starts the local writer script", async () => {
+  const packageJson = JSON.parse(await readFile(path.join(repoRoot, "package.json"), "utf8"));
+
+  assert.equal(packageJson.scripts.write, "node scripts/write.mjs");
+});
