@@ -1,13 +1,12 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import test from "node:test";
-
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+import { readRepoFile } from "./helpers/repo-files.mjs";
 
 test("YouTube documentation matches the active embed implementation", () => {
-  const docs = read("docs/YOUTUBE.MD");
-  const clientModule = read("src/features/blog/client/postDetailsRerun.js");
-  const sessionModule = read("src/features/blog/client/postDetailsSession.js");
+  const docs = readRepoFile("docs/YOUTUBE.MD");
+  const clientModule = readRepoFile("src/features/blog/client/postDetailsRerun.js");
+  const sessionModule = readRepoFile("src/features/blog/client/postDetailsSession.js");
   const implementation = `${clientModule}\n${sessionModule}`;
 
   assert.match(docs, /postDetailsRerun\.js.*client module/i);

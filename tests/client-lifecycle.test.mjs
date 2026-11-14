@@ -1,16 +1,12 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
 import { initPostDetails } from "../src/features/blog/client/postDetailsRerun.js";
 import { createPostDetailsSession } from "../src/features/blog/client/postDetailsSession.js";
 import * as clientLifecycleUtils from "../src/utils/clientLifecycle.js";
 import { FakeDocument, FakeElement, TrackedEventTarget } from "./helpers/dom-fakes.mjs";
+import { readRepoFile } from "./helpers/repo-files.mjs";
 
 const { createClientLifecycle, scheduleAbortableTimeout } = clientLifecycleUtils;
-
-function read(path) {
-  return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-}
 
 class LifecycleDocument extends FakeDocument {
   constructor() {
@@ -184,7 +180,7 @@ test("createClientLifecycle activates one root and aborts it before the next", (
 });
 
 test("About layout shows no Jump To Section control", () => {
-  const aboutLayout = read("src/layouts/AboutLayout.astro");
+  const aboutLayout = readRepoFile("src/layouts/AboutLayout.astro");
 
   assert.doesNotMatch(aboutLayout, /Jump To Section/);
   assert.doesNotMatch(aboutLayout, /about-outline-mobile/);

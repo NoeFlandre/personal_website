@@ -5,21 +5,21 @@ import test from "node:test";
 import matter from "gray-matter";
 import { getPath } from "../src/features/blog/utils/getPath.ts";
 import { isPostRoutable } from "../src/features/blog/utils/postFilter.ts";
+import { repoUrl } from "./helpers/repo-files.mjs";
 
-const fromRoot = (path) => new URL(`../${path}`, import.meta.url);
-const { redirects } = JSON.parse(readFileSync(fromRoot("vercel.json"), "utf8"));
+const { redirects } = JSON.parse(readFileSync(repoUrl("vercel.json"), "utf8"));
 
 // Post URLs exactly as the blog routes generate them: same visibility filter and slug rules.
 const postUrls = new Set(
-  readdirSync(fromRoot("src/content/blog"), { recursive: true })
+  readdirSync(repoUrl("src/content/blog"), { recursive: true })
     .filter((file) => /\.mdx?$/.test(file) && !basename(file).startsWith("_"))
     .filter((file) =>
-      isPostRoutable(matter(readFileSync(fromRoot(`src/content/blog/${file}`), "utf8")).data)
+      isPostRoutable(matter(readFileSync(repoUrl(`src/content/blog/${file}`), "utf8")).data)
     )
     .map((file) => getPath(basename(file, extname(file)), `src/content/blog/${file}`))
 );
 
-const pageExists = (page) => existsSync(fromRoot(`src/pages${page}`));
+const pageExists = (page) => existsSync(repoUrl(`src/pages${page}`));
 
 function resolvesToRoute(destination) {
   const param = destination.indexOf(":");

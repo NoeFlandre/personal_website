@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
+import { readRepoFile } from "./helpers/repo-files.mjs";
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-const themeScript = read("public/toggle-theme.js");
+const themeScript = readRepoFile("public/toggle-theme.js");
 const now = Date.UTC(2026, 7, 10, 10);
 const hourInMilliseconds = 60 * 60 * 1000;
 
@@ -95,8 +95,8 @@ function runThemeScript({
 test("the active theme toggle stays owned by Header and its early script", () => {
   assert.equal(existsSync(new URL("../src/components/ThemeToggle.astro", import.meta.url)), false);
 
-  const header = read("src/components/Header.astro");
-  const layout = read("src/layouts/Layout.astro");
+  const header = readRepoFile("src/components/Header.astro");
+  const layout = readRepoFile("src/layouts/Layout.astro");
 
   assert.match(header, /id="theme-btn"/);
   assert.match(layout, /<script\s+is:inline\s+src="\/toggle-theme\.js"><\/script>/);

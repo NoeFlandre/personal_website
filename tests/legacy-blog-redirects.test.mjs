@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
+import { repoUrl } from "./helpers/repo-files.mjs";
 
-const fromRoot = (path) => new URL(`../${path}`, import.meta.url);
-const { redirects } = JSON.parse(readFileSync(fromRoot("vercel.json"), "utf8"));
+const { redirects } = JSON.parse(readFileSync(repoUrl("vercel.json"), "utf8"));
 
 test("vercel.json permanently redirects the exact /blog index and nested legacy blog paths", () => {
   assert.ok(
@@ -39,7 +39,7 @@ test("the nested legacy blog redirect comes after the dated and single-segment r
 
 test("legacy redirects live only in vercel.json, so src/middleware.js stays removed", () => {
   assert.equal(
-    existsSync(fromRoot("src/middleware.js")),
+    existsSync(repoUrl("src/middleware.js")),
     false,
     "src/middleware.js should stay removed"
   );

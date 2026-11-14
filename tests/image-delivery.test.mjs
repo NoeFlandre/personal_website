@@ -1,13 +1,11 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync as readFile } from "node:fs";
+import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, rm, stat, utimes } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import sharp from "sharp";
-
-const rootUrl = (filePath) => new URL(`../${filePath}`, import.meta.url);
-const read = (filePath) => readFile(rootUrl(filePath), "utf8");
+import { readRepoFile, repoUrl } from "./helpers/repo-files.mjs";
 
 async function loadThumbnailPath() {
   try {
@@ -71,7 +69,7 @@ test("thumbnail generation writes a bounded WebP", async () => {
   try {
     const outputPath = path.join(tempDir, "preview.webp");
     await generateThumbnail({
-      inputPath: rootUrl("public/noe-avatar.jpg"),
+      inputPath: repoUrl("public/noe-avatar.jpg"),
       outputPath,
       width: 320,
     });
@@ -224,13 +222,13 @@ test("thumbnail sources strip query and hash suffixes through one shared helper"
   assert.equal(stripQueryAndHash("/assets/img/a.png?v=1#top"), "/assets/img/a.png");
   assert.equal(stripQueryAndHash("/assets/img/a.png#top"), "/assets/img/a.png");
   assert.equal(stripQueryAndHash("/assets/img/a.png"), "/assets/img/a.png");
-  assert.doesNotMatch(read("scripts/generate-image-thumbnails.mjs"), /split\(\/\[\?#\]\//);
+  assert.doesNotMatch(readRepoFile("scripts/generate-image-thumbnails.mjs"), /split\(\/\[\?#\]\//);
 });
 
 test("about portrait and thumbnail seed share one exported path", async () => {
   const { ABOUT_PORTRAIT_PATH, getImageThumbnailPath } = await loadThumbnailPath();
-  const about = read("src/pages/about.mdx");
-  const generator = read("scripts/generate-image-thumbnails.mjs");
+  const about = readRepoFile("src/pages/about.mdx");
+  const generator = readRepoFile("scripts/generate-image-thumbnails.mjs");
 
   assert.equal(ABOUT_PORTRAIT_PATH, "/image.png");
   assert.equal(
@@ -275,18 +273,18 @@ test("thumbnail generation includes about map images from the public directory",
 });
 
 test("thumbnail generator writes the about map directory literal once", () => {
-  const generator = read("scripts/generate-image-thumbnails.mjs");
+  const generator = readRepoFile("scripts/generate-image-thumbnails.mjs");
 
   assert.equal(generator.match(/assets\/img\/about-map/g)?.length, 1);
 });
 
 test("preview consumers use generated images without changing article heroes", () => {
-  const card = read("src/components/Card.astro");
-  const about = read("src/pages/about.mdx");
-  const map = read("src/features/about/components/AboutTravelMap.astro");
-  const postDetails = read("src/layouts/PostDetails.astro");
-  const packageJson = JSON.parse(read("package.json"));
-  const gitignore = read(".gitignore");
+  const card = readRepoFile("src/components/Card.astro");
+  const about = readRepoFile("src/pages/about.mdx");
+  const map = readRepoFile("src/features/about/components/AboutTravelMap.astro");
+  const postDetails = readRepoFile("src/layouts/PostDetails.astro");
+  const packageJson = JSON.parse(readRepoFile("package.json"));
+  const gitignore = readRepoFile(".gitignore");
 
   assert.match(card, /getImageThumbnailPath/);
   assert.match(card, /alt=\{heroImageAlt \?\? title\}/);

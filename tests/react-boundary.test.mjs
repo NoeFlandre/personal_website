@@ -1,12 +1,11 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import test from "node:test";
-
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+import { readRepoFile } from "./helpers/repo-files.mjs";
 
 test("the Astro site stays free of dormant React infrastructure", () => {
-  const packageJson = JSON.parse(read("package.json"));
-  const astroConfig = read("astro.config.mjs");
+  const packageJson = JSON.parse(readRepoFile("package.json"));
+  const astroConfig = readRepoFile("astro.config.mjs");
 
   for (const dependency of ["@astrojs/react", "react", "react-dom"]) {
     assert.equal(packageJson.dependencies?.[dependency], undefined);

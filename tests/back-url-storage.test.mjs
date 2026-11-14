@@ -1,11 +1,7 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
 import { BACK_URL_KEY, getBackUrl, setBackUrl } from "../src/utils/backUrl.js";
-
-function read(path) {
-  return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-}
+import { readRepoFile } from "./helpers/repo-files.mjs";
 
 function fakeStorage(initial = {}) {
   const items = new Map(Object.entries(initial));
@@ -84,7 +80,7 @@ test("call sites read and write the back URL through the helper", () => {
     "src/layouts/Main.astro",
     "src/pages/index.astro",
   ]) {
-    const source = read(path);
+    const source = readRepoFile(path);
 
     assert.doesNotMatch(source, /sessionStorage/, path);
     assert.doesNotMatch(source, /"backUrl"/, path);

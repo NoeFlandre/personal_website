@@ -19,7 +19,7 @@ const DEFAULT_PLACES = [
   },
 ];
 
-export class FakeElement extends EventTarget {
+class FakeElement extends EventTarget {
   constructor(dataset = {}) {
     super();
     this.dataset = { ...dataset };
@@ -53,14 +53,14 @@ export class FakeElement extends EventTarget {
   }
 }
 
-export class FakeButton extends FakeElement {
+class FakeButton extends FakeElement {
   constructor(dataset = {}) {
     super(dataset);
     this.disabled = false;
   }
 }
 
-export class FakeRoot extends FakeElement {
+class FakeRoot extends FakeElement {
   constructor(places, { filterValues = ["all", "work", "travel"] } = {}) {
     super({ places: JSON.stringify(places) });
     this.mapElement = new FakeElement();
@@ -97,7 +97,7 @@ export class FakeRoot extends FakeElement {
   }
 }
 
-export class FakeDocument extends EventTarget {
+class FakeDocument extends EventTarget {
   constructor(root) {
     super();
     this.readyState = "complete";
@@ -109,14 +109,14 @@ export class FakeDocument extends EventTarget {
   }
 }
 
-export class FakeWindow extends EventTarget {
+class FakeWindow extends EventTarget {
   constructor(innerWidth = 1024) {
     super();
     this.innerWidth = innerWidth;
   }
 }
 
-export class FakeMap {
+class FakeMap {
   constructor({ zoom = 4, centerDistance = 0 } = {}) {
     this.layers = new Set();
     this.fitBoundsCalls = [];
@@ -199,7 +199,7 @@ export class FakeMap {
   }
 }
 
-export class FakeMarker {
+class FakeMarker {
   constructor(map, coordinates, options) {
     this.map = map;
     this.coordinates = coordinates;

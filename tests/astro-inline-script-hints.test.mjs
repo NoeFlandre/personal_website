@@ -1,14 +1,10 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
-
-function read(path) {
-  return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-}
+import { readRepoFile } from "./helpers/repo-files.mjs";
 
 test("scripts that Astro already treats as inline declare is:inline explicitly", () => {
-  const structuredData = read("src/components/StructuredData.astro");
-  const layout = read("src/layouts/Layout.astro");
+  const structuredData = readRepoFile("src/components/StructuredData.astro");
+  const layout = readRepoFile("src/layouts/Layout.astro");
 
   assert.match(
     structuredData,

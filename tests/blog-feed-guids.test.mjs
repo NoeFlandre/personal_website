@@ -6,8 +6,7 @@ import {
   getLegacyFeedItemXml,
   LEGACY_POST_PATHS,
 } from "../src/features/blog/utils/legacyPostPaths.ts";
-
-const fromRoot = (path) => new URL(`../${path}`, import.meta.url);
+import { repoUrl } from "./helpers/repo-files.mjs";
 
 test("a moved post keeps its old absolute URL as the feed guid, with the trailing slash feed items use", () => {
   assert.equal(
@@ -34,7 +33,7 @@ test("every moved post maps a year-folder URL back to its original root URL", ()
 });
 
 test("the feed sends the legacy guid for moved posts only", () => {
-  const feed = readFileSync(fromRoot("src/pages/rss.xml.ts"), "utf8");
+  const feed = readFileSync(repoUrl("src/pages/rss.xml.ts"), "utf8");
 
   assert.match(feed, /getLegacyFeedItemXml\(link\)/);
   assert.match(feed, /customData:/);

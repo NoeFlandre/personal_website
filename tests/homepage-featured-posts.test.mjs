@@ -1,17 +1,13 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
 import { getPath } from "../src/features/blog/utils/getPath.ts";
 import selectHomepageFeatured from "../src/features/blog/utils/selectHomepageFeatured.ts";
-
-function read(path) {
-  return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-}
+import { readRepoFile } from "./helpers/repo-files.mjs";
 
 test("homepage does not render retired work-card titles", () => {
-  const homepage = read("src/pages/index.astro");
-  const survivalGuide = read("src/content/blog/2026/survival_guide_in_ai.md");
-  const editorPickPost = read("src/content/blog/2026/editor-pick-empathy-simulation.md");
+  const homepage = readRepoFile("src/pages/index.astro");
+  const survivalGuide = readRepoFile("src/content/blog/2026/survival_guide_in_ai.md");
+  const editorPickPost = readRepoFile("src/content/blog/2026/editor-pick-empathy-simulation.md");
 
   assert.doesNotMatch(homepage, /"A small milestone for our empathy and simulation paper"/);
   assert.doesNotMatch(homepage, /"An AI survival guide"/);
@@ -20,9 +16,11 @@ test("homepage does not render retired work-card titles", () => {
 });
 
 test("homepage features exactly three posts and replaces EVERGREEN with the career post", () => {
-  const homepage = read("src/pages/index.astro");
-  const evergreen = read("src/content/blog/2026/joining_evergreen.md");
-  const careerPost = read("src/content/blog/2026/looking-for-my-next-career-opportunity.md");
+  const homepage = readRepoFile("src/pages/index.astro");
+  const evergreen = readRepoFile("src/content/blog/2026/joining_evergreen.md");
+  const careerPost = readRepoFile(
+    "src/content/blog/2026/looking-for-my-next-career-opportunity.md"
+  );
   const featuredIdsBlock = homepage.match(/const homepageFeaturedIds = \[([\s\S]*?)\];/);
 
   assert.ok(featuredIdsBlock);
@@ -41,8 +39,8 @@ test("homepage features exactly three posts and replaces EVERGREEN with the care
 });
 
 test("homepage uses the short professional tagline", () => {
-  const homepage = read("src/pages/index.astro");
-  const markdownHomepage = read("src/pages/index.md.ts");
+  const homepage = readRepoFile("src/pages/index.astro");
+  const markdownHomepage = readRepoFile("src/pages/index.md.ts");
 
   assert.match(homepage, /<p>\s*AI Research Engineer\s*<\/p>/);
   assert.doesNotMatch(homepage, /Geospatial AI & Foundation models/);
@@ -51,7 +49,7 @@ test("homepage uses the short professional tagline", () => {
 });
 
 test("homepage has no Featured Work section", () => {
-  const homepage = read("src/pages/index.astro");
+  const homepage = readRepoFile("src/pages/index.astro");
 
   assert.doesNotMatch(homepage, /id="featured-work"/);
   assert.doesNotMatch(homepage, /Featured Work/);

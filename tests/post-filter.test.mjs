@@ -1,17 +1,15 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
-
-const rootUrl = (path) => new URL(`../${path}`, import.meta.url);
-const read = (path) => readFileSync(rootUrl(path), "utf8");
+import { readRepoFile, repoUrl } from "./helpers/repo-files.mjs";
 
 test("both pages use one accessible shared filter bar", () => {
-  const componentPath = rootUrl("src/features/blog/components/PostFilterBar.astro");
+  const componentPath = repoUrl("src/features/blog/components/PostFilterBar.astro");
   assert.equal(existsSync(componentPath), true, "PostFilterBar.astro should exist");
 
-  const component = read("src/features/blog/components/PostFilterBar.astro");
-  const postsPage = read("src/pages/posts/index.astro");
-  const tagPage = read("src/pages/tags/[tag]/[...page].astro");
+  const component = readRepoFile("src/features/blog/components/PostFilterBar.astro");
+  const postsPage = readRepoFile("src/pages/posts/index.astro");
+  const tagPage = readRepoFile("src/pages/tags/[tag]/[...page].astro");
 
   assert.match(component, /aria-label="Post filters"/);
   assert.match(component, /aria-current/);

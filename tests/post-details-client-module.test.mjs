@@ -1,15 +1,11 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import test from "node:test";
-
-function read(path) {
-  return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-}
+import { readRepoFile } from "./helpers/repo-files.mjs";
 
 test("post details client module is bundled and reruns after navigation", () => {
-  const layout = read("src/layouts/PostDetails.astro");
-  const clientModule = read("src/features/blog/client/postDetailsRerun.js");
-  const sessionModule = read("src/features/blog/client/postDetailsSession.js");
+  const layout = readRepoFile("src/layouts/PostDetails.astro");
+  const clientModule = readRepoFile("src/features/blog/client/postDetailsRerun.js");
+  const sessionModule = readRepoFile("src/features/blog/client/postDetailsSession.js");
 
   assert.match(
     clientModule,

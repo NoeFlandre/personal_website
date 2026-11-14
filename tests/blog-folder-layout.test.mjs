@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import test from "node:test";
 import matter from "gray-matter";
+import { repoUrl } from "./helpers/repo-files.mjs";
 
-const fromRoot = (path) => new URL(`../${path}`, import.meta.url);
 const BLOG = "src/content/blog";
-const { redirects } = JSON.parse(readFileSync(fromRoot("vercel.json"), "utf8"));
+const { redirects } = JSON.parse(readFileSync(repoUrl("vercel.json"), "utf8"));
 
 // Posts that used to sit at the blog root. Moving them into a year folder changes their URL,
 // so each old URL must redirect to the new one. Date prefixes were dropped from the file names;
@@ -30,16 +30,16 @@ const MOVED_POSTS = [
 const isPostFile = (name) => /\.mdx?$/.test(name) && !name.startsWith("_");
 
 test("no blog posts sit at the root of the blog folder", () => {
-  const rootPosts = readdirSync(fromRoot(BLOG)).filter(isPostFile);
+  const rootPosts = readdirSync(repoUrl(BLOG)).filter(isPostFile);
 
   assert.deepEqual(rootPosts, []);
 });
 
 test("every post sits in the year folder of its publication date", () => {
   const mismatches = [];
-  for (const folder of readdirSync(fromRoot(BLOG)).filter((name) => /^\d{4}$/.test(name))) {
-    for (const file of readdirSync(fromRoot(`${BLOG}/${folder}`)).filter(isPostFile)) {
-      const { data } = matter(readFileSync(fromRoot(`${BLOG}/${folder}/${file}`), "utf8"));
+  for (const folder of readdirSync(repoUrl(BLOG)).filter((name) => /^\d{4}$/.test(name))) {
+    for (const file of readdirSync(repoUrl(`${BLOG}/${folder}`)).filter(isPostFile)) {
+      const { data } = matter(readFileSync(repoUrl(`${BLOG}/${folder}/${file}`), "utf8"));
       const year = String(new Date(data.pubDatetime).getUTCFullYear());
       if (year !== folder) mismatches.push(`${folder}/${file} is dated ${year}`);
     }
