@@ -4,16 +4,13 @@ import { existsSync, globSync, readFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { readRepoFile } from "./helpers/repo-files.mjs";
 
 const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const biomeConfig = JSON.parse(readFileSync(new URL("../biome.json", import.meta.url), "utf8"));
 const qualityPaths =
   "astro.config.mjs playwright.config.mjs public/toggle-theme.js scripts src tests";
 const regularTestGlob = "tests/**/*.test.mjs";
-
-function readWorkspaceFile(fileName) {
-  return readFileSync(new URL(`../${fileName}`, import.meta.url), "utf8");
-}
 
 function globToRegExp(glob) {
   let pattern = "";
@@ -218,8 +215,11 @@ test("regular test glob discovers at least one test file", () => {
   assert.notEqual(discovered.length, 0);
 });
 
+const sharedSourceRunner = "node scripts/run-source-mutation-tests.mjs";
+const sharedSourceTests = JSON.parse(readRepoFile("scripts/source-mutation-tests.json"));
+
 test("mutation testing covers the source tree with behavioral tests", () => {
-  const sharedConfig = JSON.parse(readWorkspaceFile("stryker.source-about-client.config.json"));
+  assert.ok(sharedSourceTests.includes("tests/about-map-controller.test.mjs"));
 
   for (const partition of sourceMutationPartitions) {
     const configPath = new URL(`../${partition.configFile}`, import.meta.url);
@@ -232,11 +232,9 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     assert.equal(config.cleanTempDir, "always");
     assert.deepEqual(config.ignorePatterns, mutationIgnorePatterns);
     assert.deepEqual(config.mutate, partition.mutate);
-    assert.match(config.commandRunner.command, /node --test --test-concurrency=1/);
-    assert.match(config.commandRunner.command, /tests\/about-map-controller\.test\.mjs/);
     assert.equal(
       config.commandRunner.command,
-      sharedConfig.commandRunner.command,
+      sharedSourceRunner,
       `${partition.configFile} should run the shared Stryker test list`
     );
     assert.equal(config.concurrency, 4);
@@ -244,13 +242,7 @@ test("mutation testing covers the source tree with behavioral tests", () => {
     assert.deepEqual(config.thresholds, { high: 100, low: 100, break: 100 });
   }
 
-  const aboutClientConfig = JSON.parse(
-    readWorkspaceFile("stryker.source-about-client.config.json")
-  );
-  assert.match(
-    aboutClientConfig.commandRunner.command,
-    /tests\/testimonials-carousel-client\.test\.mjs/
-  );
+  assert.ok(sharedSourceTests.includes("tests/testimonials-carousel-client.test.mjs"));
 
   const dedicatedConfigs = [
     ["stryker.routes.config.json", "src/pages/**/*.ts", "tests/route-api.test.mjs"],
@@ -287,13 +279,14 @@ const sourceInspectionTests = ["tests/about-links.test.mjs", "tests/gerard-dray-
 test("every test importing a mutated module is listed in a Stryker command", () => {
   const root = fileURLToPath(new URL("../", import.meta.url));
   const strykerConfigs = globSync("stryker*.config.json", { cwd: root }).map((fileName) =>
-    JSON.parse(readWorkspaceFile(fileName))
+    JSON.parse(readRepoFile(fileName))
   );
-  const listedTests = new Set(
-    strykerConfigs.flatMap(({ commandRunner }) =>
+  const listedTests = new Set([
+    ...sharedSourceTests,
+    ...strykerConfigs.flatMap(({ commandRunner }) =>
       commandRunner.command.split(/\s+/).filter((token) => token.endsWith(".test.mjs"))
-    )
-  );
+    ),
+  ]);
   const mutationScopes = strykerConfigs.map(({ mutate }) => ({
     include: mutate.filter((pattern) => !pattern.startsWith("!")),
     exclude: mutate.filter((pattern) => pattern.startsWith("!")).map((pattern) => pattern.slice(1)),
@@ -327,8 +320,6 @@ test("every test importing a mutated module is listed in a Stryker command", () 
 });
 
 test("mutation test exemptions are documented and kept out of the source-blog run", () => {
-  const sourceBlogConfig = JSON.parse(readWorkspaceFile("stryker.source-blog.config.json"));
-
   for (const [testFile, reason] of mutationTestExemptions) {
     assert.equal(
       existsSync(new URL(`../${testFile}`, import.meta.url)),
@@ -338,7 +329,7 @@ test("mutation test exemptions are documented and kept out of the source-blog ru
     assert.notEqual(reason.trim(), "", `${testFile} needs a reason`);
     assert.equal(reason.includes("\n"), false, `${testFile} reason must be one line`);
     assert.equal(
-      sourceBlogConfig.commandRunner.command.includes(testFile),
+      sharedSourceTests.includes(testFile),
       false,
       `${testFile} is exempt from the source-blog mutation run`
     );
