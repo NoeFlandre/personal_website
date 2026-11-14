@@ -61,7 +61,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "VMASC",
     location: "Suffolk, VA, USA",
     description: "Applied LLMs to simulation and decision-making",
-    body: `Advised by ${PHILIPPE_AUTHOR_LINK}, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, leverages advanced prompt engineering with GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.`,
+    body: `Advised by ${PHILIPPE_AUTHOR_LINK}, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, and uses GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.`,
   },
   {
     year: "May 2024 — Jul 2024",

@@ -178,7 +178,7 @@ test("career timeline preserves the published content contract", () => {
         subtitle: "VMASC",
         location: "Suffolk, VA, USA",
         description: "Applied LLMs to simulation and decision-making",
-        body: 'Advised by <a href="https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, leverages advanced prompt engineering with GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.',
+        body: 'Advised by <a href="https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe J. Giabbanelli</a>, my research focused on making complex Agent-Based Models interpretable for non-technical decision-makers. I built an end-to-end framework that parses NetLogo simulation metrics, and uses GPT-4o and Claude 3.5 Sonnet to analyze data trends, and condenses the text using both extractive and abstractive summarization. The resulting explanations were validated through comprehensive automated scoring and structured human evaluations.',
       },
       {
         year: "May 2024 — Jul 2024",
