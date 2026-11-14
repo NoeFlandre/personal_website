@@ -77,7 +77,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "EuroMov",
     location: "Alès, Occitanie, France",
     description: "Generative AI applied to artistic movement analysis",
-    body: `Supervised by ${authorLink(GERARD_SCHOLAR_URL, "Gérard Dray")}, my research stood at the intersection of AI and art by generating digital artwork from human movement data. I processed raw sensor spreadsheets from an artist's movements and used a remote GPU container to run StableDiffusion with ControlNet and specialized models. I developed an iterative workflow that combined image generation with MATLAB scripts for depth-based image composition, accepting uncertainty to create novel visual compositions and study the expressive potential of diffusion models.`,
+    body: `Supervised by ${authorLink(GERARD_SCHOLAR_URL, "Gérard Dray")}, I studied the intersection of diffusion models and art by generating digital artwork from human movement data.`,
   },
   {
     year: "Nov 2023 — Dec 2023",
