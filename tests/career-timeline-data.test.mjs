@@ -186,7 +186,7 @@ test("career timeline preserves the published content contract", () => {
         subtitle: "Miami University",
         location: "Oxford, OH, USA",
         description: "LLMs for conceptual modeling and multimodal evaluation",
-        body: 'I investigated how LLMs can be integrated with simulation and conceptual modeling. <a href="https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe Giabbanelli</a> was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, applying a Design of Experiments methodology to merge complex causal maps using LLMs, and utilizing advanced prompt engineering and style transfer to translate agent-based models into empathetic stories.',
+        body: 'I studied how LLMs can be integrated with simulation and conceptual modeling. <a href="https://scholar.google.com/citations?user=7YilOHoAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Philippe Giabbanelli</a> was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, merging complex causal maps using LLMs, and studying prompt engineering and style transfer to translate agent-based models into empathetic stories.',
       },
       {
         year: "Jan 2024 — May 2024",

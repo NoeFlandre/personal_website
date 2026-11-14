@@ -69,7 +69,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "Miami University",
     location: "Oxford, OH, USA",
     description: "LLMs for conceptual modeling and multimodal evaluation",
-    body: `I investigated how LLMs can be integrated with simulation and conceptual modeling. ${authorLink(PHILIPPE_SCHOLAR_URL, "Philippe Giabbanelli")} was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, applying a Design of Experiments methodology to merge complex causal maps using LLMs, and utilizing advanced prompt engineering and style transfer to translate agent-based models into empathetic stories.`,
+    body: `I studied how LLMs can be integrated with simulation and conceptual modeling. ${authorLink(PHILIPPE_SCHOLAR_URL, "Philippe Giabbanelli")} was my supervisor. My contributions included testing LLMs on multimodal graduate-level exams using both text and slide decks, merging complex causal maps using LLMs, and studying prompt engineering and style transfer to translate agent-based models into empathetic stories.`,
   },
   {
     year: "Jan 2024 — May 2024",
