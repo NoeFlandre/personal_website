@@ -44,6 +44,7 @@ I'm Noe Flandre, an AI Research Engineer focused on datasets, model training, an
 `npm run write` opens a local editor for posts in `src/content/blog/<year>/`:
 
 - Edit a post with autosave and a live preview. The preview uses the last build's stylesheet, so run `npm run build` once first.
+- Click **Full screen preview** to see the preview fill the screen. Press Esc to go back.
 - Add an image or video with the button, drag and drop, or paste. It goes to `public/assets/img/<year>/<post>/` and its Markdown is inserted at the cursor.
 - Set the hero image from the toolbar. It writes `heroImage` and `heroImageAlt` into the frontmatter.
 - New posts start as drafts with the minimal frontmatter.
