@@ -329,3 +329,15 @@ test("the preview shows the hero image above the post body", async () => {
     await fixture.close();
   }
 });
+
+test("the editor page offers a full screen preview that the browser can enter", async () => {
+  const fixture = await startFixture();
+  try {
+    const html = await (await fetch(fixture.origin + "/")).text();
+
+    assert.match(html, /<button id="fullscreen"/);
+    assert.match(html, /<iframe id="preview"[^>]*\ballowfullscreen\b/);
+  } finally {
+    await fixture.close();
+  }
+});

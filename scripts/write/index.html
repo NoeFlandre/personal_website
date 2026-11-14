@@ -89,6 +89,7 @@
   <span id="file">No post open</span>
   <span id="hint" hidden>Preview has no site styles yet. Run <code>npm run build</code> once.</span>
   <span id="status" role="status" aria-live="polite"></span>
+  <button id="fullscreen" type="button" disabled>Full screen preview</button>
   <button id="save" type="button" disabled>Save</button>
 </header>
 <aside>
@@ -113,7 +114,7 @@
     </details>
     <textarea id="editor" spellcheck="true" aria-label="Markdown source" disabled placeholder="Pick a post on the left, or create one. You can also drop or paste images here."></textarea>
   </div>
-  <iframe id="preview" title="Preview" sandbox="allow-same-origin"></iframe>
+  <iframe id="preview" title="Preview" sandbox="allow-same-origin" allowfullscreen></iframe>
 </main>
 <script>
   const els = {
@@ -124,6 +125,7 @@
     status: document.getElementById("status"),
     hint: document.getElementById("hint"),
     save: document.getElementById("save"),
+    fullscreen: document.getElementById("fullscreen"),
     newForm: document.getElementById("new-post"),
     newTitle: document.getElementById("new-title"),
   };
@@ -216,6 +218,7 @@
     els.editor.value = post.content;
     els.editor.disabled = false;
     els.save.disabled = false;
+    els.fullscreen.disabled = false;
     media.addButton.disabled = false;
     media.heroButton.disabled = false;
     els.file.textContent = post.path;
@@ -350,6 +353,16 @@
     } catch (error) {
       reportError(error);
     }
+  });
+
+  // The browser's own full screen mode: the preview fills the screen. Esc or the button exits.
+  if (!document.fullscreenEnabled) els.fullscreen.hidden = true;
+  els.fullscreen.addEventListener("click", () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else els.preview.requestFullscreen().catch(reportError);
+  });
+  document.addEventListener("fullscreenchange", () => {
+    els.fullscreen.textContent = document.fullscreenElement ? "Exit full screen" : "Full screen preview";
   });
 
   els.editor.addEventListener("dragover", (event) => {
