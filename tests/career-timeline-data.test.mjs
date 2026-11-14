@@ -202,7 +202,7 @@ test("career timeline preserves the published content contract", () => {
         subtitle: "Centre Hospitalier de Thuir",
         location: "Thuir, Occitanie, France",
         description: "BI dashboards to modernize hospital data reporting",
-        body: ' I modernized hospital data reporting under the supervision of <a href="https://www.linkedin.com/in/cl%C3%A9ment-naudy-7270b114a/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Clément Naudy</a>,  by replacing manual export processes with real-time QlikView dashboards connected to administrative and medical ERPs. I wrote SQL queries and QlikView load scripts to extract, transform, and model hospital data, building dashboards to track key indicators such as medical activity or absenteeism. Finally, I authored technical documentation to ensure project sustainability.',
+        body: 'I modernized hospital data reporting under the supervision of <a href="https://www.linkedin.com/in/cl%C3%A9ment-naudy-7270b114a/" target="_blank" rel="noopener noreferrer" class="underline decoration-accent/30 underline-offset-4 hover:text-accent">Clément Naudy</a>, by replacing manual export processes with real-time QlikView dashboards connected to administrative and medical ERPs.',
       },
       {
         year: "May 2023 — Jun 2023",

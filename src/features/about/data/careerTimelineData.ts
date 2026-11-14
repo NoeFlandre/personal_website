@@ -85,7 +85,7 @@ export const CAREER_TIMELINE_EXPERIENCE: TimelineItem[] = [
     subtitle: "Centre Hospitalier de Thuir",
     location: "Thuir, Occitanie, France",
     description: "BI dashboards to modernize hospital data reporting",
-    body: ` I modernized hospital data reporting under the supervision of ${authorLink("https://www.linkedin.com/in/cl%C3%A9ment-naudy-7270b114a/", "Clément Naudy")},  by replacing manual export processes with real-time QlikView dashboards connected to administrative and medical ERPs. I wrote SQL queries and QlikView load scripts to extract, transform, and model hospital data, building dashboards to track key indicators such as medical activity or absenteeism. Finally, I authored technical documentation to ensure project sustainability.`,
+    body: `I modernized hospital data reporting under the supervision of ${authorLink("https://www.linkedin.com/in/cl%C3%A9ment-naudy-7270b114a/", "Clément Naudy")}, by replacing manual export processes with real-time QlikView dashboards connected to administrative and medical ERPs.`,
   },
   {
     year: "May 2023 — Jun 2023",
