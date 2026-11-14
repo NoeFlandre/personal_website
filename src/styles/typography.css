@@ -42,6 +42,10 @@
     max-width: 640px;
     width: 100%;
   }
+  /* !important: this sits in @layer base, so the hero's max-w-[640px] utility would otherwise win. */
+  .prose > img[src="/assets/img/2026/a-reminder-on-k-means/kmeans-summary.png"] {
+    max-width: 100% !important;
+  }
   .prose pre {
     box-sizing: border-box;
     max-width: 100%;
