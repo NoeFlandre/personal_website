@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import {
+  assertPostFilePath,
   createPost,
   listPosts,
   readPost,
@@ -146,4 +147,19 @@ test("splitFrontmatter separates the YAML block from the body", () => {
     frontmatter: null,
     body: "No frontmatter here",
   });
+});
+
+test("assertPostFilePath accepts relative markdown paths and rejects everything else", () => {
+  assert.equal(assertPostFilePath("2026/my-post.md"), "2026/my-post.md");
+
+  for (const bad of ["", "   ", "/etc/passwd.md", "2026/post.txt", "post\0.md"]) {
+    assert.throws(
+      () => assertPostFilePath(bad),
+      (error) => {
+        assert.ok(error instanceof WriterError, `${JSON.stringify(bad)} should be rejected`);
+        assert.equal(error.status, 400);
+        return true;
+      }
+    );
+  }
 });

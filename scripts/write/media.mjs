@@ -1,6 +1,6 @@
 import { mkdir, readdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { resolvePostPath, splitFrontmatter, WriterError } from "./posts.mjs";
+import { assertPostFilePath, resolvePostPath, splitFrontmatter, WriterError } from "./posts.mjs";
 
 export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
 
@@ -93,7 +93,7 @@ export async function saveUpload({ root, publicDir, postPath, filename, data }) 
 
 /** Lists the media already uploaded for a post, so it can be reused without re-uploading. */
 export async function listMedia({ publicDir, postPath }) {
-  const { path: relativePost } = resolvePostPath("/", postPath);
+  const relativePost = assertPostFilePath(postPath);
   const folder = path.join(publicDir, mediaFolderFor(relativePost));
   let names;
   try {

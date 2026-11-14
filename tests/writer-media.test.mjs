@@ -12,6 +12,7 @@ import {
   setHeroFields,
 } from "../scripts/write/media.mjs";
 import { WriterError } from "../scripts/write/posts.mjs";
+import { createWriterFixture } from "./helpers/writer-fixtures.mjs";
 
 const PNG = Buffer.concat([
   Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
@@ -28,16 +29,13 @@ const SVG = Buffer.from(
 );
 
 async function makeFixture() {
-  const base = await mkdtemp(path.join(tmpdir(), "writer-media-"));
-  const root = path.join(base, "blog");
-  const publicDir = path.join(base, "public");
-  await mkdir(path.join(root, "2026"), { recursive: true });
-  await mkdir(publicDir, { recursive: true });
+  const fixture = await createWriterFixture();
+  await mkdir(path.join(fixture.root, "2026"), { recursive: true });
   await writeFile(
-    path.join(root, "2026", "attention-pooling.md"),
+    path.join(fixture.root, "2026", "attention-pooling.md"),
     '---\ntitle: "Attention"\n---\n\nBody\n'
   );
-  return { base, root, publicDir, close: () => rm(base, { recursive: true, force: true }) };
+  return fixture;
 }
 
 async function expectWriterError(promise, status) {

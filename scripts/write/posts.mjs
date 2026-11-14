@@ -30,14 +30,22 @@ export function slugify(title) {
 }
 
 /** Turns a user-supplied relative path into an absolute file path inside `root`. */
-export function resolvePostPath(root, relativePath) {
+/** Checks that a path names a markdown file relative to the blog folder, and returns it unchanged. */
+export function assertPostFilePath(relativePath) {
   if (typeof relativePath !== "string" || relativePath.trim() === "") {
     throw new WriterError(400, "Missing post path");
   }
   if (path.isAbsolute(relativePath) || relativePath.includes("\0")) {
     throw new WriterError(400, "Path must be relative to the blog folder");
   }
+  if (path.extname(relativePath) !== ".md") {
+    throw new WriterError(400, "Only .md posts can be edited here");
+  }
+  return relativePath;
+}
 
+export function resolvePostPath(root, relativePath) {
+  assertPostFilePath(relativePath);
   const full = path.resolve(root, relativePath);
   const relative = path.relative(root, full);
   const escapes =
@@ -152,6 +160,11 @@ export async function createPost(root, { title, now = new Date() }) {
   if (await fileExists(full)) throw new WriterError(409, "A post with this name already exists");
 
   await mkdir(path.dirname(full), { recursive: true });
-  await writeFile(full, scaffold(cleanTitle, now), { encoding: "utf8", flag: "wx" });
+  try {
+    await writeFile(full, scaffold(cleanTitle, now), { encoding: "utf8", flag: "wx" });
+  } catch (error) {
+    if (error.code === "EEXIST") throw new WriterError(409, "A post with this name already exists");
+    throw error;
+  }
   return { path: postPath };
 }

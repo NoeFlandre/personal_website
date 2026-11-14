@@ -5,17 +5,15 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { createWriterServer } from "../scripts/write/server.mjs";
+import { createWriterFixture } from "./helpers/writer-fixtures.mjs";
 
 const EDITOR_PAGE = new URL("../scripts/write/index.html", import.meta.url).pathname;
 
 async function startFixture() {
-  const base = await mkdtemp(path.join(tmpdir(), "writer-server-"));
-  const root = path.join(base, "blog");
-  const publicDir = path.join(base, "public");
+  const { base, root, publicDir, close: removeFixtureFiles } = await createWriterFixture();
   const distDir = path.join(base, "dist");
 
   await mkdir(path.join(root, "2026"), { recursive: true });
-  await mkdir(publicDir, { recursive: true });
   await mkdir(path.join(distDir, "_astro"), { recursive: true });
   await writeFile(
     path.join(root, "2026", "post.md"),
@@ -40,7 +38,7 @@ async function startFixture() {
     async close() {
       server.closeAllConnections();
       await new Promise((resolve) => server.close(resolve));
-      await rm(base, { recursive: true, force: true });
+      await removeFixtureFiles();
     },
   };
 }
