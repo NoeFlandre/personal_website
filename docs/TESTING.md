@@ -26,6 +26,10 @@ report-heavy HTML and JSON reporters are intentionally disabled to keep the full
 npm run test:mutation
 ```
 
+The five source scopes share one test list, `scripts/source-mutation-tests.json`, which
+`scripts/run-source-mutation-tests.mjs` runs. Add a behavioral test there when it imports a
+mutated module; the quality checks fail otherwise.
+
 The CRAP score combines cyclomatic complexity and statement coverage:
 
 ```text
