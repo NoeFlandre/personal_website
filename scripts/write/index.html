@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Blog writer (local)</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fdfdfd;
+    --fg: #1d1d1f;
+    --muted: #6b6b6b;
+    --line: #d8d8d8;
+    --accent: #006cac;
+    --error: #b00020;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161616; --fg: #e8e8e8; --muted: #9a9a9a; --line: #333; --accent: #6ab7ff; --error: #ff8a8a; }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    font: 14px/1.5 ui-monospace, Menlo, Consolas, monospace;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  header {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  header h1 { font-size: 15px; margin: 0 auto 0 0; }
+  #file { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40ch; }
+  #status[data-kind="error"] { color: var(--error); }
+  #status[data-kind="busy"] { color: var(--muted); }
+  #hint { color: var(--muted); }
+  button { font: inherit; color: inherit; background: none; border: 1px solid var(--line); border-radius: 4px; padding: 3px 10px; cursor: pointer; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  aside { border-right: 1px solid var(--line); overflow: auto; padding: 8px; min-height: 0; }
+  #new-post { display: flex; gap: 4px; margin-bottom: 8px; }
+  #new-post input {
+    flex: 1; min-width: 0; font: inherit; color: inherit; background: transparent;
+    border: 1px solid var(--line); border-radius: 4px; padding: 3px 6px;
+  }
+  #post-list button {
+    display: block; width: 100%; text-align: left; border: 0; border-radius: 4px;
+    padding: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  #post-list button[aria-current="true"] { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+  #post-list small { display: block; color: var(--muted); }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 0; }
+  #editor {
+    width: 100%; height: 100%; resize: none; border: 0; border-right: 1px solid var(--line);
+    padding: 16px; font: inherit; background: transparent; color: inherit; outline: none;
+    white-space: pre-wrap;
+  }
+  #preview { width: 100%; height: 100%; border: 0; background: var(--bg); }
+  .editor-pane { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--line); }
+  #media-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  #alt {
+    flex: 1 1 160px; min-width: 0; font: inherit; color: inherit; background: transparent;
+    border: 1px solid var(--line); border-radius: 4px; padding: 3px 6px;
+  }
+  #media-list { padding: 4px 10px; border-bottom: 1px solid var(--line); max-height: 30vh; overflow: auto; }
+  #media-list summary { cursor: pointer; color: var(--muted); padding: 2px 0; }
+  #media-items { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; }
+  #media-items li { display: flex; gap: 6px; align-items: center; }
+  #media-items span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #media-items button { padding: 1px 8px; }
+  @media (max-width: 800px) {
+    body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
+    aside { border-right: 0; border-bottom: 1px solid var(--line); max-height: 30vh; }
+    main { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); }
+    #editor { border-right: 0; border-bottom: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Blog writer</h1>
+  <span id="file">No post open</span>
+  <span id="hint" hidden>Preview has no site styles yet. Run <code>npm run build</code> once.</span>
+  <span id="status" role="status" aria-live="polite"></span>
+  <button id="save" type="button" disabled>Save</button>
+</header>
+<aside>
+  <form id="new-post">
+    <input id="new-title" type="text" placeholder="New post title" aria-label="New post title" required>
+    <button type="submit">New</button>
+  </form>
+  <nav id="post-list" aria-label="Posts"></nav>
+</aside>
+<main>
+  <div class="editor-pane">
+    <div id="media-bar">
+      <button id="add-media" type="button" disabled>Add image or video</button>
+      <button id="set-hero" type="button" disabled>Set hero image</button>
+      <input id="alt" type="text" placeholder="Alt text (optional)" aria-label="Alt text for the next image">
+      <input id="file-media" type="file" accept="image/*,video/mp4,video/webm" multiple hidden>
+      <input id="file-hero" type="file" accept="image/*" hidden>
+    </div>
+    <details id="media-list">
+      <summary>Media in this post</summary>
+      <ul id="media-items"></ul>
+    </details>
+    <textarea id="editor" spellcheck="true" aria-label="Markdown source" disabled placeholder="Pick a post on the left, or create one. You can also drop or paste images here."></textarea>
+  </div>
+  <iframe id="preview" title="Preview" sandbox="allow-same-origin"></iframe>
+</main>
+<script>
+  const els = {
+    editor: document.getElementById("editor"),
+    preview: document.getElementById("preview"),
+    list: document.getElementById("post-list"),
+    file: document.getElementById("file"),
+    status: document.getElementById("status"),
+    hint: document.getElementById("hint"),
+    save: document.getElementById("save"),
+    newForm: document.getElementById("new-post"),
+    newTitle: document.getElementById("new-title"),
+  };
+
+  const state = { path: null, saved: "", autosaveTimer: null, renderTimer: null, renderId: 0 };
+
+  async function api(url, body) {
+    const options = { headers: { "x-writer": "1" } };
+    if (body !== undefined) {
+      options.method = "POST";
+      options.headers["content-type"] = "application/json";
+      options.body = JSON.stringify(body);
+    }
+    const response = await fetch(url, options);
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error ?? `Request failed (${response.status})`);
+    return data;
+  }
+
+  function setStatus(text, kind = "ok") {
+    els.status.textContent = text;
+    els.status.dataset.kind = kind;
+  }
+
+  const isDirty = () => state.path !== null && els.editor.value !== state.saved;
+
+  function showUnsaved() {
+    if (isDirty()) setStatus("Unsaved changes", "busy");
+  }
+
+  async function loadPosts() {
+    const posts = await api("/api/posts");
+    if (posts.length === 0) {
+      const empty = document.createElement("p");
+      empty.textContent = "No posts yet.";
+      els.list.replaceChildren(empty);
+      return;
+    }
+    els.list.replaceChildren(
+      ...posts.map((post) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.path = post.path;
+        button.setAttribute("aria-current", String(post.path === state.path));
+        button.append(post.title + (post.draft ? " (draft)" : ""));
+        const date = document.createElement("small");
+        date.textContent = post.path;
+        button.append(date);
+        button.addEventListener("click", () => openPost(post.path).catch(reportError));
+        return button;
+      })
+    );
+  }
+
+  async function save() {
+    clearTimeout(state.autosaveTimer);
+    if (!isDirty()) return;
+    const content = els.editor.value;
+    setStatus("Saving…", "busy");
+    try {
+      await api("/api/post", { path: state.path, content });
+      state.saved = content;
+      if (isDirty()) showUnsaved();
+      else setStatus(`Saved ${new Date().toLocaleTimeString()}`);
+    } catch (error) {
+      setStatus(`Not saved: ${error.message}`, "error");
+    }
+  }
+
+  function scheduleRender(delay = 250) {
+    clearTimeout(state.renderTimer);
+    state.renderTimer = setTimeout(renderPreview, delay);
+  }
+
+  async function renderPreview() {
+    const id = ++state.renderId;
+    const { html, styled } = await api("/api/render", { markdown: els.editor.value });
+    if (id !== state.renderId) return;
+    const scroll = els.preview.contentWindow?.scrollY ?? 0;
+    els.preview.addEventListener("load", () => els.preview.contentWindow.scrollTo(0, scroll), { once: true });
+    els.preview.srcdoc = html;
+    els.hint.hidden = styled;
+  }
+
+  async function openPost(postPath) {
+    if (isDirty()) await save();
+    const post = await api(`/api/post?path=${encodeURIComponent(postPath)}`);
+    state.path = post.path;
+    state.saved = post.content;
+    els.editor.value = post.content;
+    els.editor.disabled = false;
+    els.save.disabled = false;
+    media.addButton.disabled = false;
+    media.heroButton.disabled = false;
+    els.file.textContent = post.path;
+    setStatus("Saved");
+    await loadPosts();
+    refreshMedia().catch(reportError);
+    scheduleRender(0);
+    els.editor.focus();
+  }
+
+  function reportError(error) {
+    setStatus(error.message, "error");
+  }
+
+  function edited() {
+    showUnsaved();
+    scheduleRender();
+    clearTimeout(state.autosaveTimer);
+    state.autosaveTimer = setTimeout(() => save().catch(reportError), 800);
+  }
+
+  els.editor.addEventListener("input", edited);
+
+  const media = {
+    alt: document.getElementById("alt"),
+    addButton: document.getElementById("add-media"),
+    heroButton: document.getElementById("set-hero"),
+    addInput: document.getElementById("file-media"),
+    heroInput: document.getElementById("file-hero"),
+    items: document.getElementById("media-items"),
+  };
+
+  const stemOf = (name) => name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ");
+
+  function requireOpenPost() {
+    if (!state.path) throw new Error("Open or create a post first");
+  }
+
+  async function uploadFile(file) {
+    requireOpenPost();
+    const hasExtension = /\.[a-z0-9]+$/i.test(file.name);
+    const name = hasExtension ? file.name : `pasted.${file.type.split("/")[1] ?? "bin"}`;
+    const params = new URLSearchParams({ postPath: state.path, filename: name });
+    const response = await fetch(`/api/upload?${params}`, {
+      method: "POST",
+      headers: { "x-writer": "1", "content-type": file.type || "application/octet-stream" },
+      body: file,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error ?? `Upload failed (${response.status})`);
+    return data;
+  }
+
+  function markdownFor({ url, name, kind }) {
+    const alt = media.alt.value.trim() || stemOf(name);
+    if (kind === "video") return `<video controls src="${url}"></video>`;
+    return `![${alt}](${url})`;
+  }
+
+  function replaceSelection(text) {
+    const { selectionStart: start, selectionEnd: end, value } = els.editor;
+    const before = value.slice(0, start);
+    const lineBreak = before === "" || before.endsWith("\n") ? "" : "\n";
+    els.editor.setRangeText(`${lineBreak}${text}\n`, start, end, "end");
+    edited();
+  }
+
+  async function addFiles(files) {
+    requireOpenPost();
+    for (const file of files) {
+      setStatus(`Uploading ${file.name}…`, "busy");
+      replaceSelection(markdownFor(await uploadFile(file)));
+    }
+    refreshMedia().catch(reportError);
+  }
+
+  async function setHeroFrom(url, name) {
+    requireOpenPost();
+    const alt = media.alt.value.trim() || stemOf(name);
+    const response = await api("/api/hero", { content: els.editor.value, url, alt });
+    els.editor.value = response.content;
+    edited();
+  }
+
+  async function refreshMedia() {
+    if (!state.path) return;
+    const items = await api(`/api/media?path=${encodeURIComponent(state.path)}`);
+    if (items.length === 0) {
+      const empty = document.createElement("li");
+      empty.textContent = "No media yet.";
+      media.items.replaceChildren(empty);
+      return;
+    }
+    media.items.replaceChildren(
+      ...items.map((item) => {
+        const row = document.createElement("li");
+        const label = document.createElement("span");
+        label.textContent = item.name;
+        label.title = item.url;
+        const insert = document.createElement("button");
+        insert.type = "button";
+        insert.textContent = "Insert";
+        insert.addEventListener("click", () => replaceSelection(markdownFor(item)));
+        const hero = document.createElement("button");
+        hero.type = "button";
+        hero.textContent = "Hero";
+        hero.addEventListener("click", () => setHeroFrom(item.url, item.name).catch(reportError));
+        row.append(label, insert, hero);
+        return row;
+      })
+    );
+  }
+
+  media.addButton.addEventListener("click", () => media.addInput.click());
+  media.heroButton.addEventListener("click", () => media.heroInput.click());
+
+  media.addInput.addEventListener("change", () => {
+    const files = [...media.addInput.files];
+    media.addInput.value = "";
+    addFiles(files).catch(reportError);
+  });
+
+  media.heroInput.addEventListener("change", async () => {
+    const [file] = media.heroInput.files;
+    media.heroInput.value = "";
+    if (!file) return;
+    try {
+      setStatus("Uploading hero…", "busy");
+      const saved = await uploadFile(file);
+      await setHeroFrom(saved.url, saved.name);
+      refreshMedia().catch(reportError);
+    } catch (error) {
+      reportError(error);
+    }
+  });
+
+  els.editor.addEventListener("dragover", (event) => {
+    if (event.dataTransfer?.types.includes("Files")) event.preventDefault();
+  });
+
+  els.editor.addEventListener("drop", (event) => {
+    const files = [...(event.dataTransfer?.files ?? [])];
+    if (files.length === 0) return;
+    event.preventDefault();
+    addFiles(files).catch(reportError);
+  });
+
+  els.editor.addEventListener("paste", (event) => {
+    const files = [...(event.clipboardData?.files ?? [])].filter(
+      (file) => file.type.startsWith("image/") || file.type.startsWith("video/")
+    );
+    if (files.length === 0) return;
+    event.preventDefault();
+    addFiles(files).catch(reportError);
+  });
+
+  els.save.addEventListener("click", () => save().catch(reportError));
+
+  document.addEventListener("keydown", (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
+      event.preventDefault();
+      save().catch(reportError);
+    }
+  });
+
+  els.newForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      if (isDirty()) await save();
+      const created = await api("/api/posts", { title: els.newTitle.value });
+      els.newTitle.value = "";
+      await openPost(created.path);
+    } catch (error) {
+      reportError(error);
+    }
+  });
+
+  window.addEventListener("beforeunload", (event) => {
+    if (isDirty()) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+  });
+
+  loadPosts().catch(reportError);
+</script>
+</body>
+</html>
