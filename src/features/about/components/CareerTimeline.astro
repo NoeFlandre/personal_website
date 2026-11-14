@@ -109,7 +109,7 @@ const timelineTitle = (item: TimelineItem, section: TimelineSection) =>
             )}
             {item.body && <p class="text-base text-foreground/80 mb-2" set:html={item.body} />}
             {item.details && (
-              <ul class={section.detailsClass}>
+              <ul class={item.detailsClass ?? section.detailsClass}>
                 {item.details.map((detail) => <li set:html={detail} />)}
               </ul>
             )}

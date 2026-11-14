@@ -11,6 +11,7 @@ export interface TimelineItem {
   descriptionHtml?: TimelineHtml;
   body?: TimelineHtml;
   details?: TimelineHtml[];
+  detailsClass?: string;
   location?: string;
   link?: string;
 }
@@ -103,14 +104,14 @@ export const CAREER_TIMELINE_EDUCATION: TimelineItem[] = [
     title: "IMT Mines Alès",
     subtitle: "MEng (Computer Science / AI)",
     location: "Alès, France",
+    detailsClass: "list-disc list-outside ml-4 space-y-1 text-base text-foreground/80",
     details: [
-      "Class representative",
-      "<strong>AI & Machine Learning:</strong> Advanced Machine Learning, Deep Learning, Symbolic AI, Heuristic Optimization, Multi-Criteria Decision Analysis, Mathematics for Machine Learning, Uncertainty Theory",
-      "<strong>Statistics & Mathematics:</strong> Advanced Statistics & Probability, Probabilities, Statistics, Calculus & Numerical Analysis",
-      "<strong>Software Engineering & CS:</strong> Software Design, Algorithm Complexity & Recursion, C Programming, Algorithms & Programming, Formal Specification, Web Technologies, Computer Networks, Databases",
-      "<strong>Data & Analytics:</strong> Data Collection, Validation, Visualization & Reporting, Signal Processing, Finite Elements, Operational Research",
-      "<strong>Engineering Sciences:</strong> Mechanics of Continuous Media, Strength of Materials, Thermodynamics, Fluid Mechanics, Electrical Energy",
-      "<strong>Business & Management:</strong> Project Management, Business Model, Market Research & Marketing, Macroeconomics, Finance, Business Law, Business Management, Engineering Ethics, Competitive Intelligence",
+      "AI & Machine Learning",
+      "Statistics & Mathematics",
+      "Software Engineering & CS",
+      "Data & Analytics",
+      "Engineering Sciences",
+      "Business & Management",
     ],
   },
   {
