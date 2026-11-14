@@ -22,6 +22,7 @@ I'm Noe Flandre, an AI Research Engineer focused on datasets, model training, an
 │   ├── pages/           # Routes and pages
 │   ├── styles/          # Global styles and CSS
 │   └── utils/           # Utility functions
+├── scripts/             # Local tooling: blog writer and quality checks (not built)
 ├── astro.config.mjs     # Astro configuration
 ├── vercel.json          # Vercel deployment and CSP configuration
 ├── package.json         # Project dependencies and scripts
@@ -36,6 +37,18 @@ I'm Noe Flandre, an AI Research Engineer focused on datasets, model training, an
 | `npm run dev`          | Starts local dev server at `localhost:4321` |
 | `npm run build`        | Build the production site to `./dist/`      |
 | `npm run preview`      | Preview the build locally, before deploying |
+| `npm run write`        | Local blog writer at `127.0.0.1:4330`       |
+
+## Writing posts locally
+
+`npm run write` opens a local editor for posts in `src/content/blog/<year>/`:
+
+- Edit a post with autosave and a live preview. The preview uses the last build's stylesheet, so run `npm run build` once first.
+- Add an image or video with the button, drag and drop, or paste. It goes to `public/assets/img/<year>/<post>/` and its Markdown is inserted at the cursor.
+- Set the hero image from the toolbar. It writes `heroImage` and `heroImageAlt` into the frontmatter.
+- New posts start as drafts with the minimal frontmatter.
+
+The writer is a local Node script in `scripts/`. It is not part of the site build, and nothing deployed can reach it.
 
 ## Deployment
 
