@@ -16,6 +16,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Root pages: `/about.md`
 - Raw markdown served with `Content-Type: text/plain` and proper caching headers
 - Redirect from noeflandre.com/*.md URLs to noeflandre.md/* (#133)
+- Local blog writer (`npm run write`): live preview, autosave, drafts, and image/video uploads. It runs only on your machine and is never part of the deployed site
+
+### Changed
+- Blog posts are organized into year folders (`src/content/blog/<year>/`). Posts that sat at the root moved there, so their URLs now include the year; the old `/posts/<slug>` and `/posts/<slug>.md` URLs redirect permanently
+- Homepage hero and site description now read "AI Research Engineer"
+- Homepage no longer shows the "Featured Work" section
+
+### Removed
+- "Jump To Section" outline on the About page, with its client script
+- Unused site-wide OG image generator; post pages keep their generated OG images
 
 ### Fixed
 - Slow theme switching animation on iPhone Safari (#122)
