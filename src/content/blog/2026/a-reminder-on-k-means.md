@@ -23,15 +23,9 @@ So in the following part of this post, my goal is simply to put my notes into wo
 
 ## Supervision or not?
 
-Suppose we have a dataset $X = \{x_1, x_2, \ldots, x_n\}$. In a supervised setting we would have a set of $y_i$ associated with those $x_i$. If you would like to formalize it, it could be $Y = \{y_1, y_2, \ldots, y_n\}$. 
+Suppose we have a dataset of cheese images. After passing these through an encoder you would end up with one embedding $x_i$ for each of your images. This would results in the dataset $X = \{x_1, x_2, \ldots, x_n\}$. In a supervised setting we would have a set of $y_i$ associated with those $x_i$. If you would like to formalize it, it could be $Y = \{y_1, y_2, \ldots, y_n\}$. If your goal is to know whether your cheeses are hard or soft, this supervision could be $y_i ∈ \{\text{hard}, \text{soft}\}$.
 
-However for K-means, we are working in an unsupervised setting, which means that in our case we only have $X$ and our goal is to figure out some interesting structure in our data in the absence of supervision (i.e in the absence of $Y$). 
-
-Ok but, what would that look like in practice?
-
-Suppose you are having a dataset of cheese images. Your goal is to determine whether these cheeses are hard or soft. So what you are going to do, is that you are going to encode each of these images. As a result each image gets an embedding: that's your $x_i$. 
-
-In a supervised setting, you would have for each $x_i$, a label associated with it. Here it would be $y_i ∈ \{\text{hard}, \text{soft}\}$. In an unsupervised setting, you would only have your $x_i$ and that's all! Figure 1 showcases the difference between the two settings.  
+However for K-means, we are working in an unsupervised setting, which means that in our case we only have $X$ and our goal is to figure out some interesting structure in our data in the absence of supervision (i.e in the absence of $Y$). Figure 1 showcases the difference between the two settings.  
 
 
 <figure style="width: min(100%, 640px);">
@@ -61,7 +55,7 @@ First you are going to define your dataset $X = \{x_1, x_2, \ldots, x_n\}$ where
 
 <figure style="width: min(100%, 300px);">
   <img src="/assets/img/2026/a-reminder-on-k-means/kmeans-init.png" alt="kmeans init" />
-  <figcaption>Figure 3: Initializing the cluster centroids at random</figcaption>
+  <figcaption>Figure 3: Initializing the cluster centroids at random. Here k=2 </figcaption>
 </figure>
 
 2) Then you are going to repeat until convergence the following (do not freak out, we are going to break down the math): 
@@ -80,7 +74,7 @@ Here is the formula:
 
 In other words, for every $x_i$ (every cheese image embedding), we are going to define a $c_i$. Now, that $c_i$ is the identity of the closest cluster centroid. As shown in Figure 4, for a given data point (here the circled blue dot), we are going to check which cluster is the closest. In the case of Figure 4, that's the blue star. And you need to do that for each data point. So now you have $\{x_1, x_2, \ldots, x_n\}$ and $\{c_1, c_2, \ldots, c_n\}$, each $c_i$ being the closest cluster identity to $x_i$. As written $c_i$ takes its values in $\{1, 2, \ldots, K\}$ because of the argmin.
 
-<figure style="width: min(100%, 300px);">
+<figure style="width: min(100%, 560px);">
   <img src="/assets/img/2026/a-reminder-on-k-means/kmeans-assign-1.png" alt="kmeans assign 1" />
   <figcaption>Figure 4: Assigning the closest cluster centroid to each data point</figcaption>
 </figure>

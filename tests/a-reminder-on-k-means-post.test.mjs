@@ -19,8 +19,8 @@ test("the k-means post sizes its body figures by panel layout", () => {
   assert.doesNotMatch(content, /!\[[^\]]*\]\(\/assets\/img\/2026\/a-reminder-on-k-means\//);
   assert.equal((content.match(/<figcaption>Figure \d: /g) ?? []).length, 6);
 
-  // Single-panel figures (461px source) are sized to Figure 1's rendered height (~240px at 640px wide).
-  for (const file of ["kmeans-init.png", "kmeans-assign-1.png", "kmeans-update.png"]) {
+  // Figures are sized so they render at the same scale (~0.65x source): 461px sources at 300px, 973px sources at 640px.
+  for (const file of ["kmeans-init.png", "kmeans-update.png"]) {
     assert.equal(figureWidths.get(file), 300, `${file} should be 300px`);
   }
   for (const file of [
@@ -30,4 +30,6 @@ test("the k-means post sizes its body figures by panel layout", () => {
   ]) {
     assert.equal(figureWidths.get(file), 640, `${file} should be 640px`);
   }
+  // Figure 4 is a tall 973px panel, shown a little smaller than 640px so it does not dominate the column.
+  assert.equal(figureWidths.get("kmeans-assign-1.png"), 560, "kmeans-assign-1.png should be 560px");
 });
