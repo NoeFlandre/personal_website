@@ -124,3 +124,7 @@ Lastly, since it can be shown that $J$ is a non convex function, we may end up w
 </figure> 
 
 And here you go! That's what there is to know about K-means, now it's time to read the paper from Meta on e-means :)
+
+## Acknowledgements
+
+Many thanks to my friend [Aritra](https://huggingface.co/ariG23498) for giving me valuable feedback on this post.
