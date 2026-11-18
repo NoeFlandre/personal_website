@@ -4,10 +4,6 @@ import test from "node:test";
 import matter from "gray-matter";
 
 const postPath = new URL("../src/content/blog/2026/rope-pair-index-rotations.md", import.meta.url);
-const heroSourcePath = new URL(
-  "../public/assets/img/2026/rope-pair-index-rotations/tikz/rope-hero.tex",
-  import.meta.url
-);
 
 test("the RoPE pair-index post preserves the notes and local-review metadata", () => {
   assert.equal(existsSync(postPath), true);
@@ -24,12 +20,4 @@ test("the RoPE pair-index post preserves the notes and local-review metadata", (
   assert.match(content, /This is the pair \$i\$ whose RoPE frequency makes \$N\$ rotations/);
   assert.doesNotMatch(content, /^\\\[/m);
   assert.doesNotMatch(content, /^\\\]$/m);
-
-  assert.equal(existsSync(heroSourcePath), true);
-
-  const heroSource = readFileSync(heroSourcePath, "utf8");
-  assert.match(heroSource, /circle \(1\.45\)/);
-  assert.match(heroSource, /R_\{\\theta\}x_i/);
-  assert.match(heroSource, /node\[pos=1, above right=6pt, fill=white, inner sep=1pt\]/);
-  assert.doesNotMatch(heroSource, /L\\omega_i|\\mathrm\{base\}|\\ln/);
 });

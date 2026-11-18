@@ -1,4 +1,3 @@
-const YOUTUBE_EMBED_CLASS = "youtube-embed-container";
 const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
 
 /**
@@ -42,17 +41,4 @@ export function extractYouTubeId(input) {
 
 export function getYouTubeEmbedSrc(input) {
   return `https://www.youtube.com/embed/${extractYouTubeId(input)}`;
-}
-
-export function buildYouTubeEmbedMarkup(input) {
-  return `<div class="${YOUTUBE_EMBED_CLASS}">
-    <iframe
-      width="560"
-      height="315"
-      src="${getYouTubeEmbedSrc(input)}"
-      title="YouTube video player"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-    ></iframe>
-  </div>`;
 }
