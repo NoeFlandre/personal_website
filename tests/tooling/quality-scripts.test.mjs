@@ -47,22 +47,22 @@ const mutationIgnorePatterns = [
 
 const sourceMutationPartitions = [
   {
-    configFile: "stryker.source-about-client.config.json",
+    configFile: "config/stryker/source-about-client.json",
     scriptName: "source-about-client",
     mutate: ["src/features/about/client/**/*.js", "src/features/about/utils/**/*.js"],
   },
   {
-    configFile: "stryker.source-about-map.config.json",
+    configFile: "config/stryker/source-about-map.json",
     scriptName: "source-about-map",
     mutate: ["src/features/about/data/aboutMapPlaces.ts"],
   },
   {
-    configFile: "stryker.source-career.config.json",
+    configFile: "config/stryker/source-career.json",
     scriptName: "source-career",
     mutate: ["src/features/about/data/careerTimelineData.ts", "src/features/about/data/links.ts"],
   },
   {
-    configFile: "stryker.source-blog.config.json",
+    configFile: "config/stryker/source-blog.json",
     scriptName: "source-blog",
     mutate: [
       "src/features/blog/client/**/*.js",
@@ -73,7 +73,7 @@ const sourceMutationPartitions = [
     ],
   },
   {
-    configFile: "stryker.source-core.config.json",
+    configFile: "config/stryker/source-core.json",
     scriptName: "source-core",
     mutate: [
       "src/env.d.ts",
@@ -162,32 +162,32 @@ test("quality scripts expose coverage, CRAP, and mutation checks", () => {
   );
   assert.equal(
     packageJson.scripts["test:mutation:source-about-client"],
-    "stryker run stryker.source-about-client.config.json"
+    "stryker run config/stryker/source-about-client.json"
   );
   assert.equal(
     packageJson.scripts["test:mutation:source-about-map"],
-    "stryker run stryker.source-about-map.config.json"
+    "stryker run config/stryker/source-about-map.json"
   );
   assert.equal(
     packageJson.scripts["test:mutation:source-career"],
-    "stryker run stryker.source-career.config.json"
+    "stryker run config/stryker/source-career.json"
   );
   assert.equal(
     packageJson.scripts["test:mutation:source-blog"],
-    "stryker run stryker.source-blog.config.json"
+    "stryker run config/stryker/source-blog.json"
   );
   assert.equal(
     packageJson.scripts["test:mutation:source-core"],
-    "stryker run stryker.source-core.config.json"
+    "stryker run config/stryker/source-core.json"
   );
   assert.equal(
     packageJson.scripts["test:mutation:routes"],
-    "stryker run stryker.routes.config.json"
+    "stryker run config/stryker/routes.json"
   );
-  assert.equal(packageJson.scripts["test:mutation:og"], "stryker run stryker.og.config.json");
+  assert.equal(packageJson.scripts["test:mutation:og"], "stryker run config/stryker/og.json");
   assert.equal(
     packageJson.scripts["test:mutation:content"],
-    "stryker run stryker.content.config.json"
+    "stryker run config/stryker/content.json"
   );
   assert.equal(
     packageJson.scripts["test:mutation"],
@@ -246,14 +246,14 @@ test("mutation testing covers the source tree with behavioral tests", () => {
   assert.ok(sharedSourceTests.includes("tests/about/testimonials-carousel-client.test.mjs"));
 
   const dedicatedConfigs = [
-    ["stryker.routes.config.json", "src/pages/**/*.ts", "tests/site/route-api.test.mjs"],
+    ["config/stryker/routes.json", "src/pages/**/*.ts", "tests/site/route-api.test.mjs"],
     [
-      "stryker.og.config.json",
+      "config/stryker/og.json",
       ["src/features/blog/og/**/*.js", "src/features/blog/og/**/*.ts", "src/utils/loadOgFonts.ts"],
       "tests/blog/og-images.test.mjs",
     ],
     [
-      "stryker.content.config.json",
+      "config/stryker/content.json",
       "src/content.config.ts",
       "tests/content/content-config.test.mjs",
     ],
@@ -286,7 +286,7 @@ const sourceInspectionTests = [
 
 test("every test importing a mutated module is listed in a Stryker command", () => {
   const root = fileURLToPath(new URL("../../", import.meta.url));
-  const strykerConfigs = globSync("stryker*.config.json", { cwd: root }).map((fileName) =>
+  const strykerConfigs = globSync("config/stryker/*.json", { cwd: root }).map((fileName) =>
     JSON.parse(readRepoFile(fileName))
   );
   const listedTests = new Set([

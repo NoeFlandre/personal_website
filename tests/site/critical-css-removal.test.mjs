@@ -9,11 +9,11 @@ test("the unused critical CSS module stays removed", () => {
   }
 
   for (const path of [
-    "stryker.source-about-client.config.json",
-    "stryker.source-about-map.config.json",
-    "stryker.source-blog.config.json",
-    "stryker.source-career.config.json",
-    "stryker.source-core.config.json",
+    "config/stryker/source-about-client.json",
+    "config/stryker/source-about-map.json",
+    "config/stryker/source-blog.json",
+    "config/stryker/source-career.json",
+    "config/stryker/source-core.json",
   ]) {
     assert.doesNotMatch(
       readRepoFile(path),

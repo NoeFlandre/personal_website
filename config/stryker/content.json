@@ -1,9 +1,9 @@
 {
-  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
-  "mutate": ["src/features/about/data/careerTimelineData.ts", "src/features/about/data/links.ts"],
+  "$schema": "../../node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "mutate": ["src/content.config.ts"],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node scripts/run-source-mutation-tests.mjs"
+    "command": "node --test --test-concurrency=4 tests/content/content-config.test.mjs"
   },
   "coverageAnalysis": "off",
   "cleanTempDir": "always",

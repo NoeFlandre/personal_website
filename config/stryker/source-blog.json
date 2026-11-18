@@ -1,6 +1,12 @@
 {
-  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
-  "mutate": ["src/features/about/client/**/*.js", "src/features/about/utils/**/*.js"],
+  "$schema": "../../node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "mutate": [
+    "src/features/blog/client/**/*.js",
+    "src/features/blog/contentPaths.ts",
+    "src/features/blog/contentRules.ts",
+    "src/features/blog/utils/**/*.js",
+    "src/features/blog/utils/**/*.ts"
+  ],
   "testRunner": "command",
   "commandRunner": {
     "command": "node scripts/run-source-mutation-tests.mjs"

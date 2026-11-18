@@ -1,17 +1,9 @@
 {
-  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
-  "mutate": [
-    "src/env.d.ts",
-    "src/types.d.ts",
-    "src/site-config.js",
-    "src/utils/**/*.js",
-    "src/utils/**/*.ts",
-    "src/utils/**/*.mjs",
-    "!src/utils/loadOgFonts.ts"
-  ],
+  "$schema": "../../node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "mutate": ["src/pages/**/*.ts"],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node scripts/run-source-mutation-tests.mjs"
+    "command": "node --test --test-concurrency=4 tests/site/route-api.test.mjs"
   },
   "coverageAnalysis": "off",
   "cleanTempDir": "always",
