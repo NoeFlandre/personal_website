@@ -2,7 +2,7 @@
 title: "I am joining the EVERGREEN research team"
 description: "Next month, I will be joining INRIA in Montpellier, within the EVERGREEN research team as a research engineer."
 pubDatetime: 2026-04-04T11:00:00Z
-heroImage: /evergreen_logo.png
+heroImage: /assets/img/2026/joining_evergreen/evergreen_logo.png
 tags: ["Post"]
 featured: false
 ---
@@ -32,10 +32,10 @@ Then for my last internship before graduation, I decided to join Airbus Defence 
 
 Right after this internship, I graduated from my engineering school and took some time off in India. I made the most of this time to focus on some personal projects to learn things I never really got the time to do, mingled with coding agents and agentic engineering, and lately I have been involved on other research projects with [Dr Philippe Giabbanelli](https://scholar.google.com/citations?user=7YilOHoAAAAJ&hl=en) on topics like agentic engineering workflows, large language models to explain agent-based simulations and to connect causal maps. I also got the chance to travel a bit in North India and Thailand.
 
-![Thar Desert](/thar_desert.jpeg)
+![Thar Desert](/assets/img/2026/joining_evergreen/thar_desert.jpeg)
 *Thar Desert, India*
 
-![Bangkok](/bangkok.jpeg)
+![Bangkok](/assets/img/2026/joining_evergreen/bangkok.jpeg)
 *Bangkok, Thailand*
 
 I have been wondering (a lot) what to do and where to go after graduation. I have tasted a small portion of research and had a little bite in the industry, which both have their assets and drawbacks. Given the current state of the job market as a junior it has not been an easy time to find something appealing or to find something at all. But this « time off » in India gave me some time to think about it and eventually I have decided to stick to research after graduation. The first reason is obviously because I enjoy doing research a lot. It seems to me that it is a lot more flexible than corporate life but most of all it is a lot more rewarding. What I mean is that you are more likely to be in control of your work, explore some areas you wouldn’t otherwise and get the opportunity to share your work with the world. Moreover I believe it is a great way to learn and gain expertise, which we don’t have after graduation, especially in generalist engineering schools like mine. Ok we have done a few projects classifying cats and dogs here and there, but even if internships were nice experiences, it fundamentally leave you after graduation with so much left to learn and so much to explore. While I was trying to figure out my first job, someone gave me the following advice: « choose the place where you will learn the most ». It is dead simple as an advice, yet this is the best advice I ever had.

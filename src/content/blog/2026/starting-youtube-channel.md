@@ -2,7 +2,7 @@
 title: "I am starting a youtube channel"
 description: "A few words on why I am starting a youtube channel"
 pubDatetime: 2026-08-07T11:00:00Z
-heroImage: /youtube.png
+heroImage: /assets/img/2026/starting-youtube-channel/youtube.png
 tags: ["Post"]
 featured: false
 draft: false

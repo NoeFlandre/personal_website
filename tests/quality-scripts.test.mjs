@@ -40,7 +40,6 @@ const mutationIgnorePatterns = [
   "output/**",
   "public/assets/**",
   "public/generated/**",
-  "public/textual-descriptions-place-on-earth/**",
   "reports/**",
 ];
 

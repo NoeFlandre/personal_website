@@ -2,7 +2,7 @@
 title: "How to describe a place on Earth using text? Part 1: wikidata"
 description: "A blog post where I am introducing a simple first approach to describe a given place on Earth using wikidata"
 pubDatetime: 2026-08-12T09:38:00Z
-heroImage: /textual-descriptions-place-on-earth/hero.png
+heroImage: /assets/img/2026/textual-descriptions-place-on-earth/hero.png
 tags: ["Post"]
 featured: false
 draft: false
@@ -29,7 +29,7 @@ The first level of description we can give to a place is to give it coordinates 
 This is a great way to localize any given place on Earth. Below (Figure 1) is a little diagram for you to understand what is the definition of the latitude and the longitude we are using here.
 
 <figure style="width: min(100%, 480px);">
-  <img src="/textual-descriptions-place-on-earth/latitude_longitude.png" alt="Defining geographic coordinates with the latitude and the longitude" />
+  <img src="/assets/img/2026/textual-descriptions-place-on-earth/latitude_longitude.png" alt="Defining geographic coordinates with the latitude and the longitude" />
   <figcaption>Figure 1: Defining geographic coordinates with the latitude and the longitude</figcaption>
 </figure>
 
@@ -72,21 +72,21 @@ On Open Street Map you will find different kinds of geometries as shown in Figur
 - **Relation**: A relation allows you to combine geometries and have complex structure with multiple polygons. You could describe a location with outer parts or holes. You could for example use a relation to describe a building with an inner courtyard.
 
 <figure style="width: min(100%, 640px);">
-  <img src="/textual-descriptions-place-on-earth/osm-geometries.png" alt="The different geometries you can find on Open Street Map." />
+  <img src="/assets/img/2026/textual-descriptions-place-on-earth/osm-geometries.png" alt="The different geometries you can find on Open Street Map." />
   <figcaption>Figure 2: The different geometries you can find on Open Street Map.</figcaption>
 </figure>
 
 Now, coming back to our airport, if we were to plot these points on a map we would have the following object (Figure 3), which gives boundaries to our airport.
 
 <figure style="width: min(100%, 640px);">
-  <img src="/textual-descriptions-place-on-earth/polygon-airport.png" alt="The Open Street Map polygon representing the Airport of Pau (France)." />
+  <img src="/assets/img/2026/textual-descriptions-place-on-earth/polygon-airport.png" alt="The Open Street Map polygon representing the Airport of Pau (France)." />
   <figcaption>Figure 3: The polygon representing the Airport of Pau (France).</figcaption>
 </figure>
 
 Using this geometry we could then further describe it with some statistics and find out that its area is of $1.75\,\mathrm{km}^2$. Using its coordinates, you could now also overlap some satellite images to describe the place with some visual signal (Figure 4). But what is going to be our interest here, is to find some textual description of this place.
 
 <figure style="width: min(100%, 640px);">
-  <img src="/textual-descriptions-place-on-earth/satellite-image-airport.png" alt="A satellite image of the airport, Pau (France)" />
+  <img src="/assets/img/2026/textual-descriptions-place-on-earth/satellite-image-airport.png" alt="A satellite image of the airport, Pau (France)" />
   <figcaption>Figure 4: A satellite image of the airport, Pau (France)</figcaption>
 </figure>
 
@@ -124,7 +124,7 @@ Thanks to this URL, we are going to be able to retrieve some sitelinks from Wiki
 I don’t think I need to introduce Wikipedia to you, but it is obvious that this time we are going to often come across rich textual descriptions, coming with references and sometimes images, which is much better than mere tags to describe a place!
 
 <figure style="width: min(100%, 640px);">
-  <img src="/textual-descriptions-place-on-earth/wikidata-airport.png" alt="The Wikidata sources associated with the Airport of Pau (France)." />
+  <img src="/assets/img/2026/textual-descriptions-place-on-earth/wikidata-airport.png" alt="The Wikidata sources associated with the Airport of Pau (France)." />
   <figcaption>Figure 5: The Wikidata sources associated with the Airport of Pau (France).</figcaption>
 </figure>
 
@@ -133,7 +133,7 @@ Let’s have a look at the English Wikipedia article (Figure 6). As you can see 
 Some other interesting things to note are that we now have proper sentences describing our airport, with references (text in blue). Another useful thing is that this text comes in sections. For example there is the “Airlines and destinations” section. This can matter for processing this text later. Suppose for downstream purposes you were only interested in the geographic side of a place, you could easily filter for sections having the word “geography” in their title (the section "Geography" appears to be quite standard), if any such section exist, and already have high quality geography related descriptions for the place you are studying!
 
 <figure style="width: min(100%, 640px);">
-  <img src="/textual-descriptions-place-on-earth/wikipedia-airport.png" alt="The english Wikipedia article associated with the Airport of Pau (France)." />
+  <img src="/assets/img/2026/textual-descriptions-place-on-earth/wikipedia-airport.png" alt="The english Wikipedia article associated with the Airport of Pau (France)." />
   <figcaption>Figure 6: The english Wikipedia article associated with the Airport of Pau (France).</figcaption>
 </figure>
 
@@ -152,7 +152,7 @@ For us to get a first idea of the scale we are going to deal with, we can visit 
 
 
 <figure style="width: min(100%, 640px);">
-  <img src="/textual-descriptions-place-on-earth/taginfo.png
+  <img src="/assets/img/2026/textual-descriptions-place-on-earth/taginfo.png
 " alt="Some statistics on the wikidata tag on the Taginfo website" />
   <figcaption>Figure 7: Some statistics on the wikidata tag on the Taginfo website</figcaption>
 </figure>
@@ -162,7 +162,7 @@ By looking at Figure 7, we can already see that we are dealing with millions of 
 In order to build a worldwide dataset of such pairs of geographical footprints and textual descriptions, we first need to access all polygons we are interested in (in my current endeavours, I am not interested in dealing with nodes, but the logic is just the same). You could use an API in order to extract these polygons, for example using the [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API), however at this scale you would certainly very quickly hit some rate limits. A simpler approach then is to download what we call OpenStreetMap Data Extracts using the [Geofabrik platform](https://download.geofabrik.de/) (Figure 8).
 
 <figure style="width: min(100%, 640px);">
-  <img src="/textual-descriptions-place-on-earth/geofabrik.png" alt="The Geofabrik download server to get OpenStreetMap data extracts" />
+  <img src="/assets/img/2026/textual-descriptions-place-on-earth/geofabrik.png" alt="The Geofabrik download server to get OpenStreetMap data extracts" />
   <figcaption>Figure 8: The Geofabrik download server to get OpenStreetMap data extracts</figcaption>
 </figure>
 
@@ -188,7 +188,7 @@ Conversely, and as anticipated earlier, regions of the world like Africa are hig
 
 
 <figure style="width: min(100%, 640px);">
-  <img src="/textual-descriptions-place-on-earth/geographic_text_presence.png
+  <img src="/assets/img/2026/textual-descriptions-place-on-earth/geographic_text_presence.png
 " alt="Polygons with at least one non-empty article" />
   <figcaption>Figure 9: Polygons with at least one non-empty article</figcaption>
 </figure>

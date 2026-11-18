@@ -37,7 +37,7 @@
     max-width: 100%;
     @apply !my-0;
   }
-  .prose > img[src="/textual-descriptions-place-on-earth/hero.png"] {
+  .prose > img[src="/assets/img/2026/textual-descriptions-place-on-earth/hero.png"] {
     height: auto;
     max-width: 640px;
     width: 100%;

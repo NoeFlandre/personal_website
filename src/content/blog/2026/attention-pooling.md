@@ -3,7 +3,7 @@ title: "But what is attention pooling exactly?"
 description: "A blog post to breakdown the maths behind attention pooling."
 pubDatetime: 2026-08-15T12:00:00+02:00
 tags: ["Post"]
-heroImage: /attention_pooling_hero_attention_pooling_hero_final.png
+heroImage: /assets/img/2026/attention-pooling/hero.png
 draft: false
 unlisted: false
 ---

@@ -2,7 +2,7 @@
 title: "Two different philosophies of giving an agent hands"
 description: "A comparison between CLI and MCP approaches for giving AI agents capabilities to interact with systems."
 pubDatetime: 2026-02-13T12:00:00+01:00
-heroImage: /mcp.png
+heroImage: /assets/img/2026/giving-agents-hands/mcp.png
 tags: ["Post"]
 featured: false
 ---
