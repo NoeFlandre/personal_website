@@ -7,6 +7,20 @@ newer: the tests import TypeScript directly using [native type stripping](https:
 npm test
 ```
 
+Tests live in `tests/`, grouped by the part of the site they cover:
+
+| Folder | Covers |
+| --- | --- |
+| `about/` | About page: career timeline, travel map, testimonials, profile links |
+| `blog/` | Blog features: listings, filters, post pages, feeds, Open Graph images, embeds |
+| `content/` | The content collection and checks pinned to individual posts |
+| `site/` | Site-wide code: config, layouts, styles, routes, URL and image helpers |
+| `tooling/` | CI, quality scripts, and the test helpers themselves |
+| `writer/` | The local post writer in `scripts/write/` |
+| `e2e/` | Playwright browser tests (`npm run test:e2e`) |
+| `helpers/` | Shared fixtures and fakes; `repo-files.mjs` resolves paths from the repository root |
+| `typechecks/` | TypeScript-only checks run by `blog/post-layout-metadata-types.test.mjs` |
+
 Coverage is collected for the source tree and written to `coverage/c8/`:
 
 ```sh

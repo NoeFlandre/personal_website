@@ -3,7 +3,7 @@
   "mutate": ["src/pages/**/*.ts"],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test --test-concurrency=4 tests/route-api.test.mjs"
+    "command": "node --test --test-concurrency=4 tests/site/route-api.test.mjs"
   },
   "coverageAnalysis": "off",
   "cleanTempDir": "always",

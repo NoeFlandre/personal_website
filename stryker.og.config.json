@@ -7,7 +7,7 @@
   ],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test --test-concurrency=4 tests/og-images.test.mjs tests/load-og-fonts.test.mjs"
+    "command": "node --test --test-concurrency=4 tests/blog/og-images.test.mjs tests/blog/load-og-fonts.test.mjs"
   },
   "coverageAnalysis": "off",
   "cleanTempDir": "always",

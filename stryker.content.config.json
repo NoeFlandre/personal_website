@@ -3,7 +3,7 @@
   "mutate": ["src/content.config.ts"],
   "testRunner": "command",
   "commandRunner": {
-    "command": "node --test --test-concurrency=4 tests/content-config.test.mjs"
+    "command": "node --test --test-concurrency=4 tests/content/content-config.test.mjs"
   },
   "coverageAnalysis": "off",
   "cleanTempDir": "always",
